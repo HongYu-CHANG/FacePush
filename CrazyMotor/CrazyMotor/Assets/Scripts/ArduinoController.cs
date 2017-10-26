@@ -38,15 +38,13 @@ public class ArduinoController : MonoBehaviour {
 	}
     public void sendButtonOnClick()
     {
-        int selectedNum = 0;
-        selectedNum = RightDropdown.GetComponent<Dropdown>().value;
-        Debug.Log(RightOptions[selectedNum].text);
-        selectedNum = LeftDropdown.GetComponent<Dropdown>().value;
-        Debug.Log(LeftOptions[selectedNum].text);
-        Debug.Log(DurationField.text);
+        int RselectedNum = 0;
+        int LselectedNum = 0;
+        RselectedNum = RightDropdown.GetComponent<Dropdown>().value;
+        LselectedNum = LeftDropdown.GetComponent<Dropdown>().value;
 
-        String data = "";
-        //Debug.Log(condition + "." + data);
+        String data = "R:"+ RightOptions[RselectedNum].text + " L:"+ LeftOptions[LselectedNum].text + " D:"+ DurationField.text;
+        Debug.Log( data);
         if (connected)
         {
             if (arduinoController != null)
