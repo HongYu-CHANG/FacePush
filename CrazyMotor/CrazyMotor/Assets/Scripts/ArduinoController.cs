@@ -15,13 +15,20 @@ public class ArduinoController : MonoBehaviour {
     public Dropdown LeftDropdown;
     public InputField DurationField;
     public Button SendButton;
+
     private SerialPort arduinoController;
+    private List<Dropdown.OptionData> RightOptions;
+    private List<Dropdown.OptionData> LeftOptions;
 
 
     // Use this for initialization
     private void Start ()
     {
         connectToArdunio();
+        Button tempBtn = SendButton.GetComponent<Button>();
+        tempBtn.onClick.AddListener(sendButtonOnClick);
+        RightOptions = RightDropdown.GetComponent<Dropdown>().options;
+        LeftOptions = LeftDropdown.GetComponent<Dropdown>().options;
     }
 
     // Update is called once per frame
@@ -29,8 +36,15 @@ public class ArduinoController : MonoBehaviour {
     {
 		
 	}
-    public void sendData()
+    public void sendButtonOnClick()
     {
+        int selectedNum = 0;
+        selectedNum = RightDropdown.GetComponent<Dropdown>().value;
+        Debug.Log(RightOptions[selectedNum].text);
+        selectedNum = LeftDropdown.GetComponent<Dropdown>().value;
+        Debug.Log(LeftOptions[selectedNum].text);
+        Debug.Log(DurationField.text);
+
         String data = "";
         //Debug.Log(condition + "." + data);
         if (connected)
