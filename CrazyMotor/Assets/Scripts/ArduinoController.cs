@@ -74,14 +74,16 @@ public class ArduinoController : MonoBehaviour {
                     string[] ttys = Directory.GetFiles("/dev/", "tty.*");
                     foreach (string dev in ttys)
                     {
-                        if (dev.StartsWith("/dev/tty.*"))
+                        if (dev.StartsWith("/dev/tty.")){
                             serial_ports.Add(dev);
+                            Debug.Log (String.Format (dev));
+                        }
                     }
                 }
                 //controller = new SerialPort ("/dev/tty.usbmodem1411");
                 portChoice = "/dev/" + choice;
-                Debug.Log(portChoice);
-                arduinoController = new SerialPort(portChoice);
+                //Debug.Log(portChoice);
+                //arduinoController = new SerialPort(portChoice);
             }
             arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
             arduinoController.Handshake = Handshake.None;
