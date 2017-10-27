@@ -30,22 +30,31 @@ void setup()
 
 void loop()
 {
-  
 }
 
 void serialEvent() //Called when data is available. Use Serial.read() to capture this data.
 {
-
+  //R L Duration
+   while (Serial.available())
+  {
+      String servoCmd = ""; 
+      char inChar = (char)Serial.read();
+      servoCmd += inChar;
+      if (inChar == '\n')
+      {
+        moveServo(servoCmd);
+      }
+  }
 }
 
-void moveServo()
+void moveServo(String Cmd)
 {
   int dur = 100; //duration is 100 loops
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
-    rightServo.write(Easing::degreeCal(callFuntion,pos, 0, 140, dur));
+    rightServo.write(Easing::degreeCal(Cmd, pos, 0, 140, dur));
     delay(15); //wait for the servo to move
-    leftServo.write(Easing::degreeCal(callFuntion,pos, 140, -140, dur));
+    leftServo.write(Easing::degreeCal(Cmd, pos, 140, -140, dur));
     delay(15);
   }
   
