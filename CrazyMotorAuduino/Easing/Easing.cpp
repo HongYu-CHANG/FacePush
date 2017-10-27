@@ -54,41 +54,21 @@ map<string, FnPtr> funMap;
 void Easing::initialSetup()
 {
 	funMap["linearTween"] = linearTween;
-	funMap["easeInQuad"] = easeInQuad;
-	funMap["easeOutQuad"] = easeOutQuad;
-	funMap["easeInOutQuad"] = easeInOutQuad;
-	funMap["easeInCubic"] = easeInCubic;
-	funMap["easeOutCubic"] = easeOutCubic;
-	funMap["easeInOutCubic"] = easeInOutCubic;
-	funMap["easeInQuart"] = easeInQuart;
-	funMap["easeOutQuart"] = easeOutQuart;
-	funMap["easeInOutQuart"] = easeInOutQuart;
-	funMap["easeInQuint"] = easeInQuint;
-	funMap["easeOutQuint"] = easeOutQuint;
-	funMap["easeInOutQuint"] = easeInOutQuint;
-	funMap["easeInSine"] = easeInSine;
-	funMap["easeOutSine"] = easeOutSine;
-	funMap["easeInOutSine"] = easeInOutSine;
-	funMap["easeInExpo"] = easeInExpo;
-	funMap["easeOutExpo"] = easeOutExpo;
-	funMap["easeInOutExpo"] = easeInOutExpo;
-	funMap["easeInCirc"] = easeInCirc;
-	funMap["easeOutCirc"] = easeOutCirc;
-	funMap["easeInOutCirc"] = easeInOutCirc;
-	funMap["easeInElastic"] = easeInElastic;
-	funMap["easeOutElastic"] = easeOutElastic;
-	funMap["easeInOutElastic"] = easeInOutElastic;
-	funMap["easeInBack"] = easeInBack;
-	funMap["easeOutBack"] = easeOutBack;
-	funMap["easeInOutBack"] = easeInOutBack;
-	funMap["easeInBounce"] = easeInBounce;
-	funMap["easeOutBounce"] = easeOutBounce;
-	funMap["easeInOutBounce"] = easeInOutBounce;
+	funMap["easeInQuad"] = easeInQuad; funMap["easeOutQuad"] = easeOutQuad; funMap["easeInOutQuad"] = easeInOutQuad; // Quad
+	funMap["easeInCubic"] = easeInCubic; funMap["easeOutCubic"] = easeOutCubic; funMap["easeInOutCubic"] = easeInOutCubic; //Cubic
+	funMap["easeInQuart"] = easeInQuart; funMap["easeOutQuart"] = easeOutQuart; funMap["easeInOutQuart"] = easeInOutQuart; //Quart
+	funMap["easeInQuint"] = easeInQuint; funMap["easeOutQuint"] = easeOutQuint; funMap["easeInOutQuint"] = easeInOutQuint; //Quint
+	funMap["easeInSine"] = easeInSine; funMap["easeOutSine"] = easeOutSine; funMap["easeInOutSine"] = easeInOutSine; //Sine
+	funMap["easeInExpo"] = easeInExpo; funMap["easeOutExpo"] = easeOutExpo; funMap["easeInOutExpo"] = easeInOutExpo; //Expo
+	funMap["easeInCirc"] = easeInCirc; funMap["easeOutCirc"] = easeOutCirc; funMap["easeInOutCirc"] = easeInOutCirc; //Circ
+	funMap["easeInElastic"] = easeInElastic; funMap["easeOutElastic"] = easeOutElastic; funMap["easeInOutElastic"] = easeInOutElastic; //Elastic
+	funMap["easeInBack"] = easeInBack; funMap["easeOutBack"] = easeOutBack; funMap["easeInOutBack"] = easeInOutBack; //Back
+	funMap["easeInBounce"] = easeInBounce; funMap["easeOutBounce"] = easeOutBounce; funMap["easeInOutBounce"] = easeInOutBounce; //Bounce
 }
 
 float Easing::degreeCal(string funName, float pos, float startDegree, float moveDegree, float duration)
 {
-	return myMap[funName](pos, startDegree, moveDegree, duration);
+	return funMap[funName](pos, startDegree, moveDegree, duration);
 }
 
 // simple linear tweening - no easing

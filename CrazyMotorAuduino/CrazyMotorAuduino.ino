@@ -37,25 +37,27 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
   //R L Duration
    while (Serial.available())
   {
-      String servoCmd = ""; 
+      int i = 0;
+      String servoCmd[3] = ""; 
       char inChar = (char)Serial.read();
-      servoCmd += inChar;
+      servoCmd[i] += inChar;
+      if(inChar == ' ') i++;
       if (inChar == '\n')
       {
-        moveServo(servoCmd);
+        moveServo(servoCmd[0], servoCmd[1], servoCmd[2]);
       }
   }
 }
 
-void moveServo(String Cmd)
+void moveServo(String RservoCmd, String LservoCmd, String Dration)
 {
-  int dur = 100; //duration is 100 loops
+  int dur = Dration.toInt();//Catch the duration
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
-    rightServo.write(Easing::degreeCal(Cmd, pos, 0, 140, dur));
-    delay(15); //wait for the servo to move
-    leftServo.write(Easing::degreeCal(Cmd, pos, 140, -140, dur));
-    delay(15);
+    rightServo.write(Easing::degreeCal(RservoCmd, pos, 0, 140, dur));
+    //delay(15); //wait for the servo to move
+    leftServo.write(Easing::degreeCal(LservoCmd, pos, 140, -140, dur));
+    delay(15);//wait for the servo to move
   }
   
   delay(1000); //wait a second, then move back using "bounce" easing
