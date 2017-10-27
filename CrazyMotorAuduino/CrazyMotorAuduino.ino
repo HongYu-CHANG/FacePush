@@ -40,27 +40,17 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
    while (Serial.available())
   {
       int i = 0;
-      int charCount = 0;
-      String servoCmd = ""; 
-      int spaceNum[3] = {0};
-      char* ArrayservoCmd[3];
+      String servoCmd[3] = ""; 
       char inChar = (char)Serial.read();
-      servoCmd += inChar;
-      charCount++;
-      if (inChar == ' ')spaceNum[i] = charCount-1;
-      if (inChar == '\n')
-      {
-        ArrayservoCmd[0] = const_cast<char*>(servoCmd.substring(0, spaceNum[0]).c_str());//Right
-        ArrayservoCmd[1]= const_cast<char*>(servoCmd.substring(spaceNum[0]+1, spaceNum[1]).c_str());//Left
-        ArrayservoCmd[2] = const_cast<char*>(servoCmd.substring(spaceNum[1]+1, spaceNum[2]).c_str());//Duration
-        moveServo(ArrayservoCmd[0], ArrayservoCmd[1], ArrayservoCmd[2]);
-      }
+      if (inChar == ' ') i++;
+      else servoCmd[i] += inChar;
+      if (inChar == '\n') moveServo(servoCmd[0], servoCmd[1], servoCmd[2]);
   }
 }
 
-void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
+void moveServo(String RservoCmd, String LservoCmd, String Duration)
 {
-  int dur = Duration-'0';//Catch the duration
+  int dur = Duration.toInt();//Catch the duration
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
     //rightServo.write(degreeCal(RservoCmd, pos, 0, 140, dur));
@@ -74,7 +64,6 @@ void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
   rightServo.write(0);  //put servo at 0 degrees
   leftServo.write(140);  //put servo at 140 degrees
 }
-
 
 void initialSetup()
 {
@@ -91,9 +80,9 @@ void initialSetup()
   funMap["easeInBounce"] = easeInBounce; funMap["easeOutBounce"] = easeOutBounce; funMap["easeInOutBounce"] = easeInOutBounce; //Bounce
 }
 
-float degreeCal(char* funName, float t, float b, float c, float d)
+float degreeCal(string funName, float t, float b, float c, float d)
 {
-  std::string str(funName);
+  //std::string str(funName);
   return funMap[funName](t, b, c, d);
 }
 
@@ -102,7 +91,6 @@ float degreeCal(char* funName, float t, float b, float c, float d)
 float linearTween (float t, float b, float c, float d) {
   return c*t/d + b;
 }
-
 
  ///////////// QUADRATIC EASING: t^2 ///////////////////
 
@@ -187,8 +175,6 @@ float easeInOutQuint (float t, float b, float c, float d) {
   return c/2*((t-=2)*t*t*t*t + 2) + b;
 }
 
-
-
  ///////////// SINUSOIDAL EASING: sin(t) ///////////////
 
 // sinusoidal easing in - accelerating from zero velocity
@@ -206,7 +192,6 @@ float easeOutSine (float t, float b, float c, float d) {
 float easeInOutSine (float t, float b, float c, float d) {
   return -c/2 * (cos(M_PI*t/d) - 1) + b;
 }
-
 
  ///////////// EXPONENTIAL EASING: 2^t /////////////////
 
@@ -228,7 +213,6 @@ float easeInOutExpo (float t, float b, float c, float d) {
   if ((t/=d/2) < 1) return c/2 * pow(2, 10 * (t - 1)) + b;
   return c/2 * (-pow(2, -10 * --t) + 2) + b;
 }
-
 
  /////////// CIRCULAR EASING: sqrt(1-t^2) //////////////
 
