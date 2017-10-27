@@ -21,7 +21,8 @@ using namespace std;
 
 Servo rightServo; //create servo object
 Servo leftServo; //create servo object
-std::map<String, int> funMap;
+typedef float(*FnPtr)(float, float, float, float);
+std::map<String, FnPtr> funMap;
 
 void setup()
 {
@@ -74,7 +75,6 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
 void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 {
   Serial.println("====== START =====");
-  Serial.println(funMap["easeInElastic"]);
   int dur = atoi(Duration);//Catch the duration
   //Serial.println(dur);
   for (int pos=0; pos<dur; pos++){
@@ -94,15 +94,15 @@ void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 
 void initialSetup()
 {
-  funMap["linearTween"] = 1;
-  funMap["easeInQuad"] = 2; funMap["easeOutQuad"] = 3; funMap["easeInOutQuad"] = 4; // Quad
-  funMap["easeInCubic"] = 5; funMap["easeOutCubic"] = 6; funMap["easeInOutCubic"] = 7; //Cubic
-  funMap["easeInQuart"] = 8; funMap["easeOutQuart"] = 9; funMap["easeInOutQuart"] = 10; //Quart
+  funMap["linearTween"] = linearTween;
+  funMap["easeInQuad"] = easeInQuad; funMap["easeOutQuad"] = easeOutQuad; funMap["easeInOutQuad"] = easeInOutQuad; // Quad
+  funMap["easeInCubic"] = easeInCubic; funMap["easeOutCubic"] = easeOutCubic; funMap["easeInOutCubic"] = easeInOutCubic; //Cubic
+  funMap["easeInQuart"] = easeInQuart; funMap["easeOutQuart"] = easeOutQuart; funMap["easeInOutQuart"] = easeInOutQuart; //Quart
   //funMap["easeInQuint"] = easeInQuint; funMap["easeOutQuint"] = easeOutQuint; funMap["easeInOutQuint"] = easeInOutQuint; //Quint
-  funMap["easeInSine"] = 11; funMap["easeOutSine"] = 12; funMap["easeInOutSine"] = 13; //Sine
-  funMap["easeInExpo"] = 14; funMap["easeOutExpo"] = 15; funMap["easeInOutExpo"] = 16; //Expo
-  funMap["easeInCirc"] = 17; funMap["easeOutCirc"] = 18; funMap["easeInOutCirc"] = 19; //Circ
-  funMap["easeInElastic"] = 20; funMap["easeOutElastic"] = 21; funMap["easeInOutElastic"] = 22; //Elastic
+  funMap["easeInSine"] = easeInSine; funMap["easeOutSine"] = easeOutSine; funMap["easeInOutSine"] = easeInOutSine; //Sine
+  funMap["easeInExpo"] = easeInExpo; funMap["easeOutExpo"] = easeOutExpo; funMap["easeInOutExpo"] = easeInOutExpo; //Expo
+  funMap["easeInCirc"] = easeInCirc; funMap["easeOutCirc"] = easeOutCirc; funMap["easeInOutCirc"] = easeInOutCirc; //Circ
+  funMap["easeInElastic"] = easeInElastic; funMap["easeOutElastic"] = easeOutElastic; funMap["easeInOutElastic"] = easeInOutElastic; //Elastic
   //funMap["easeInBack"] = easeInBack; funMap["easeOutBack"] = easeOutBack; funMap["easeInOutBack"] = easeInOutBack; //Back
   //funMap["easeInBounce"] = easeInBounce; funMap["easeOutBounce"] = easeOutBounce; funMap["easeInOutBounce"] = easeInOutBounce; //Bounce
   
@@ -112,83 +112,12 @@ float degreeCal(char* funName, float t, float b, float c, float d)
 {
   String temp = String(funName);
   Serial.println(temp);
-  Serial.println(funMap[temp]);
   Serial.println(t);
   Serial.println(b);
   Serial.println(c);
   Serial.println(d);
   float answer;
-  switch(funMap[funName])
-  {
-    case 1:
-      answer = linearTween (t, b, c, d);
-    break;
-    case 2:
-      answer = easeInQuad (t, b, c, d);
-    break;
-    case 3:
-      answer = easeOutQuad (t, b, c, d);
-    break;
-    case 4:
-      answer = easeInOutQuad (t, b, c, d);
-    break;
-    case 5:
-      answer = easeInCubic (t, b, c, d);
-    break;
-    case 6:
-      answer = easeOutCubic (t, b, c, d);
-    break;
-    case 7:
-      answer = easeInOutCubic (t, b, c, d);
-    break;
-    case 8:
-      answer = easeInQuart (t, b, c, d);
-    break;
-    case 9:
-      answer = easeOutQuart (t, b, c, d);
-    break;
-    case 10:
-      answer = easeInOutQuart (t, b, c, d);
-    break;
-    case 11:
-      answer = easeInSine (t, b, c, d);
-    break;
-    case 12:
-      answer = easeOutSine (t, b, c, d);
-    break;
-    case 13:
-      answer = easeInOutSine (t, b, c, d);
-    break;
-    case 14:
-      answer = easeInExpo (t, b, c, d);
-    break;
-    case 15:
-      answer = easeOutExpo (t, b, c, d);
-    break;
-    case 16:
-      answer = easeInOutExpo (t, b, c, d);
-    break;
-    case 17:
-      answer = easeInCirc (t, b, c, d);
-    break;
-    case 18:
-      answer = easeOutCirc (t, b, c, d);
-    break;
-    case 19:
-      answer = easeInOutCirc (t, b, c, d);
-    break;
-    case 20:
-      answer = easeInElastic (t, b, c, d);
-    break;
-    case 21:
-      answer = easeOutElastic (t, b, c, d);
-    break;
-    case 22:
-      answer = easeInOutElastic (t, b, c, d);
-    break;    
-  }
-  //float answer = funMap[funName](t, b, c, d);
-  return answer;
+  return funMap[temp](t, b, c, d);
 }
 
 // simple linear tweening - no easing
@@ -203,7 +132,6 @@ float linearTween (float t, float b, float c, float d) {
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be in frames or seconds/milliseconds
 float easeInQuad (float t, float b, float c, float d) {
-  Serial.println("Quad");
   return c*(t/=d)*t + b;
 }
 
@@ -291,7 +219,6 @@ float easeInSine (float t, float b, float c, float d) {
 
 // sinusoidal easing out - decelerating to zero velocity
 float easeOutSine (float t, float b, float c, float d) {
-  Serial.println("Start Sine");
   return c * sin(t/d * (M_PI/2)) + b;
 }
 
