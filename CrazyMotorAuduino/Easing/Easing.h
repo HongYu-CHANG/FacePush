@@ -52,7 +52,9 @@
 //class Easing {
 //public:
 	//Easing();
-namespace Easing{	
+namespace Easing{
+	void initialSetup();
+	float degreeCal(string, float, float, float, float);
 	float linearTween (float t, float b, float c, float d);
 	float easeInQuad (float t, float b, float c, float d);
 	float easeOutQuad (float t, float b, float c, float d);

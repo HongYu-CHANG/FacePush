@@ -1,5 +1,3 @@
-#include <Servo.h>
-
 /*
  * Easing
  * Tobias Toft <hello@tobiastoft.dk>
@@ -15,39 +13,44 @@
  * for more info see Easing.h or Easing.cpp
  */
 
-#include "Easing.h"
+#include <Easing.h>
 #include <Servo.h>
 
-Servo myServo; //create servo object
-const int buttonPin = 11; //we have a push button on pin 11
+Servo rightServo; //create servo object
+Servo leftServo; //create servo object
 
-void setup(){
-  myServo.attach(9); //attach servo at pin 9
-  myServo.write(0);  //put servo at 0 degrees
-  pinMode(buttonPin, INPUT); //set up button
-  digitalWrite(buttonPin, HIGH); //activate internal pull-up resistor (then we don't have to put one in our circuit)
+void setup()
+{
+  rightServo.attach(13); //attach servo at pin 13
+  rightServo.write(0);  //put servo at 0 degrees
+  leftServo.attach(12); //attach servo at pin 12
+  leftServo.write(140);  //put servo at 140 degrees
+  Easing::initialSetup();
 }
 
-void loop(){
-  boolean buttonPressed = digitalRead(buttonPin); //read button, LOW==activated
-  if (buttonPressed==LOW){
-    moveServo();
-  }
+void loop()
+{
+  
 }
 
-void moveServo(){
+void serialEvent() //Called when data is available. Use Serial.read() to capture this data.
+{
+
+}
+
+void moveServo()
+{
   int dur = 100; //duration is 100 loops
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
-    myServo.write(Easing::easeInOutCubic(pos, 0, 140, dur));
+    rightServo.write(Easing::degreeCal(callFuntion,pos, 0, 140, dur));
     delay(15); //wait for the servo to move
+    leftServo.write(Easing::degreeCal(callFuntion,pos, 140, -140, dur));
+    delay(15);
   }
   
   delay(1000); //wait a second, then move back using "bounce" easing
-  
-  for (int pos=0; pos<dur; pos++){
-    //move servo -140 degrees from position 140 (back to 0)
-    myServo.write(Easing::easeOutBounce(pos, 140, -140, dur));
-    delay(15);
-  }
+  //back to initial positon
+  rightServo.write(0);  //put servo at 0 degrees
+  leftServo.write(140);  //put servo at 140 degrees
 }

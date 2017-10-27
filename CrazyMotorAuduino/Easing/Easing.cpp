@@ -47,6 +47,49 @@
 #include "Easing.h"
 #include <math.h>
 
+using namespace std;
+typedef float(*FnPtr)(float, float, float, float);
+map<string, FnPtr> funMap;
+
+void Easing::initialSetup()
+{
+	funMap["linearTween"] = linearTween;
+	funMap["easeInQuad"] = easeInQuad;
+	funMap["easeOutQuad"] = easeOutQuad;
+	funMap["easeInOutQuad"] = easeInOutQuad;
+	funMap["easeInCubic"] = easeInCubic;
+	funMap["easeOutCubic"] = easeOutCubic;
+	funMap["easeInOutCubic"] = easeInOutCubic;
+	funMap["easeInQuart"] = easeInQuart;
+	funMap["easeOutQuart"] = easeOutQuart;
+	funMap["easeInOutQuart"] = easeInOutQuart;
+	funMap["easeInQuint"] = easeInQuint;
+	funMap["easeOutQuint"] = easeOutQuint;
+	funMap["easeInOutQuint"] = easeInOutQuint;
+	funMap["easeInSine"] = easeInSine;
+	funMap["easeOutSine"] = easeOutSine;
+	funMap["easeInOutSine"] = easeInOutSine;
+	funMap["easeInExpo"] = easeInExpo;
+	funMap["easeOutExpo"] = easeOutExpo;
+	funMap["easeInOutExpo"] = easeInOutExpo;
+	funMap["easeInCirc"] = easeInCirc;
+	funMap["easeOutCirc"] = easeOutCirc;
+	funMap["easeInOutCirc"] = easeInOutCirc;
+	funMap["easeInElastic"] = easeInElastic;
+	funMap["easeOutElastic"] = easeOutElastic;
+	funMap["easeInOutElastic"] = easeInOutElastic;
+	funMap["easeInBack"] = easeInBack;
+	funMap["easeOutBack"] = easeOutBack;
+	funMap["easeInOutBack"] = easeInOutBack;
+	funMap["easeInBounce"] = easeInBounce;
+	funMap["easeOutBounce"] = easeOutBounce;
+	funMap["easeInOutBounce"] = easeInOutBounce;
+}
+
+float Easing::degreeCal(string funName, float pos, float startDegree, float moveDegree, float duration)
+{
+	return myMap[funName](pos, startDegree, moveDegree, duration);
+}
 
 // simple linear tweening - no easing
 // t: current time, b: beginning value, c: change in value, d: duration
