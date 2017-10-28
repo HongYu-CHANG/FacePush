@@ -66,7 +66,6 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
         servoCmd.substring(spaceNum[0]+1, spaceNum[1]).toCharArray(LservoCmd, 20);
         servoCmd.substring(spaceNum[1]+1, spaceNum[2]).toCharArray(DservoCmd, 20);        
         moveServo(RservoCmd, LservoCmd, DservoCmd);
-        Serial.println("====== END =====");
       }
       Serial.println(servoCmd);
   } 
@@ -74,14 +73,10 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
 
 void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 {
-  Serial.println("====== START =====");
   int dur = atoi(Duration);//Catch the duration
-  //Serial.println(dur);
   for (int pos=0; pos<dur; pos++){
-    Serial.println(pos);
     //move servo from 0 and 140 degrees forward
-    //rightServo.write(degreeCal(RservoCmd, pos, 0, 140, dur));
-    //delay(15); //wait for the servo to move
+    rightServo.write(degreeCal(RservoCmd, pos, 0, 140, dur));
     leftServo.write(degreeCal(LservoCmd, pos, 180, -140, dur));
     delay(15);//wait for the servo to move
   }
@@ -111,12 +106,8 @@ void initialSetup()
 float degreeCal(char* funName, float t, float b, float c, float d)
 {
   String temp = String(funName);
-  Serial.println(temp);
-  Serial.println(t);
-  Serial.println(b);
-  Serial.println(c);
-  Serial.println(d);
-  float answer;
+  Serial.println(temp+" : "+ t);
+  //Serial.println(t);
   return funMap[temp](t, b, c, d);
 }
 
