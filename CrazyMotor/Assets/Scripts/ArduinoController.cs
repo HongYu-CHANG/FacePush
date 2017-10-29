@@ -43,7 +43,7 @@ public class ArduinoController : MonoBehaviour {
         RselectedNum = RightDropdown.GetComponent<Dropdown>().value;
         LselectedNum = LeftDropdown.GetComponent<Dropdown>().value;
 
-        String data = RightOptions[RselectedNum].text + " "+ LeftOptions[LselectedNum].text + " "+ DurationField.text;
+        String data = "?"+RightOptions[RselectedNum].text + " "+ LeftOptions[LselectedNum].text + " "+ DurationField.text;
         Debug.Log(data);
         if (connected)
         {
