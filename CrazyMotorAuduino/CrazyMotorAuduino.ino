@@ -29,7 +29,7 @@ void setup()
   
   rightServo.attach(13); //attach servo at pin 13
   rightServo.write(20);  //put servo at 0 degrees
-  leftServo.attach(12); //attach servo at pin 12
+  leftServo.attach(8); //attach servo at pin 12
   leftServo.write(160);  //put servo at 140 degrees
   initialSetup();
   Serial.println("--- Start Serial Monitor SEND_RCVE ---");
@@ -42,49 +42,63 @@ void loop()
 void serialEvent() //Called when data is available. Use Serial.read() to capture this data.
 {
   //R L Duration
-  int charCount = 0;
+  int charCount = -1;
   int i = 0;
   String servoCmd = ""; 
   int spaceNum[3] = {0};
-  char RservoCmd[20];
-  char LservoCmd[20];
-  char DservoCmd[20];
+
+  char inChar;
 
    while (Serial.available())
   {      
-      char inChar = (char)Serial.read();
+      inChar = (char)Serial.read();
       servoCmd += inChar;
+      Serial.println("servoCmd = "+servoCmd);
       charCount++;
-      if (inChar == ' '&& charCount > 1)spaceNum[i++] = charCount-1;
+      if (inChar == ' '&& charCount > 1){spaceNum[i] = charCount; Serial.println("pos = "+ String(spaceNum[i++]));}
       if (inChar == '\n')
       {
-        spaceNum[i] = charCount-1;
-        servoCmd.substring(1, spaceNum[0]).toCharArray(RservoCmd, servoCmd.substring(1, spaceNum[0]+1).length());
+        spaceNum[i] = charCount;
+        /*Serial.println("Rpdddos = "+ servoCmd.substring(0, spaceNum[0])+"!");
+        Serial.println("Rpdddos = "+ String(servoCmd.substring(0, spaceNum[0]+1).length())+"!");
+        Serial.println("Lpdddos = "+ servoCmd.substring(spaceNum[0]+1, spaceNum[1])+"!");
+        Serial.println("Lpdddos = "+ String(servoCmd.substring(spaceNum[0]+1, spaceNum[1]+1).length())+"!");
+        Serial.println("Dpdddos = "+ servoCmd.substring(spaceNum[1]+1, spaceNum[2])+"!");
+        Serial.println("Dpdddos = "+ String(servoCmd.substring(spaceNum[1]+1, spaceNum[2]+1).length())+"!");
+        */
+        char RservoCmd[servoCmd.substring(0, spaceNum[0]).length()+1];
+        char LservoCmd[servoCmd.substring(spaceNum[0]+1, spaceNum[1]+1).length()];
+        char DservoCmd[servoCmd.substring(spaceNum[1]+1, spaceNum[2]+1).length()];
+        servoCmd.substring(0, spaceNum[0]).toCharArray(RservoCmd, servoCmd.substring(0, spaceNum[0]+1).length());
         servoCmd.substring(spaceNum[0]+1, spaceNum[1]).toCharArray(LservoCmd, servoCmd.substring(spaceNum[0]+1, spaceNum[1]+1).length());
-        servoCmd.substring(spaceNum[1]+1, spaceNum[2]).toCharArray(DservoCmd, servoCmd.substring(spaceNum[1]+1, spaceNum[2]+1).length());        
+        servoCmd.substring(spaceNum[1]+1, spaceNum[2]).toCharArray(DservoCmd, servoCmd.substring(spaceNum[1]+1, spaceNum[2]+1).length());   
+        //Serial.println(RservoCmd);     
         moveServo(RservoCmd, LservoCmd, DservoCmd);
         charCount = 0;
         i = 0;
         servoCmd = ""; 
       }
-      Serial.println(servoCmd);
+      delay(5);      
   } 
 }
 
 void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 {
   int dur = atoi(Duration);//Catch the duration
+
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
     rightServo.write(degreeCal(RservoCmd, pos, 20, 140, dur));
     leftServo.write(degreeCal(LservoCmd, pos, 160, -140, dur));
     delay(15);//wait for the servo to move
+    Serial.println(pos);
   }
   
   delay(1000); //wait a second, then move back using "bounce" easing
   //back to initial positon
-  rightServo.write(0);  //put servo at 0 degrees
-  leftServo.write(180);  //put servo at 140 degrees
+  rightServo.write(20);  //put servo at 0 degrees
+  leftServo.write(160);  //put servo at 140 degrees
+
 }
 
 void initialSetup()
