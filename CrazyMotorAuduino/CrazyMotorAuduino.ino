@@ -28,9 +28,9 @@ void setup()
   Serial.begin(115200);
   
   rightServo.attach(13); //attach servo at pin 13
-  rightServo.write(20);  //put servo at 0 degrees
-  leftServo.attach(8); //attach servo at pin 12
-  leftServo.write(160);  //put servo at 140 degrees
+  rightServo.write(0);  //put servo at 0 degrees
+  leftServo.attach(8); //attach servo at pin 8
+  leftServo.write(180);  //put servo at 140 degrees
   initialSetup();
   Serial.println("--- Start Serial Monitor SEND_RCVE ---");
 }
@@ -88,16 +88,16 @@ void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
-    rightServo.write(degreeCal(RservoCmd, pos, 20, 140, dur));
-    leftServo.write(degreeCal(LservoCmd, pos, 160, -140, dur));
+    rightServo.write(degreeCal(RservoCmd, pos, 0, 120, dur));
+    leftServo.write(degreeCal(LservoCmd, pos, 180, -120, dur));
     delay(15);//wait for the servo to move
     Serial.println(pos);
   }
   
-  delay(1000); //wait a second, then move back using "bounce" easing
+  delay(500); //wait a second, then move back using "bounce" easing
   //back to initial positon
-  rightServo.write(20);  //put servo at 0 degrees
-  leftServo.write(160);  //put servo at 140 degrees
+  rightServo.write(0);  //put servo at 0 degrees
+  leftServo.write(180);  //put servo at 140 degrees
 
 }
 
