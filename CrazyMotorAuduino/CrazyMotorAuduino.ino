@@ -28,9 +28,9 @@ void setup()
   Serial.begin(115200);
   
   rightServo.attach(13); //attach servo at pin 13
-  rightServo.write(0);  //put servo at 0 degrees
-  leftServo.attach(8); //attach servo at pin 8
-  leftServo.write(180);  //put servo at 140 degrees
+  rightServo.write(15);  //put servo at 0 degrees
+  leftServo.attach(7); //attach servo at pin 8
+  leftServo.write(165);  //put servo at 140 degrees
   initialSetup();
   Serial.println("--- Start Serial Monitor SEND_RCVE ---");
 }
@@ -88,16 +88,16 @@ void moveServo(char* RservoCmd, char* LservoCmd, char* Duration)
 
   for (int pos=0; pos<dur; pos++){
     //move servo from 0 and 140 degrees forward
-    rightServo.write(degreeCal(RservoCmd, pos, 0, 120, dur));
-    leftServo.write(degreeCal(LservoCmd, pos, 180, -120, dur));
+    rightServo.write(degreeCal(RservoCmd, pos, 15, 65, dur));
+    leftServo.write(degreeCal(LservoCmd, pos, 165, -65, dur));
     delay(15);//wait for the servo to move
     Serial.println(pos);
   }
   
   delay(500); //wait a second, then move back using "bounce" easing
   //back to initial positon
-  rightServo.write(0);  //put servo at 0 degrees
-  leftServo.write(180);  //put servo at 140 degrees
+  rightServo.write(15);  //put servo at 0 degrees
+  leftServo.write(165);  //put servo at 140 degrees
 
 }
 
@@ -113,7 +113,7 @@ void initialSetup()
   funMap["easeInCirc"] = 17; funMap["easeOutCirc"] = 18; funMap["easeInOutCirc"] = 19; //Circ
   funMap["easeInElastic"] = 20; funMap["easeOutElastic"] = 21; funMap["easeInOutElastic"] = 22; //Elastic
   //funMap["easeInBack"] = 23; funMap["easeOutBack"] = 24; funMap["easeInOutBack"] = 25; //Back
-  //funMap["easeInBounce"] = 26; funMap["easeOutBounce"] = 27; funMap["easeInOutBounce"] = 28; //Bounce
+  //funMap["easeInBounce"] = 23; funMap["easeOutBounce"] = 24; funMap["easeInOutBounce"] = 25; //Bounce
   
 }
 
