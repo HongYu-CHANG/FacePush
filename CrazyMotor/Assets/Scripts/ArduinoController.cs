@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Ports;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -15,11 +16,15 @@ public class ArduinoController : MonoBehaviour {
     public Dropdown LeftDropdown;
     public InputField DurationField;
     public Button SendButton;
+    public int RStartDegree;
+    public int RMoveDegree;
+    public int LStartDegree;
+    public int LMoveDegree;
 
     private SerialPort arduinoController;
     private List<Dropdown.OptionData> RightOptions;
     private List<Dropdown.OptionData> LeftOptions;
-
+    private Dictionary<String, int> funMap = new Dictionary<string, int>( );
 
     // Use this for initialization
     private void Start ()
@@ -29,6 +34,18 @@ public class ArduinoController : MonoBehaviour {
         tempBtn.onClick.AddListener(sendButtonOnClick);
         RightOptions = RightDropdown.GetComponent<Dropdown>().options;
         LeftOptions = LeftDropdown.GetComponent<Dropdown>().options;
+
+        funMap.Add("None", 0); funMap.Add("linearTween", 1);
+        funMap.Add("easeInQuad", 2); funMap.Add("easeOutQuad", 3); funMap.Add("easeInOutQuad", 4);
+        funMap.Add("easeInCubic", 5); funMap.Add("easeOutCubic", 6); funMap.Add("easeInOutCubic", 7);
+        funMap.Add("easeInQuart", 8); funMap.Add("easeOutQuart", 9); funMap.Add("easeInOutQuart", 10);
+        funMap.Add("easeInQuint", 29); funMap.Add("easeOutQuint", 30); funMap.Add("easeInOutQuint", 31);
+        funMap.Add("easeInSine", 11); funMap.Add("easeOutSine", 12); funMap.Add("easeInOutSine", 13);
+        funMap.Add("easeInExpo", 14); funMap.Add("easeOutExpo", 15); funMap.Add("easeInOutExpo", 16);
+        funMap.Add("easeInCirc", 17); funMap.Add("easeOutCirc", 18); funMap.Add("easeInOutCirc", 19);
+        funMap.Add("easeInElastic", 20); funMap.Add("easeOutElastic", 21); funMap.Add("easeInOutElastic", 22);
+        funMap.Add("easeInBack", 23); funMap.Add("easeOutBack", 24); funMap.Add("easeInOutBack", 25);
+        funMap.Add("easeInBounce", 26); funMap.Add("easeOutBounce", 27); funMap.Add("easeInOutBounce", 28);
     }
 
     // Update is called once per frame
@@ -42,20 +59,32 @@ public class ArduinoController : MonoBehaviour {
         int LselectedNum = 0;
         RselectedNum = RightDropdown.GetComponent<Dropdown>().value;
         LselectedNum = LeftDropdown.GetComponent<Dropdown>().value;
+        
+        Type thisType = this.GetType();
 
-        String data = RightOptions[RselectedNum].text + " "+ LeftOptions[LselectedNum].text + " "+ DurationField.text;
-        Debug.Log(data);
-        if (connected)
+        int dur = int.Parse(DurationField.text);//Catch the duration
+        double Rdegree = 0;
+        double Ldegree = 0;
+        
+        for (int pos = 0; pos < dur; pos++)
         {
-            if (arduinoController != null)
+            Rdegree = degreeCal(RightOptions[RselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
+            Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
+            String data = Rdegree.ToString() + " " + Ldegree.ToString();
+            Debug.Log(data);
+            if (connected)
             {
-                arduinoController.Write(data);
-                arduinoController.Write("\n");
+                if (arduinoController != null)
+                {
+                    arduinoController.Write(data);
+                    arduinoController.Write("\n");
+                }
+                else
+                {
+                    Debug.Log("nullport");
+                }
             }
-            else
-            {
-                Debug.Log("nullport");
-            }
+            Thread.Sleep(50);
         }
     }
 
@@ -88,7 +117,7 @@ public class ArduinoController : MonoBehaviour {
             arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
             arduinoController.Handshake = Handshake.None;
             arduinoController.RtsEnable = true;
-            arduinoController.Open();
+            //arduinoController.Open();
         }
     }
 
@@ -419,6 +448,109 @@ public class ArduinoController : MonoBehaviour {
     {
         if (t < d / 2) return easeInBounce(t * 2, 0, c, d) * .5 + b;
         return easeOutBounce(t * 2 - d, 0, c, d) * .5 + c * .5 + b;
+    }
+
+    double degreeCal(string funName, float t, float b, float c, float d)
+    {
+        double answer = 0.0;
+        switch (funMap[funName])
+        {
+            case 1:
+                answer = linearTween(t, b, c, d);
+                break;
+            case 2:
+                answer = easeInQuad(t, b, c, d);
+                break;
+            case 3:
+                answer = easeOutQuad(t, b, c, d);
+                break;
+            case 4:
+                answer = easeInOutQuad(t, b, c, d);
+                break;
+            case 5:
+                answer = easeInCubic(t, b, c, d);
+                break;
+            case 6:
+                answer = easeOutCubic(t, b, c, d);
+                break;
+            case 7:
+                answer = easeInOutCubic(t, b, c, d);
+                break;
+            case 8:
+                answer = easeInQuart(t, b, c, d);
+                break;
+            case 9:
+                answer = easeOutQuart(t, b, c, d);
+                break;
+            case 10:
+                answer = easeInOutQuart(t, b, c, d);
+                break;
+            case 11:
+                answer = easeInSine(t, b, c, d);
+                break;
+            case 12:
+                answer = easeOutSine(t, b, c, d);
+                break;
+            case 13:
+                answer = easeInOutSine(t, b, c, d);
+                break;
+            case 14:
+                answer = easeInExpo(t, b, c, d);
+                break;
+            case 15:
+                answer = easeOutExpo(t, b, c, d);
+                break;
+            case 16:
+                answer = easeInOutExpo(t, b, c, d);
+                break;
+            case 17:
+                answer = easeInCirc(t, b, c, d);
+                break;
+            case 18:
+                answer = easeOutCirc(t, b, c, d);
+                break;
+            case 19:
+                answer = easeInOutCirc(t, b, c, d);
+                break;
+            case 20:
+                answer = easeInElastic(t, b, c, d);
+                break;
+            case 21:
+                answer = easeOutElastic(t, b, c, d);
+                break;
+            case 22:
+                answer = easeInOutElastic(t, b, c, d);
+                break;
+            case 23:
+                answer = easeInBack(t, b, c, d);
+                break;
+            case 24:
+                answer = easeOutBack(t, b, c, d);
+                break;
+            case 25:
+                answer = easeInOutBack(t, b, c, d);
+                break;
+            case 26:
+                answer = easeInBounce(t, b, c, d);
+                break;
+            case 27:
+                answer = easeOutBounce(t, b, c, d);
+                break;
+            case 28:
+                answer = easeInOutBounce(t, b, c, d);
+                break;
+            case 29:
+                answer = easeInQuint(t, b, c, d);
+                break;
+            case 30:
+                answer = easeOutQuint(t, b, c, d);
+                break;
+            case 31:
+                answer = easeInOutQuint(t, b, c, d);
+                break;
+
+        }
+        return answer;
     }
 
 }
