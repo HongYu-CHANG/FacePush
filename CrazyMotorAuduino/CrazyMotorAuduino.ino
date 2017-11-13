@@ -12,6 +12,7 @@
  * Easing functions based on Robert Penner's work,
  * for more info see Easing.h or Easing.cpp
  */
+#include <Servo.h>
 
 Servo rightServo; //create servo object
 Servo leftServo; //create servo object
@@ -21,9 +22,9 @@ void setup()
   Serial.begin(115200);
   
   rightServo.attach(13); //attach servo at pin 13
-  rightServo.write(15);  //put servo at 0 degrees
+  rightServo.write(180);  //put servo at 0 degrees
   leftServo.attach(7); //attach servo at pin 8
-  leftServo.write(165);  //put servo at 140 degrees
+  leftServo.write(0);  //put servo at 140 degrees
   Serial.println("--- Start Serial Monitor SEND_RCVE ---");
 }
 

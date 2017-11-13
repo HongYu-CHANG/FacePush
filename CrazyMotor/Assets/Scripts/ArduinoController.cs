@@ -65,12 +65,13 @@ public class ArduinoController : MonoBehaviour {
         int dur = int.Parse(DurationField.text);//Catch the duration
         double Rdegree = 0;
         double Ldegree = 0;
+        String data = "";
         
         for (int pos = 0; pos < dur; pos++)
         {
             Rdegree = degreeCal(RightOptions[RselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
-            Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
-            String data = Rdegree.ToString() + " " + Ldegree.ToString();
+            Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, LStartDegree, LMoveDegree, dur);
+            data = Rdegree.ToString("f2") + " " + Ldegree.ToString("f2");
             Debug.Log(data);
             if (connected)
             {
@@ -84,7 +85,23 @@ public class ArduinoController : MonoBehaviour {
                     Debug.Log("nullport");
                 }
             }
-            Thread.Sleep(50);
+            Thread.Sleep(100);
+        }
+
+        Thread.Sleep(50); //wait a second, then move back using "bounce" easing
+        data = RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2");
+        Debug.Log(data);
+        if (connected)
+        {
+            if (arduinoController != null)
+            {
+                arduinoController.Write(data);
+                arduinoController.Write("\n");
+            }
+            else
+            {
+                Debug.Log("nullport");
+            }
         }
     }
 
@@ -117,7 +134,22 @@ public class ArduinoController : MonoBehaviour {
             arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
             arduinoController.Handshake = Handshake.None;
             arduinoController.RtsEnable = true;
-            //arduinoController.Open();
+            arduinoController.Open();
+
+            Thread.Sleep(50);
+            Debug.Log(RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2"));
+            if (connected)
+            {
+                if (arduinoController != null)
+                {
+                    arduinoController.Write(RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2"));
+                    arduinoController.Write("\n");
+                }
+                else
+                {
+                    Debug.Log("nullport");
+                }
+            }
         }
     }
 
@@ -455,6 +487,10 @@ public class ArduinoController : MonoBehaviour {
         double answer = 0.0;
         switch (funMap[funName])
         {
+            
+            case 0:
+                answer = b;
+                break;
             case 1:
                 answer = linearTween(t, b, c, d);
                 break;
