@@ -15,6 +15,7 @@ public class ArduinoController : MonoBehaviour {
     public Dropdown RightDropdown;
     public Dropdown LeftDropdown;
     public InputField DurationField;
+    public InputField RepeatField;
     public Button SendButton;
     public int RStartDegree;
     public int RMoveDegree;
@@ -34,6 +35,7 @@ public class ArduinoController : MonoBehaviour {
         tempBtn.onClick.AddListener(sendButtonOnClick);
         RightOptions = RightDropdown.GetComponent<Dropdown>().options;
         LeftOptions = LeftDropdown.GetComponent<Dropdown>().options;
+        RepeatField.text = "1";
 
         funMap.Add("None", 0); funMap.Add("linearTween", 1);
         funMap.Add("easeInQuad", 2); funMap.Add("easeOutQuad", 3); funMap.Add("easeInOutQuad", 4);
@@ -61,22 +63,28 @@ public class ArduinoController : MonoBehaviour {
         LselectedNum = LeftDropdown.GetComponent<Dropdown>().value;
 
         int dur = int.Parse(DurationField.text);//Catch the duration
+        int repeat = int.Parse(RepeatField.text);//Catch the duration
+        repeat = repeat == -1 ? 100 : repeat;
         double Rdegree = 0;
         double Ldegree = 0;
         String data = "";
-        
-        for (int pos = 0; pos < dur; pos++)
+        for(int i = 1 ; i <= repeat; i++)
         {
-            Rdegree = degreeCal(RightOptions[RselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
-            Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, LStartDegree, LMoveDegree, dur);
-            data = Rdegree.ToString("f2") + " " + Ldegree.ToString("f2");
-            SendData(data);
-            Thread.Sleep(100);
-        }
+            Debug.Log("--------" + i.ToString() + "--------");
+            for (int pos = 0; pos < dur; pos++)
+            {
+                Rdegree = degreeCal(RightOptions[RselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
+                Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, LStartDegree, LMoveDegree, dur);
+                data = Rdegree.ToString("f2") + " " + Ldegree.ToString("f2");
+                SendData(data);
+                Thread.Sleep(100);
+            }
 
-        Thread.Sleep(50); //wait a second, then move back using "bounce" easing
-        data = RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2");
-       SendData(data);
+            Thread.Sleep(50); //wait a second, then move back using "bounce" easing
+            data = RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2");
+            SendData(data);
+            Thread.Sleep(50);
+        }
     }
 
     private void connectToArdunio()
