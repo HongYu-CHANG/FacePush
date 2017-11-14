@@ -59,8 +59,6 @@ public class ArduinoController : MonoBehaviour {
         int LselectedNum = 0;
         RselectedNum = RightDropdown.GetComponent<Dropdown>().value;
         LselectedNum = LeftDropdown.GetComponent<Dropdown>().value;
-        
-        Type thisType = this.GetType();
 
         int dur = int.Parse(DurationField.text);//Catch the duration
         double Rdegree = 0;
@@ -72,37 +70,13 @@ public class ArduinoController : MonoBehaviour {
             Rdegree = degreeCal(RightOptions[RselectedNum].text, pos, RStartDegree, RMoveDegree, dur);
             Ldegree = degreeCal(LeftOptions[LselectedNum].text, pos, LStartDegree, LMoveDegree, dur);
             data = Rdegree.ToString("f2") + " " + Ldegree.ToString("f2");
-            Debug.Log(data);
-            if (connected)
-            {
-                if (arduinoController != null)
-                {
-                    arduinoController.Write(data);
-                    arduinoController.Write("\n");
-                }
-                else
-                {
-                    Debug.Log("nullport");
-                }
-            }
+            SendData(data);
             Thread.Sleep(100);
         }
 
         Thread.Sleep(50); //wait a second, then move back using "bounce" easing
         data = RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2");
-        Debug.Log(data);
-        if (connected)
-        {
-            if (arduinoController != null)
-            {
-                arduinoController.Write(data);
-                arduinoController.Write("\n");
-            }
-            else
-            {
-                Debug.Log("nullport");
-            }
-        }
+       SendData(data);
     }
 
     private void connectToArdunio()
@@ -137,12 +111,18 @@ public class ArduinoController : MonoBehaviour {
             arduinoController.Open();
 
             Thread.Sleep(50);
-            Debug.Log(RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2"));
+            SendData(RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2"));
+        }
+    }
+
+    void SendData(String data)
+    {
+        Debug.Log(data);
             if (connected)
             {
                 if (arduinoController != null)
                 {
-                    arduinoController.Write(RStartDegree.ToString("f2") + " " + LStartDegree.ToString("f2"));
+                    arduinoController.Write(data);
                     arduinoController.Write("\n");
                 }
                 else
@@ -150,9 +130,7 @@ public class ArduinoController : MonoBehaviour {
                     Debug.Log("nullport");
                 }
             }
-        }
     }
-
     // simple linear tweening - no easing
     // t: current time, b: beginning value, c: change in value, d: duration
     double linearTween(double t, double b, double c, double d)
