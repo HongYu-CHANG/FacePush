@@ -11,7 +11,6 @@ void setup()
   rightServo.write(0);
   leftServo.attach(6,500,2500); //attach servo at pin 8
   leftServo.write(150);
-  Serial.println("--- Start Serial Monitor SEND_RCVE ---");
 }
 
 void loop()
@@ -27,7 +26,6 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
   {      
       inChar = (char)Serial.read();
       servoCmd += inChar;
-      //Serial.println("servoCmd = "+servoCmd);
       if (servoCmd == "R\n")
       {
         Serial.println(String(rightServo.read()) + " " + String(leftServo.read()));

@@ -9,16 +9,10 @@ using UnityEngine.UI;
 public class ArduinoController : MonoBehaviour {
 
     //serial connecting
-    
-    public Dropdown RightDropdown;
-    public Dropdown LeftDropdown;
-    public InputField DurationField;
-    public InputField RepeatField;
+
     public Button SendButton;
 
     private CommunicateWithArduino arduino;
-    private List<Dropdown.OptionData> RightOptions;
-    private List<Dropdown.OptionData> LeftOptions;
 
     // Use this for initialization
     private void Start ()
@@ -38,7 +32,7 @@ public class ArduinoController : MonoBehaviour {
 	}
     public void sendButtonOnClick()
     {
-       arduino.SendData("90 88");
+       new Thread (arduino.initailDecide).Start ();
     }
 }
 
@@ -99,5 +93,22 @@ class CommunicateWithArduino
                     Debug.Log("nullport");
                 }
             }
+    }
+    public string readArduino()
+    {
+        return arduinoController.ReadLine ();
+    }
+    public void initailDecide()
+    {
+        for (int i = 0; i <= 150; i+=5)
+       {
+           SendData(i.ToString() + " " + (150-i).ToString());
+           Thread.Sleep(60);
+           SendData("R");
+           Thread.Sleep(60);
+           Debug.Log(readArduino());
+           Thread.Sleep(60);
+           
+       }
     }
 }
