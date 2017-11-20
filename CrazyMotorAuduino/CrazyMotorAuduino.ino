@@ -2,6 +2,8 @@
 
 Servo rightServo; //create servo object
 Servo leftServo; //create servo object
+int lastRDegree = 0;
+int lastLDegree = 150;
 
 void setup()
 {
@@ -9,7 +11,7 @@ void setup()
   
   rightServo.attach(11,500,2500); //attach servo at pin 13
   rightServo.write(0);
-  leftServo.attach(6,500,2500); //attach servo at pin 8
+  leftServo.attach(3,500,2500); //attach servo at pin 8
   leftServo.write(150);
 }
 
@@ -21,26 +23,28 @@ void serialEvent() //Called when data is available. Use Serial.read() to capture
 {
   String servoCmd = ""; 
   char inChar;
-
    while (Serial.available())
   {      
       inChar = (char)Serial.read();
       servoCmd += inChar;
-      if (servoCmd == "R\n")
-      {
-        Serial.println(String(rightServo.read()) + " " + String(leftServo.read()));
-        servoCmd = "";
-        inChar = "";
-      }
       if (inChar == ' ')
       {
-        rightServo.write(servoCmd.toInt());
+        if(servoCmd.toInt() != lastRDegree)
+        {
+          rightServo.write(servoCmd.toInt());
+          lastRDegree = servoCmd.toInt();
+        }
         servoCmd = "";
       }
       if (inChar == '\n')
       {
-        leftServo.write(servoCmd.toInt());
+        if(servoCmd.toInt() != lastLDegree)
+        {
+          leftServo.write(servoCmd.toInt());
+          lastLDegree = servoCmd.toInt();
+        }
+        servoCmd = "";
       }
-      delay(5);      
+      delay(10);      
   } 
 }
