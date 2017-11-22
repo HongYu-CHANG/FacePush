@@ -40,60 +40,91 @@ public class ArduinoController : MonoBehaviour {
     //Add Random Degree
     public void AddRandomRightButtonOnClick()
     {
-       arduino.setRandomNumber(UnityEngine.Random.Range(1,10));
-       new Thread (arduino.RMotorAddRandomDegree).Start();
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorAddRandomDegree).Start("Right");
     }
     public void AddRandomLeftButtonOnClick()
     {
-       arduino.setRandomNumber(UnityEngine.Random.Range(1,10));
-       new Thread (arduino.LMotorAddRandomDegree).Start();
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorAddRandomDegree).Start("Left");
     }
     public void AddRandomAllButtonOnClick()
     {
-       arduino.setRandomNumber(UnityEngine.Random.Range(1,10));
-       new Thread (arduino.AllMotorAddRandomDegree).Start();
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorAddRandomDegree).Start("All");
+    }
+
+    //Sub Random Degree
+    public void SubRandomRightButtonOnClick()
+    {
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorSubRandomDegree).Start("Right");
+    }
+    public void SubRandomLeftButtonOnClick()
+    {
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorSubRandomDegree).Start("Left");
+    }
+    public void SubRandomAllButtonOnClick()
+    {
+       arduino.setRandomNumber(UnityEngine.Random.Range(2,12));
+       new Thread (arduino.MotorSubRandomDegree).Start("All");
     }
 
     //Add 5 Degree
     public void AddFiveRightButtonOnClick()
     {
-       new Thread (arduino.RMotorAdd5Degree).Start();
+       new Thread (arduino.MotorAdd5Degree).Start("Right");
     }
     public void AddFiveLeftButtonOnClick()
     {
-       new Thread (arduino.LMotorAdd5Degree).Start();
+       new Thread (arduino.MotorAdd5Degree).Start("Left");
     }
     public void AddFiveAllButtonOnClick()
     {
-       new Thread (arduino.AllMotorAdd5Degree).Start();
+       new Thread (arduino.MotorAdd5Degree).Start("All");
+    }
+
+    //Sub 5 Degree
+    public void SubFiveRightButtonOnClick()
+    {
+       new Thread (arduino.MotorSub5Degree).Start("Right");
+    }
+    public void SubFiveLeftButtonOnClick()
+    {
+       new Thread (arduino.MotorSub5Degree).Start("Left");
+    }
+    public void SubFiveAllButtonOnClick()
+    {
+       new Thread (arduino.MotorSub5Degree).Start("All");
     }
 
     //Motor Repeat
     public void RepeatRightButtonOnClick()
     {
-       new Thread (arduino.RMotorRepeat).Start();
+       new Thread (arduino.MotorRepeat).Start("Right");
     }
     public void RepeatLeftButtonOnClick()
     {
-       new Thread (arduino.LMotorRepeat).Start();
+       new Thread (arduino.MotorRepeat).Start("Left");
     }
     public void RepeatAllButtonOnClick()
     {
-       new Thread (arduino.AllMotorRepeat).Start();
+       new Thread (arduino.MotorRepeat).Start("All");
     }
 
     //Motor Reset
     public void ResetRightButtonOnClick()
     {
-       new Thread (arduino.resetRMotor).Start();
+       new Thread (arduino.resetMotor).Start("Right");
     }
     public void ResetLeftButtonOnClick()
     {
-       new Thread (arduino.resetLMotor).Start();
+       new Thread (arduino.resetMotor).Start("Left");
     }
     public void ResetAllButtonOnClick()
     {
-       new Thread (arduino.resetAllMotor).Start();
+       new Thread (arduino.resetMotor).Start("All");
     }
 }
 
@@ -153,13 +184,24 @@ class CommunicateWithArduino
     }
     public void SendData(String data)
     {
-        Debug.Log(data);
+        
         string[] newsArr;
         newsArr = data.Split(' ');
         if(int.Parse(newsArr[0]) <= Rmax && int.Parse(newsArr[1]) >= Lmax)
         {
             Rnow = int.Parse(newsArr[0]);
+            if(Rnow < 0) 
+            {    
+                Rnow = 0;
+                data = "0 "+newsArr[1];
+            }
             Lnow = int.Parse(newsArr[1]);
+            if(Lnow > 150) 
+            {
+                Lnow = 150;
+                data = newsArr[0]+" 150";
+            }
+            Debug.Log(data);
             if (connected)
             {
                 if (arduinoController != null)
@@ -180,36 +222,59 @@ class CommunicateWithArduino
     }
 
     //reset Motor
-    public void resetAllMotor()
+    public void resetMotor(object obj)
     {
-        SendData("0 150");
-        Thread.Sleep(1000);
-    }
-    public void resetRMotor()
-    {
-        SendData("0 "+Lnow);
-        Thread.Sleep(1000);
-    }
-    public void resetLMotor()
-    {
-        SendData(Rnow+" 150");
+        string str = obj as string;
+        if(str == "All" )
+        {
+            SendData("0 150");
+        }
+        else if (str == "Right")
+        {
+            SendData("0 "+Lnow);
+        }
+        else if (str == "Left")
+        {
+            SendData(Rnow+" 150");
+        }
         Thread.Sleep(1000);
     }
 
     //Add 5 Degree
-    public void AllMotorAdd5Degree()
+    public void MotorAdd5Degree(object obj)
     {
-        SendData((Rnow+5)+" "+(Lnow-5));
+        string str = obj as string;
+        if(str == "All" )
+        {
+            SendData((Rnow+5)+" "+(Lnow-5));
+        }
+        else if (str == "Right")
+        {
+            SendData((Rnow+5)+" "+Lnow);
+        }
+        else if (str == "Left")
+        {
+            SendData(Rnow+" "+(Lnow-5));
+        }
         Thread.Sleep(1000);
     }
-    public void RMotorAdd5Degree()
+
+    //Sub 5 Degree
+    public void MotorSub5Degree(object obj)
     {
-        SendData((Rnow+5)+" "+Lnow);
-        Thread.Sleep(1000);
-    }
-    public void LMotorAdd5Degree()
-    {
-        SendData(Rnow+" "+(Lnow-5));
+        string str = obj as string;
+        if(str == "All" )
+        {
+            SendData((Rnow-5)+" "+(Lnow+5));
+        }
+        else if (str == "Right")
+        {
+            SendData((Rnow-5)+" "+Lnow);
+        }
+        else if (str == "Left")
+        {
+            SendData(Rnow+" "+(Lnow+5));
+        }
         Thread.Sleep(1000);
     }
 
@@ -218,19 +283,40 @@ class CommunicateWithArduino
     {
         RandomNumber = tmp;
     }    
-    public void AllMotorAddRandomDegree()
+    public void MotorAddRandomDegree(object obj)
     {
-        SendData((Rnow+RandomNumber)+" "+(Lnow-RandomNumber));
+        string str = obj as string;
+        if(str == "All" )
+        {
+            SendData((Rnow+RandomNumber)+" "+(Lnow-RandomNumber));
+        }
+        else if (str == "Right")
+        {
+            SendData((Rnow+RandomNumber)+" "+Lnow);
+        }
+        else if (str == "Left")
+        {
+            SendData(Rnow+" "+(Lnow-RandomNumber));
+        }
         Thread.Sleep(1000);
     }
-    public void RMotorAddRandomDegree()
+
+     //Sub Random Degree
+    public void MotorSubRandomDegree(object obj)
     {
-        SendData((Rnow+RandomNumber)+" "+Lnow);
-        Thread.Sleep(1000);
-    }
-    public void LMotorAddRandomDegree()
-    {
-        SendData(Rnow+" "+(Lnow-RandomNumber));
+        string str = obj as string;
+        if(str == "All" )
+        {
+            SendData((Rnow-RandomNumber)+" "+(Lnow+RandomNumber));
+        }
+        else if (str == "Right")
+        {
+            SendData((Rnow-RandomNumber)+" "+Lnow);
+        }
+        else if (str == "Left")
+        {
+            SendData(Rnow+" "+(Lnow+RandomNumber));
+        }
         Thread.Sleep(1000);
     }
 
@@ -249,35 +335,29 @@ class CommunicateWithArduino
     {
         repeatTime = TmpRepeat;
     }
-    public void RMotorRepeat()
+    public void MotorRepeat(object obj)
     {
-        int tmp = 0;
-        for(int i = 0 ; i < repeatTime ; i++)
-        {
-            tmp = i % RRepeatdegree.Length;
-            SendData(RRepeatdegree[tmp]+" "+Lnow);
-            Thread.Sleep(1000);
-        }
-    }
-    public void LMotorRepeat()
-    {
-        int tmp = 0;
-        for(int i = 0 ; i < repeatTime ; i++)
-        {
-            tmp = i % LRepeatdegree.Length;
-            SendData(Rnow+" "+LRepeatdegree[tmp]);
-            Thread.Sleep(1000);
-        }
-    }
-    public void AllMotorRepeat()
-    {
+        string str = obj as string;
         int Rtmp = 0;
         int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
-            Rtmp = i % RRepeatdegree.Length;
-            Ltmp = i % LRepeatdegree.Length;
-            SendData(RRepeatdegree[Rtmp]+" "+LRepeatdegree[Ltmp]);
+            if(str == "All" )
+            {
+                Rtmp = i % RRepeatdegree.Length;
+                Ltmp = i % LRepeatdegree.Length;
+                SendData(RRepeatdegree[Rtmp]+" "+LRepeatdegree[Ltmp]);
+            }
+            else if (str == "Right")
+            {
+                Rtmp = i % RRepeatdegree.Length;
+                SendData(RRepeatdegree[Rtmp]+" "+Lnow);
+            }
+            else if (str == "Left")
+            {
+                Ltmp = i % LRepeatdegree.Length;
+                SendData(Rnow+" "+LRepeatdegree[Ltmp]);
+            }
             Thread.Sleep(1000);
         }
     }
