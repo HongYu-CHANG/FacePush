@@ -1,0 +1,5 @@
+C:\Users\HarrisQs\Desktop\SMarto\SMarto\bin\Debug\SMarto.dll
+C:\Users\HarrisQs\Desktop\SMarto\SMarto\bin\Debug\SMarto.pdb
+C:\Users\HarrisQs\Desktop\SMarto\SMarto\obj\Debug\SMarto.csprojResolveAssemblyReference.cache
+C:\Users\HarrisQs\Desktop\SMarto\SMarto\obj\Debug\SMarto.dll
+C:\Users\HarrisQs\Desktop\SMarto\SMarto\obj\Debug\SMarto.pdb
