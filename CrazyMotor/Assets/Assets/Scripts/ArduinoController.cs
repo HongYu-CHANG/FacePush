@@ -40,30 +40,30 @@ public class ArduinoController : MonoBehaviour {
     //Add Random Degree
     public void AddRandomRightButtonOnClick()
     {
-       Uno.SendData(Rmotor.addDegree(UnityEngine.Random.Range(2,12))+" 100");
+       Uno.SendData(Rmotor.addDegree(UnityEngine.Random.Range(2,12))+" "+Lmotor.getnowDegree());
        
     }
     public void AddRandomLeftButtonOnClick()
     {
-       
+       Uno.SendData(Rmotor.getnowDegree()+" "+Lmotor.addDegree(UnityEngine.Random.Range(2,12)));
     }
     public void AddRandomAllButtonOnClick()
     {
-       
+       Uno.SendData(Rmotor.addDegree(UnityEngine.Random.Range(2,12))+" "+Lmotor.addDegree(UnityEngine.Random.Range(2,12)));
     }
 
     //Sub Random Degree
     public void SubRandomRightButtonOnClick()
     {
-      
+      Uno.SendData(Rmotor.subDegree(UnityEngine.Random.Range(2,12))+" "+Lmotor.getnowDegree());
     }
     public void SubRandomLeftButtonOnClick()
     {
-       
+        Uno.SendData(Rmotor.getnowDegree()+" "+Lmotor.subDegree(UnityEngine.Random.Range(2,12)));
     }
     public void SubRandomAllButtonOnClick()
     {
-       
+        Uno.SendData(Rmotor.subDegree(UnityEngine.Random.Range(2,12))+" "+Lmotor.subDegree(UnityEngine.Random.Range(2,12)));
     }
 
     //Add 5 Degree
@@ -152,10 +152,7 @@ public class ArduinoController : MonoBehaviour {
                             }
                         }
                     }
-                    //controller = new SerialPort ("/dev/tty.usbmodem1411");
                     portChoice = "/dev/" + choice;
-                    //Debug.Log(portChoice);
-                    //arduinoController = new SerialPort(portChoice);
                 }
                 arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
                 arduinoController.Handshake = Handshake.None;
@@ -166,9 +163,6 @@ public class ArduinoController : MonoBehaviour {
         }
         public void SendData(String data)
         {
-            
-            string[] newsArr;
-            newsArr = data.Split(' ');
             Debug.Log(data);
             if (connected)
             {
@@ -184,8 +178,9 @@ public class ArduinoController : MonoBehaviour {
             }
             else
             {
-                Debug.Log("角度太大了！！");
+                Debug.Log("未連接");
             }
+            Thread.Sleep(1000);
         }
     }
 }
