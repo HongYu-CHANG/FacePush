@@ -5,6 +5,7 @@ using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using SMarto;
 
 public class ArduinoController : MonoBehaviour {
 
