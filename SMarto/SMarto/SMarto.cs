@@ -33,7 +33,10 @@ namespace SMarto
 
         public string addDegree(int addDegree = 5)
         {
-            return preventTooBigDegree((nowDegree + addDegree)).ToString();
+            if(isClockwise)
+                return preventTooBigDegree((nowDegree + addDegree)).ToString();
+            else
+                return preventTooBigDegree((nowDegree - addDegree)).ToString();
         }
 
         public string subDegree(int subDegree = 5)
