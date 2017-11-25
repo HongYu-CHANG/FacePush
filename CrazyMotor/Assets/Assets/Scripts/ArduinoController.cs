@@ -18,6 +18,7 @@ public class ArduinoController : MonoBehaviour {
     public int[] LRepeatdegree;
 
     private CommunicateWithArduino arduino;
+    private SMarto Rmotor;
 
     // Use this for initialization
     private void Start ()
@@ -25,6 +26,9 @@ public class ArduinoController : MonoBehaviour {
         //connectToArdunio();
         arduino = new CommunicateWithArduino ();
         new Thread (arduino.connectToArdunio).Start ();
+
+        Rmotor = new Smarto();
+        Rmotor.initial(0, 75, true);
         arduino.setLmax(Lmax);
         arduino.setRmax(Rmax);
         arduino.setrepeatTime(repeatTime);
