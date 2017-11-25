@@ -28,6 +28,7 @@ namespace SMarto
 
         public string reset()
         {
+            nowDegree = initialDegree;
             return initialDegree.ToString();
         }
 
