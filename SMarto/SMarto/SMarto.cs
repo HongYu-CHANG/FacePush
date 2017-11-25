@@ -71,7 +71,7 @@ namespace SMarto
         }
     }
 
-    public class ArduinoConnect
+    internal class ArduinoConnect
     {
         private string serialPort;
         private SerialPort arduinoController;
