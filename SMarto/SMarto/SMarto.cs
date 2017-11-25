@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace SMarto
 {
-    public class SMartoing
+    public class MotorControl
     {
         private int initialDegree;
         private int nowDegree;
@@ -78,7 +78,7 @@ namespace SMarto
         private bool connected;
         private bool mac;
 
-        ArduinoConnect(string serialPort = "tty.usbmodem1421", bool isConnected = true, 
+        ArduinoConnect(string serialPort = "tty.usbmodem1421", bool isConnected = true,
             bool isMac = true)
         {
             this.serialPort = serialPort;
@@ -125,9 +125,9 @@ namespace SMarto
             {
                 if (arduinoController != null)
                 {
-                arduinoController.Write(data);
-                arduinoController.Write("\n");
-                }     
+                    arduinoController.Write(data);
+                    arduinoController.Write("\n");
+                }
             }
             Thread.Sleep(1000);
         }
