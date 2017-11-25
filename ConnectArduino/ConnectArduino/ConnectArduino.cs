@@ -7,7 +7,7 @@ using System.Threading;
 
 namespace ConnectArduino
 {
-    internal class ArduinoConnect
+    public class ArduinoConnect
     {
         private string serialPort;
         private SerialPort arduinoController;

@@ -2,3 +2,4 @@ C:\Users\HarrisQs\Desktop\CrazyMotor\ConnectArduino\ConnectArduino\bin\Release\C
 C:\Users\HarrisQs\Desktop\CrazyMotor\ConnectArduino\ConnectArduino\bin\Release\ConnectArduino.pdb
 C:\Users\HarrisQs\Desktop\CrazyMotor\ConnectArduino\ConnectArduino\obj\Release\ConnectArduino.dll
 C:\Users\HarrisQs\Desktop\CrazyMotor\ConnectArduino\ConnectArduino\obj\Release\ConnectArduino.pdb
+C:\Users\HarrisQs\Desktop\CrazyMotor\ConnectArduino\ConnectArduino\obj\Release\ConnectArduino.csprojResolveAssemblyReference.cache
