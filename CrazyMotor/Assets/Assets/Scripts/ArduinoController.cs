@@ -97,15 +97,39 @@ public class ArduinoController : MonoBehaviour {
     //Motor Repeat
     public void RepeatRightButtonOnClick()
     {
-       
+       string[] RStmp = Rmotor.repeatMotor(RRepeatdegree);
+        int Rtmp = 0;
+        int Ltmp = 0;
+        for(int i = 0 ; i < repeatTime ; i++)
+        {
+            Rtmp = i % RStmp.Length;
+            SendData(RStmp[Rtmp]+" "+Lmotor.getnowDegree());
+        }
     }
     public void RepeatLeftButtonOnClick()
     {
-       
+       string[] LStmp = Lmotor.repeatMotor(LRepeatdegree);
+        int Rtmp = 0;
+        int Ltmp = 0;
+        for(int i = 0 ; i < repeatTime ; i++)
+        {
+            Ltmp = i % LStmp.Length;
+            SendData(RStmp[Rtmp]+" "+LStmp[Ltmp]);
+        }
     }
     public void RepeatAllButtonOnClick()
     {
-       
+       string[] RStmp = Rmotor.repeatMotor(RRepeatdegree);
+       string[] LStmp = Lmotor.repeatMotor(LRepeatdegree);
+
+        int Rtmp = 0;
+        int Ltmp = 0;
+        for(int i = 0 ; i < repeatTime ; i++)
+        {
+            Rtmp = i % RStmp.Length;
+            Ltmp = i % LStmp.Length;
+            SendData(RStmp[Rtmp]+" "+LStmp[Ltmp]);
+        }
     }
 
     //Motor Reset
