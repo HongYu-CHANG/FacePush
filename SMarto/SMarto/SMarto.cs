@@ -78,7 +78,7 @@ namespace SMarto
         private bool connected;
         private bool mac;
 
-        ArduinoConnect(string serialPort = "tty.usbmodem1421", bool isConnected = true,
+        public void createConnect(string serialPort = "tty.usbmodem1421", bool isConnected = true,
             bool isMac = true)
         {
             this.serialPort = serialPort;
