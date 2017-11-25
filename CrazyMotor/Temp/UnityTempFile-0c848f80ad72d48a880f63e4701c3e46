@@ -12,6 +12,7 @@
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll'
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll'
 -r:'/Applications/Unity/Unity.app/Contents/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll'
+-r:'Assets/SMarto.dll'
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.dll'
 -define:UNITY_5_3_OR_NEWER
 -define:UNITY_5_4_OR_NEWER
