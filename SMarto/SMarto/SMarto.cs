@@ -49,14 +49,9 @@ namespace SMarto
             return preventTooBigDegree(goalDegree).ToString();
         }
 
-        public string[] repeatMotor(int[] Repeatdegree)
+        public string repeatMotor(int[] Repeatdegree, int index)
         {
-            string[] tmp = { "" };
-            for (int i = 0; i < Repeatdegree.Length; i++)
-            {
-                tmp[i] = preventTooBigDegree(Repeatdegree[i]).ToString();
-            }
-            return tmp;
+            return preventTooBigDegree(Repeatdegree[index]).ToString();
         }
 
         private int preventTooBigDegree(int judgmentDegree)
