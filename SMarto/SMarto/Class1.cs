@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace SMarto
 {
-    public class SMarto
+    public class SMartoing
     {
         private int initialDegree;
         private int nowDegree;
