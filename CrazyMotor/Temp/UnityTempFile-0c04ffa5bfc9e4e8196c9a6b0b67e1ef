@@ -26,6 +26,7 @@
 -r:'/Applications/Unity/Unity.app/Contents/Managed/UnityEditor.Graphs.dll'
 -r:'/Applications/Unity/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport/UnityEditor.OSXStandalone.Extensions.dll'
 -r:'Assets/SMarto.dll'
+-r:'Assets/ConnectArduino.dll'
 -define:UNITY_5_3_OR_NEWER
 -define:UNITY_5_4_OR_NEWER
 -define:UNITY_5_5_OR_NEWER
