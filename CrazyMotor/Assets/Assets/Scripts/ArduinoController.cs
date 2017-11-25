@@ -97,53 +97,48 @@ public class ArduinoController : MonoBehaviour {
     //Motor Repeat
     public void RepeatRightButtonOnClick()
     {
-       string[] RStmp = Rmotor.repeatMotor(RRepeatdegree);
         int Rtmp = 0;
         int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
-            Rtmp = i % RStmp.Length;
-            SendData(RStmp[Rtmp]+" "+Lmotor.getnowDegree());
+            Rtmp = i % RRepeatdegree.Length;
+            Uno.SendData(Rmotor.repeatMotor(RRepeatdegree, Rtmp)+" "+Lmotor.getnowDegree());
         }
     }
     public void RepeatLeftButtonOnClick()
     {
-       string[] LStmp = Lmotor.repeatMotor(LRepeatdegree);
         int Rtmp = 0;
         int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
-            Ltmp = i % LStmp.Length;
-            SendData(RStmp[Rtmp]+" "+LStmp[Ltmp]);
+            Ltmp = i % LRepeatdegree.Length;
+            Uno.SendData(Rmotor.getnowDegree()+" "+Lmotor.repeatMotor(LRepeatdegree, Ltmp));
         }
     }
     public void RepeatAllButtonOnClick()
     {
-       string[] RStmp = Rmotor.repeatMotor(RRepeatdegree);
-       string[] LStmp = Lmotor.repeatMotor(LRepeatdegree);
-
         int Rtmp = 0;
         int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
-            Rtmp = i % RStmp.Length;
-            Ltmp = i % LStmp.Length;
-            SendData(RStmp[Rtmp]+" "+LStmp[Ltmp]);
+            Rtmp = i % RRepeatdegree.Length;
+            Ltmp = i % LRepeatdegree.Length;
+            Uno.SendData(Rmotor.repeatMotor(RRepeatdegree, Rtmp)+" "+Lmotor.repeatMotor(LRepeatdegree, Ltmp));
         }
     }
 
     //Motor Reset
     public void ResetRightButtonOnClick()
     {
-       
+        Uno.SendData(Rmotor.reset()+" "+Lmotor.getnowDegree());
     }
     public void ResetLeftButtonOnClick()
     {
-       
+        Uno.SendData(Rmotor.getnowDegree()+" "+Lmotor.reset());
     }
     public void ResetAllButtonOnClick()
     {
-       
+        Uno.SendData(Rmotor.reset()+" "+Lmotor.reset());
     }
 
     class CommunicateWithArduino
