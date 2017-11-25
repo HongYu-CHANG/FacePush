@@ -6,3 +6,4 @@ C:\Users\HarrisQs\Desktop\CrazyMotor\SMarto\SMarto\bin\Release\SMarto.dll
 C:\Users\HarrisQs\Desktop\CrazyMotor\SMarto\SMarto\bin\Release\SMarto.pdb
 C:\Users\HarrisQs\Desktop\CrazyMotor\SMarto\SMarto\obj\Release\SMarto.dll
 C:\Users\HarrisQs\Desktop\CrazyMotor\SMarto\SMarto\obj\Release\SMarto.pdb
+C:\Users\HarrisQs\Desktop\CrazyMotor\SMarto\SMarto\obj\Release\SMarto.csprojResolveAssemblyReference.cache

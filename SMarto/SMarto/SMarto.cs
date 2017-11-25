@@ -13,13 +13,18 @@ namespace SMarto
         private int maxDegree;
         private bool isClockwise;//順時針是指從開始
 
-        public string initial(int initialDegree = 0, int maxDegree = 75, bool isClockwise = true)
+        public void initial(int initialDegree = 0, int maxDegree = 75, bool isClockwise = true)
         {
             this.initialDegree = initialDegree;
             this.nowDegree = initialDegree;
             this.maxDegree = maxDegree;
             this.isClockwise = isClockwise;
-            return initialDegree.ToString();
+            //return initialDegree.ToString();
+        }
+
+        public string getnowDegree()
+        {
+            return nowDegree.ToString();
         }
 
         public string reset()
