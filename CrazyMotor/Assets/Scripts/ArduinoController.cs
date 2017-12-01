@@ -98,7 +98,6 @@ public class ArduinoController : MonoBehaviour {
     public void RepeatRightButtonOnClick()
     {
         int Rtmp = 0;
-        int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
             Rtmp = i % RRepeatdegree.Length;
@@ -107,7 +106,6 @@ public class ArduinoController : MonoBehaviour {
     }
     public void RepeatLeftButtonOnClick()
     {
-        int Rtmp = 0;
         int Ltmp = 0;
         for(int i = 0 ; i < repeatTime ; i++)
         {
