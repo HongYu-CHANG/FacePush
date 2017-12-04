@@ -25,11 +25,19 @@ public class VideoContoller : MonoBehaviour {
 	{
     	Debug.Log("Start play Video");
 		Uno = new CommunicateWithArduino();
-        new Thread (Uno.connectToArdunio).Start ();
+        //new Thread (Uno.connectToArdunio).Start ();
 		Rmotor = new MotorControl();
         Rmotor.initial(0, 75, true);
         Lmotor = new MotorControl();
         Lmotor.initial(150, 75, false);
+
+
+		SerialPort arduinoController;
+		arduinoController =new SerialPort("COM19", 115200, Parity.None, 8, StopBits.One);
+		arduinoController.Handshake = Handshake.None;
+		arduinoController.RtsEnable = true;
+		arduinoController.Open();
+		Debug.LogWarning(arduinoController);
 	}
 	
 	// Update is called once per frame
@@ -104,7 +112,7 @@ public class VideoContoller : MonoBehaviour {
     {
 
         public bool connected = true;
-        public bool mac = true;
+        public bool mac = false;
         public string choice = "tty.usbmodem1421";
 
         private SerialPort arduinoController;
@@ -113,7 +121,7 @@ public class VideoContoller : MonoBehaviour {
         {
             if (connected)
             {
-                string portChoice = "COM4";
+				string portChoice = "COM19";
                 if (mac)
                 {
                     int p = (int)Environment.OSVersion.Platform;
@@ -132,10 +140,11 @@ public class VideoContoller : MonoBehaviour {
                     }
                     portChoice = "/dev/" + choice;
                 }
-                arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
+				arduinoController =new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
                 arduinoController.Handshake = Handshake.None;
                 arduinoController.RtsEnable = true;
                 arduinoController.Open();
+				Debug.LogWarning(arduinoController);
             }
         
         }
