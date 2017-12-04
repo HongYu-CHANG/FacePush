@@ -35,3 +35,6 @@ sysinfo.txt
 
 #Mac
 *.DS_Store
+
+#Big Fiel
+*.mp4

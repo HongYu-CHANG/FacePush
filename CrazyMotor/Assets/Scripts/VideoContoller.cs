@@ -43,54 +43,48 @@ public class VideoContoller : MonoBehaviour {
 		{
             
             int[] RRepeatdegree = {30};//11
-			int[] LRepeatdegree = {120, 115, 110, 105, 100, 95, 90};//11
+			int[] LRepeatdegree = {110, 100, 90};//11
 			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
-			new Thread (this.repeat).Start("7");
+            Debug.LogWarning("Video Time: " + videoTime);
+			new Thread (this.repeat).Start("3");
             In = true;
 		}
-
-		else if(videoTime >= 14 && videoTime <= 15)
+		else if(videoTime >= 15 && videoTime <= 15 && In)
 		{
-            Uno.SendData(Rmotor.reset()+" "+Lmotor.reset());
-            In = false;
-		}
-		else if(videoTime >= 16 && videoTime <= 17 && !In)
-		{
-            
-            int[] RRepeatdegree = {30, 40, 50, 60};//11
-			int[] LRepeatdegree = {120};//11
-			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
-			new Thread (this.repeat).Start("4");
-            In = true;
-		}
-		else if(videoTime >= 18 && videoTime <= 23)
-		{
-            new Thread (Uno.SendData).Start(Rmotor.reset()+" "+Lmotor.reset());
             //Uno.SendData(Rmotor.reset()+" "+Lmotor.reset());
+            Debug.LogWarning("Video Time: " + videoTime);
+            new Thread (Uno.SendData).Start(Rmotor.reset()+" "+Lmotor.reset());
             In = false;
 		}
         
-		else if(videoTime >= 24 && videoTime <= 28 && !In)
+		else if(videoTime >= 16 && videoTime <= 17 && !In)
 		{
             
-            int[] RRepeatdegree = {10, 20, 30, 40, 50, 60};//11
-			int[] LRepeatdegree = {140, 130, 120, 110, 100, 90};//11
+            int[] RRepeatdegree = {40, 50, 60};//11
+			int[] LRepeatdegree = {120};//11
 			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
-			new Thread (this.repeat).Start("6");
+            Debug.LogWarning("Video Time: " + videoTime);
+			new Thread (this.repeat).Start("3");
             In = true;
 		}
-        /*
-		else if(videoTime >= 29 && videoTime <= 30)
+        
+		else if(videoTime >= 24 && videoTime <= 28 && In)
 		{
-            Uno.SendData(Rmotor.moveTo(30)+" "+Lmotor.moveTo(120));
+            
+            int[] RRepeatdegree = {10, 20, 30};//11
+			int[] LRepeatdegree = {140, 130, 120};//11
+			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
+            Debug.LogWarning("Video Time: " + videoTime);
+			new Thread (this.repeat).Start("3");
             In = false;
 		}
-		else if(videoTime == 32)
+		else if(videoTime == 32 && !In)
 		{
-            Uno.SendData(Rmotor.moveTo(75)+" "+Lmotor.moveTo(75));
+            Debug.LogWarning("Video Time: " + videoTime);
+            new Thread (Uno.SendData).Start(Rmotor.moveTo(75)+" "+Lmotor.moveTo(75));
+            In = true;
+            //Uno.SendData(Rmotor.moveTo(75)+" "+Lmotor.moveTo(75));
 		}
-*/
-		
 	}
 
 	void repeat(object obj)
@@ -98,11 +92,13 @@ public class VideoContoller : MonoBehaviour {
 		string str = obj as string;
 		int Rtmp = 0;			
 		int Ltmp = 0;
-		for(int i = 0 ; i < int.Parse(str) ; i++)
+		for(int i = 0 ; i <= int.Parse(str) ; i++)
 		{
-			Ltmp = i % LRepeatdegree.Length;
-			Rtmp = i % RRepeatdegree.Length;
-			Uno.SendData(Rmotor.repeatMotor(RRepeatdegree, Rtmp)+" "+Lmotor.repeatMotor(LRepeatdegree, Ltmp));
+			Ltmp = i % this.LRepeatdegree.Length;
+			Rtmp = i % this.RRepeatdegree.Length;
+            //Debug.LogWarning(Rmotor.repeatMotor(RRepeatdegree, Rtmp)+" "+Lmotor.repeatMotor(LRepeatdegree, Ltmp));
+            //new Thread (Uno.SendData).Start();
+            Uno.SendData(Rmotor.repeatMotor(RRepeatdegree, Rtmp)+" "+Lmotor.repeatMotor(LRepeatdegree, Ltmp));
 		}
 
 	}
@@ -171,7 +167,7 @@ public class VideoContoller : MonoBehaviour {
             {
                 Debug.Log("未連接");
             }
-            Thread.Sleep(500);
+            Thread.Sleep(1000);
         }
     }
 }
