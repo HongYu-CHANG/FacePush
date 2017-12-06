@@ -25,19 +25,11 @@ public class VideoContoller : MonoBehaviour {
 	{
     	Debug.Log("Start play Video");
 		Uno = new CommunicateWithArduino();
-        //new Thread (Uno.connectToArdunio).Start ();
+        new Thread (Uno.connectToArdunio).Start ();
 		Rmotor = new MotorControl();
-        Rmotor.initial(0, 75, true);
+        Rmotor.initial(0, 40, true);
         Lmotor = new MotorControl();
-        Lmotor.initial(150, 75, false);
-
-
-		SerialPort arduinoController;
-		arduinoController =new SerialPort("COM19", 115200, Parity.None, 8, StopBits.One);
-		arduinoController.Handshake = Handshake.None;
-		arduinoController.RtsEnable = true;
-		arduinoController.Open();
-		Debug.LogWarning(arduinoController);
+        Lmotor.initial(150, 110, false);
 	}
 	
 	// Update is called once per frame
@@ -50,41 +42,45 @@ public class VideoContoller : MonoBehaviour {
 		if(videoTime == 6 && !In)
 		{
             
-            int[] RRepeatdegree = {30, 30, 0};//11
-			int[] LRepeatdegree = {110, 100, 150};//11
+            int[] RRepeatdegree = {10, 20};//11
+			int[] LRepeatdegree = {140, 130};//11
 			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
             Debug.LogWarning("Video Time: " + videoTime);
-			new Thread (this.repeat).Start("3");
+			new Thread (this.repeat).Start("2");
             In = true;
 		}
 		else if(videoTime == 10  && In)
 		{
-            int[] RRepeatdegree = {30, 40, 50, 50, 50, 60, 70, 30};//11
-            int[] LRepeatdegree = {140, 130, 120, 120, 120, 110, 100, 120};//11
+            int[] RRepeatdegree = {10, 20, 30, 40, 10};//11
+            int[] LRepeatdegree = {140, 130, 120, 110, 140};//11
             setRRepeatdegree(RRepeatdegree, LRepeatdegree);
             Debug.LogWarning("Video Time: " + videoTime);
-            new Thread (this.repeat).Start("8");
+            new Thread (this.repeat).Start("510");
             In = false;
 		}
         
 		else if(videoTime == 19 && !In)
 		{
             
-            int[] RRepeatdegree = {40, 50, 60, 70};//11
-			int[] LRepeatdegree = {110, 100, 90, 80};//11
+			int[] RRepeatdegree = {10, 20, 30};//11
+			int[] LRepeatdegree = {140, 130, 120};//11
 			setRRepeatdegree(RRepeatdegree, LRepeatdegree);
             Debug.LogWarning("Video Time: " + videoTime);
-			new Thread (this.repeat).Start("4");
+			new Thread (this.repeat).Start("3");
             In = true;
 		}
         
 		else if(videoTime == 27 && In)
 		{
             Debug.LogWarning("Video Time: " + videoTime);
-            new Thread (Uno.SendData).Start(Rmotor.moveTo(75)+" "+Lmotor.moveTo(75));
+            new Thread (Uno.SendData).Start(Rmotor.moveTo(40)+" "+Lmotor.moveTo(110));
             In = false;
             //Uno.SendData(Rmotor.moveTo(75)+" "+Lmotor.moveTo(75));
 		}
+	}
+	void OnDestroy()
+	{
+		new Thread (Uno.SendData).Start(Rmotor.moveTo(0)+" "+Lmotor.moveTo(150));
 	}
 
 	void repeat(object obj)
@@ -121,7 +117,7 @@ public class VideoContoller : MonoBehaviour {
         {
             if (connected)
             {
-				string portChoice = "COM19";
+				string portChoice = "COM2";
                 if (mac)
                 {
                     int p = (int)Environment.OSVersion.Platform;
@@ -161,7 +157,8 @@ public class VideoContoller : MonoBehaviour {
                 }
                 else
                 {
-                    Debug.Log("nullport");
+					Debug.Log (arduinoController);
+					Debug.Log("nullport");
                 }
             }
             else
