@@ -6,6 +6,8 @@ https://github.com/RedFishChang/arduino
 https://github.com/tobiastoft/ArduinoEasing/blob/master/Easing.cpp
 
 
-#Unity com port number ­n¤p©ó10
+#Unity com port number è¦å°æ–¼10
 
-#unity ¼v¤ù ­n¿ï¥t¤@­Ó¿ï¶µ ¦o¤~¥i¥HÅªªº¨ì
+#unity å½±ç‰‡ è¦é¸å¦ä¸€å€‹é¸é … å¥¹æ‰å¯ä»¥è®€çš„åˆ°
+
+#https://github.com/CNMAT/OSC
