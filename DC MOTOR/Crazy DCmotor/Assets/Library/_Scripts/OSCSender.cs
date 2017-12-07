@@ -7,7 +7,7 @@ using UniOSC;
 
 public class OSCSender : UniOSCEventDispatcher
 {
-    public Slider mainSlider;
+    public InputField Command;
 
     public override void Awake()
     {
@@ -20,7 +20,7 @@ public class OSCSender : UniOSCEventDispatcher
         base.OnEnable();
         ClearData();
         //now we could add data;
-        AppendData(123);//
+        AppendData(1);//
         //AppendData(123f);
         //AppendData("MyString");
     }
@@ -35,6 +35,7 @@ public class OSCSender : UniOSCEventDispatcher
         
         //Here we update the data with a new value
         //OscMessage msg = null;
+        Debug.Log("？sss");
         if (_OSCeArg.Packet is OscMessage)
         {
             //message
@@ -59,7 +60,8 @@ public class OSCSender : UniOSCEventDispatcher
 
     private void _updateOscMessageData(OscMessage msg)
     {
-        msg.UpdateDataAt(0, (int)mainSlider.value);
+        Debug.Log("sss");
+        msg.UpdateDataAt(0, Command.text);
         //msg.UpdateDataAt(1, dynamicFloatValue);
         //msg.UpdateDataAt(2, dynamicStringValue);
     }
