@@ -8,10 +8,12 @@ using UniOSC;
 public class OSCSender : UniOSCEventDispatcher
 {
     public InputField Command;
+    private DCMotor RMotor;
 
     public override void Awake()
     {
         base.Awake();
+        RMotor = new DCMotor();
     }
 
     public override void OnEnable()
@@ -20,9 +22,7 @@ public class OSCSender : UniOSCEventDispatcher
         base.OnEnable();
         ClearData();
         //now we could add data;
-        AppendData(1);//
-        //AppendData(123f);
-        //AppendData("MyString");
+        AppendData(0);//
     }
     public override void OnDisable()
     {
@@ -33,9 +33,11 @@ public class OSCSender : UniOSCEventDispatcher
 
     public void MySendOSCMessageTriggerMethod(){
         
-        //Here we update the data with a new value
-        //OscMessage msg = null;
-        Debug.Log("？sss");
+        Debug.Log(RMotor.handleCommand("FORWARD", "100", "10"));
+        Debug.Log(RMotor.getTotalMove());
+        Debug.Log(RMotor.handleCommand("REVERSE", "10", "10"));
+        Debug.Log(RMotor.getTotalMove());
+        Debug.Log(RMotor.reset());
         if (_OSCeArg.Packet is OscMessage)
         {
             //message
@@ -54,16 +56,53 @@ public class OSCSender : UniOSCEventDispatcher
 
         //Here we trigger the sending
         _SendOSCMessage(_OSCeArg);
-         
-    
     }
 
     private void _updateOscMessageData(OscMessage msg)
     {
-        Debug.Log("sss");
         msg.UpdateDataAt(0, Command.text);
-        //msg.UpdateDataAt(1, dynamicFloatValue);
-        //msg.UpdateDataAt(2, dynamicStringValue);
+
     }
-	
+
+     class DCMotor
+    {
+        private int totalMove;
+        public DCMotor()
+        {
+            totalMove = 0;
+        }
+        public int getTotalMove(){return totalMove;}
+        public string handleCommand(string runCommand, string speedCommand, string timeCommand)
+        {
+            if(runCommand == "FORWARD")
+            {
+                totalMove += (int.Parse(speedCommand) * int.Parse(timeCommand));
+            }
+            else if (runCommand == "REVERSE")
+            {
+                totalMove -= (int.Parse(speedCommand) * int.Parse(timeCommand));
+            }
+
+            return runCommand+"-"+speedCommand+"-"+timeCommand;
+
+        }
+
+        public string reset()
+        {
+            int temp = totalMove/255;
+            if(totalMove > 0)
+            {
+                totalMove = 0;
+                return "REVERSE-"+255+"-"+(temp);
+            }
+            else if (totalMove < 0)
+            {
+                totalMove = 0;
+                return "FORWARD-"+255+"-"+(temp);
+            }
+            return "RELEASE-0-10";
+        }
+    }
 }
+
+
