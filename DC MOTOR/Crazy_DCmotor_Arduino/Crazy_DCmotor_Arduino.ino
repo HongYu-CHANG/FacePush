@@ -22,7 +22,6 @@
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 //input output pint
-int ledPin = 10;
 int sensorPin = A2;
 
 int status = WL_IDLE_STATUS;
@@ -34,7 +33,6 @@ int keyIndex = 0; // your network key Index number (needed only for WEP)
 IPAddress sendToUnityPC_Ip(192, 168, 0, 154); // UnityPC's IP
 unsigned int sendToUnityPC_Port = 8000; // UnityPC's listening port
 unsigned int listenPort = 9000; // local port to listen on
-
 char packetBuffer[255]; //buffer to hold incoming packet
 char ReplyBuffer[] = "acknowledged"; // a string to send back
 WiFiUDP Udp_send;
@@ -45,9 +43,6 @@ void setup() {
   WiFi.setPins(8, 7, 4, 2);
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-//  while (!Serial) {
-//    ; // wait for serial port to connect. Needed for native USB port only
-//  }
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) {
     Serial.println("WiFi shield not present");
@@ -71,14 +66,6 @@ void setup() {
   Udp_listen.begin(listenPort);
 }
 void loop() {
-  // Write Send
-  OSCMessage msg("/1/fader1");
-  msg.add((unsigned)(analogRead(sensorPin)));
-  Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
-  msg.send(Udp_send);
-  Udp_send.endPacket();
-  msg.empty();
-  delay(10);
   // Read Receive
   OSCMessage messageIn;
   int size;
@@ -87,12 +74,14 @@ void loop() {
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
-      int data = messageIn.getInt(0);
+      int data = messageIn.getInt(1);
       Serial.println(messageIn.size());
       Serial.println(data);
-      // setting intensity of the LED
-      int fadeValue = data;
-      analogWrite(ledPin, fadeValue);
+      /*
+       * messageIn 為傳送進來的資料
+       * data為處理成數字的資料
+       */
+     
     }
   }
 }

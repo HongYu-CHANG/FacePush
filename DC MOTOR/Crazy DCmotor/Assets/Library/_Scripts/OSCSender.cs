@@ -22,7 +22,15 @@ public class OSCSender : UniOSCEventDispatcher
         base.OnEnable();
         ClearData();
         //now we could add data;
-        AppendData(0);//
+        //右
+        AppendData(0);//旋轉方向
+        AppendData(0);//旋轉速度
+        AppendData(0);//旋轉時間
+        //左
+        AppendData(0);//旋轉方向
+        AppendData(0);//旋轉速度
+        AppendData(0);//旋轉時間
+
     }
     public override void OnDisable()
     {
@@ -60,7 +68,9 @@ public class OSCSender : UniOSCEventDispatcher
 
     private void _updateOscMessageData(OscMessage msg)
     {
-        msg.UpdateDataAt(0, Command.text);
+        msg.UpdateDataAt(0, -1);
+        msg.UpdateDataAt(1, 100);
+        msg.UpdateDataAt(2, 10);
 
     }
 
