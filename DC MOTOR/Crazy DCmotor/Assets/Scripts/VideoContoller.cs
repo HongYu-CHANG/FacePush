@@ -36,7 +36,6 @@ public class VideoContoller : MonoBehaviour {
 		
 		if(videoTime == 6 && !In)
 		{
-            //RMotor.SendOSCMessageTriggerMethod("runCommand", 100, 10);
             ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 10);
             LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 10, 10);
             Debug.LogWarning("Video Time: " + videoTime);

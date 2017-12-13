@@ -25,7 +25,6 @@ public class OSCSender : UniOSCEventDispatcher
         AppendData("0");//哪顆馬達
         AppendData("0");//旋轉方向
         AppendData(1);//旋轉速度
-        AppendData(2);//旋轉時間
 
     }
     public override void OnDisable()
@@ -41,6 +40,7 @@ public class OSCSender : UniOSCEventDispatcher
     {
         if (_OSCeArg.Packet is OscMessage)
         {
+            Debug.Log(direction);
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
             if(direction != "RESET")
                 _updateOscMessageData(msg, direction, speed, time);
@@ -65,7 +65,6 @@ public class OSCSender : UniOSCEventDispatcher
         msg.UpdateDataAt(0, whichMotor);
         msg.UpdateDataAt(1, direction);
         msg.UpdateDataAt(2, speed);
-        msg.UpdateDataAt(3, time);
 
     }
     
@@ -78,7 +77,6 @@ public class OSCSender : UniOSCEventDispatcher
             totalMove = 0;
             msg.UpdateDataAt(1, "REVERSE");
             msg.UpdateDataAt(2, 255);
-            msg.UpdateDataAt(3, temp);
 
         }
         else if (totalMove < 0)
@@ -86,13 +84,11 @@ public class OSCSender : UniOSCEventDispatcher
             totalMove = 0;
             msg.UpdateDataAt(1, "FORWARD");
             msg.UpdateDataAt(2, 255);
-            msg.UpdateDataAt(3, temp);
         }
         else if (totalMove == 0)
         {
             msg.UpdateDataAt(1, "RELEASE");
             msg.UpdateDataAt(2, 0);
-            msg.UpdateDataAt(3, 10);
         }            
     }
 }

@@ -9,7 +9,7 @@ For use with the Adafruit Motor Shield v2
 
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include "utility/Adafruit_MS_PWMServoDriver.h"
+#include "Adafruit_MS_PWMServoDriver.h"
 
 // Create the motor shield object with the default I2C address
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
@@ -42,11 +42,11 @@ void loop() {
 
   myMotor->run(FORWARD);
   for (i=0; i<255; i++) {
-    myMotor->setSpeed(i);  
-    delay(10);
+    myMotor->setSpeed(100);  
+    delay(1000);
   }
   for (i=255; i!=0; i--) {
-    myMotor->setSpeed(i);  
+    myMotor->setSpeed(255);  
     delay(10);
   }
   
@@ -54,11 +54,11 @@ void loop() {
 
   myMotor->run(BACKWARD);
   for (i=0; i<255; i++) {
-    myMotor->setSpeed(i);  
+    myMotor->setSpeed(255);  
     delay(10);
   }
   for (i=255; i!=0; i--) {
-    myMotor->setSpeed(i);  
+    myMotor->setSpeed(255);  
     delay(10);
   }
 

@@ -22,3 +22,10 @@ FORWARD - Rotate in a forward direction
 REVERSE - Rotate in the reverse direction
 RELEASE - Stop rotation
 速度0~255
+
+# Motor Compare
+    1. MG996R 扭力 1.275 N-m
+    2. 2 RPM  扭力 10.571 N-m
+    3. 30RPM  扭力 0.967 N-m
+    4. 10RPM  扭力 2.599 N-m
+    5. 4 RPM  扭力 7.005 N-m

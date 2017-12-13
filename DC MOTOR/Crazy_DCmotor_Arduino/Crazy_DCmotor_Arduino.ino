@@ -9,6 +9,9 @@
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
+#include <Wire.h>
+#include <Adafruit_MotorShield.h>
+#include <Adafruit_MS_PWMServoDriver.h>
 
 int status = WL_IDLE_STATUS;
 char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
@@ -23,6 +26,11 @@ char packetBuffer[255]; //buffer to hold incoming packet
 char ReplyBuffer[] = "acknowledged"; // a string to send back
 WiFiUDP Udp_send;
 WiFiUDP Udp_listen;
+
+//DC Motor
+Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+Adafruit_DCMotor *RMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M1
+Adafruit_DCMotor *LMotor = AFMS.getMotor(4);// Select which 'port' M1, M2, M3 or M4. In this case, M4
 
 void setup() 
 {
@@ -68,20 +76,28 @@ void loop()
   // Read Receive
   OSCMessage messageIn;
   int size;
-  char str[255];
   if ( (size = Udp_listen.parsePacket()) > 0)
   {
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
-        
-        messageIn.getString(0, str, 255);
-        Serial.println(str);
-        messageIn.getString(1, str, 255);
-        Serial.println(str);
-        messageIn.getString(1, str, 255);
-     
-     
+        char RorLMotor[1];
+        char Direction[10];
+        messageIn.getString(0, RorLMotor, 1);
+        messageIn.getString(1, Direction, 10);
+        Serial.println(RorLMotor);
+        Serial.println(Direction);
+        Serial.println(messageIn.getInt(2));
+        if(RorLMotor[0] == 'R')
+        {
+           RMotor->run(Direction);
+           RMotor->setSpeed(messageIn.getInt(2));  
+        }
+        else
+        {
+           LMotor->run(Direction);
+           LMotor->setSpeed(messageIn.getInt(2));  
+        }
     }
   }
 }
