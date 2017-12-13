@@ -69,18 +69,18 @@ void loop() {
   // Read Receive
   OSCMessage messageIn;
   int size;
+  char str[255];
   if ( (size = Udp_listen.parsePacket()) > 0)
   {
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
-      int data = messageIn.getInt(1);
-      Serial.println(messageIn.size());
-      Serial.println(data);
-      /*
-       * messageIn 為傳送進來的資料
-       * data為處理成數字的資料
-       */
+        
+        messageIn.getString(0, str, 255);
+        Serial.println(str);
+        messageIn.getString(1, str, 255);
+        Serial.println(str);
+     
      
     }
   }

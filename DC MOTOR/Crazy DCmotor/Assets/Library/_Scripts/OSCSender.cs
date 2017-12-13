@@ -7,13 +7,13 @@ using UniOSC;
 
 public class OSCSender : UniOSCEventDispatcher
 {
-    public InputField Command;
-    private DCMotor RMotor;
+    private int totalMove;
+    private string whichMotor;
 
     public override void Awake()
     {
         base.Awake();
-        RMotor = new DCMotor();
+        totalMove = 0;
     }
 
     public override void OnEnable()
@@ -22,96 +22,78 @@ public class OSCSender : UniOSCEventDispatcher
         base.OnEnable();
         ClearData();
         //now we could add data;
-        //右
-        AppendData(0);//旋轉方向
-        AppendData(0);//旋轉速度
-        AppendData(0);//旋轉時間
-        //左
-        AppendData(0);//旋轉方向
-        AppendData(0);//旋轉速度
-        AppendData(0);//旋轉時間
+        AppendData("0");//哪顆馬達
+        AppendData("0");//旋轉方向
+        AppendData(1);//旋轉速度
+        AppendData(2);//旋轉時間
 
     }
     public override void OnDisable()
     {
         //Don't forget this!!!!
         base.OnDisable();
-
     }
+    public int getMove(){return totalMove;}
 
-    public void MySendOSCMessageTriggerMethod(){
-        
-        Debug.Log(RMotor.handleCommand("FORWARD", "100", "10"));
-        Debug.Log(RMotor.getTotalMove());
-        Debug.Log(RMotor.handleCommand("REVERSE", "10", "10"));
-        Debug.Log(RMotor.getTotalMove());
-        Debug.Log(RMotor.reset());
+    public void setWhichMotor(string whichMotor){this.whichMotor = whichMotor;}
+
+    public void SendOSCMessageTriggerMethod(string direction, int speed, int time)
+    {
         if (_OSCeArg.Packet is OscMessage)
         {
-            //message
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
-            _updateOscMessageData(msg);
+            if(direction != "RESET")
+                _updateOscMessageData(msg, direction, speed, time);
+            else
+                reset(msg);
 
         }
-        else if (_OSCeArg.Packet is OscBundle)
-        {
-            //bundle 
-            foreach (OscMessage msg2 in ((OscBundle)_OSCeArg.Packet).Messages)
-            {
-                _updateOscMessageData(msg2);
-            }
-        }
-
-        //Here we trigger the sending
         _SendOSCMessage(_OSCeArg);
     }
 
-    private void _updateOscMessageData(OscMessage msg)
+    private void _updateOscMessageData(OscMessage msg, string direction, int speed, int time)
     {
-        msg.UpdateDataAt(0, -1);
-        msg.UpdateDataAt(1, 100);
-        msg.UpdateDataAt(2, 10);
+        if(direction == "FORWARD")
+        {
+            totalMove += speed * time;
+        }
+        else if (direction == "REVERSE")
+        {
+            totalMove -= speed * time;
+        }
+
+        msg.UpdateDataAt(0, whichMotor);
+        msg.UpdateDataAt(1, direction);
+        msg.UpdateDataAt(2, speed);
+        msg.UpdateDataAt(3, time);
 
     }
-
-     class DCMotor
+    
+    private void reset(OscMessage msg)
     {
-        private int totalMove;
-        public DCMotor()
+        int temp = totalMove/255;
+        msg.UpdateDataAt(0, whichMotor);
+        if(totalMove > 0)
         {
             totalMove = 0;
+            msg.UpdateDataAt(1, "REVERSE");
+            msg.UpdateDataAt(2, 255);
+            msg.UpdateDataAt(3, temp);
+
         }
-        public int getTotalMove(){return totalMove;}
-        public string handleCommand(string runCommand, string speedCommand, string timeCommand)
+        else if (totalMove < 0)
         {
-            if(runCommand == "FORWARD")
-            {
-                totalMove += (int.Parse(speedCommand) * int.Parse(timeCommand));
-            }
-            else if (runCommand == "REVERSE")
-            {
-                totalMove -= (int.Parse(speedCommand) * int.Parse(timeCommand));
-            }
-
-            return runCommand+"-"+speedCommand+"-"+timeCommand;
-
+            totalMove = 0;
+            msg.UpdateDataAt(1, "FORWARD");
+            msg.UpdateDataAt(2, 255);
+            msg.UpdateDataAt(3, temp);
         }
-
-        public string reset()
+        else if (totalMove == 0)
         {
-            int temp = totalMove/255;
-            if(totalMove > 0)
-            {
-                totalMove = 0;
-                return "REVERSE-"+255+"-"+(temp);
-            }
-            else if (totalMove < 0)
-            {
-                totalMove = 0;
-                return "FORWARD-"+255+"-"+(temp);
-            }
-            return "RELEASE-0-10";
-        }
+            msg.UpdateDataAt(1, "RELEASE");
+            msg.UpdateDataAt(2, 0);
+            msg.UpdateDataAt(3, 10);
+        }            
     }
 }
 
