@@ -1,28 +1,14 @@
 #include <SLIPEncodedSerial.h>
 #include <OSCData.h>
-#include <OSCBundle.h>
 #include <OSCBoards.h>
 #include <OSCTiming.h>
-#include <OSCMessage.h>
 #include <OSCMatch.h>
 #include <SLIPEncodedUSBSerial.h>
-
-/*
-  WiFi UDP Send and Receive String
-  This sketch wait an UDP packet on localPort using a WiFi shield.
-  When a packet is received an Acknowledge packet is sent to the client on port remotePort
-  Circuit:
-  WiFi shield attached
-  created 30 December 2012
-  by dlf (Metodo2 srl)
-*/
 #include <SPI.h>
 #include <WiFi101.h>
 #include <WiFiUdp.h>
 #include <OSCMessage.h>
 #include <OSCBundle.h>
-//input output pint
-int sensorPin = A2;
 
 int status = WL_IDLE_STATUS;
 char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
@@ -38,34 +24,47 @@ char ReplyBuffer[] = "acknowledged"; // a string to send back
 WiFiUDP Udp_send;
 WiFiUDP Udp_listen;
 
-void setup() {
-  //Configure pins for Adafruit ATWINC1500 Feather
-  WiFi.setPins(8, 7, 4, 2);
-  //Initialize serial and wait for port to open:
-  Serial.begin(9600);
-  // check for the presence of the shield:
-  if (WiFi.status() == WL_NO_SHIELD) {
+void setup() 
+{
+  WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
+  Serial.begin(9600);//Initialize serial and wait for port to open:
+  if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
+  {
     Serial.println("WiFi shield not present");
-    // don't continue:
-    while (true);
+    while (true); // don't continue:
   }
-  // attempt to connect to Wifi network:
-  while ( status != WL_CONNECTED) {
+  while ( status != WL_CONNECTED) // attempt to connect to Wifi network:
+  {
     Serial.print("Attempting to connect to SSID: ");
     Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
-    // wait 10 seconds for connection:
+    status = WiFi.begin(ssid, pass); // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     delay(10000);
   }
-  Serial.println("Connected to wifi");
   printWifiStatus();
-  Serial.println("\nStarting connection to server...");
-  // if you get a connection, report back via serial:
+  //OSC Start
   Udp_send.begin(sendToUnityPC_Port);
   Udp_listen.begin(listenPort);
 }
-void loop() {
+void printWifiStatus() 
+{
+  Serial.println("Connected to wifi");
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+  Serial.println("\nStarting connection to server...");
+}
+
+void loop() 
+{
   // Read Receive
   OSCMessage messageIn;
   int size;
@@ -80,22 +79,10 @@ void loop() {
         Serial.println(str);
         messageIn.getString(1, str, 255);
         Serial.println(str);
+        messageIn.getString(1, str, 255);
      
      
     }
   }
 }
-void printWifiStatus() {
-  // print the SSID of the network you're attached to:
-  Serial.print("SSID: ");
-  Serial.println(WiFi.SSID());
-  // print your WiFi shield's IP address:
-  IPAddress ip = WiFi.localIP();
-  Serial.print("IP Address: ");
-  Serial.println(ip);
-  // print the received signal strength:
-  long rssi = WiFi.RSSI();
-  Serial.print("signal strength (RSSI):");
-  Serial.print(rssi);
-  Serial.println(" dBm");
-}
+
