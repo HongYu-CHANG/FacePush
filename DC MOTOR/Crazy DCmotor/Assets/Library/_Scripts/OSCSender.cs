@@ -40,7 +40,7 @@ public class OSCSender : UniOSCEventDispatcher
     {
         if (_OSCeArg.Packet is OscMessage)
         {
-            Debug.Log(direction);
+           // Debug.Log(direction);
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
             if(direction != "RESET")
                 _updateOscMessageData(msg, direction, speed, time);
