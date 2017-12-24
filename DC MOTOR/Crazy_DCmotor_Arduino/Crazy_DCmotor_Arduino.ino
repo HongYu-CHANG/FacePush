@@ -11,7 +11,7 @@
 #include <OSCBundle.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-#include <Adafruit_MS_PWMServoDriver.h>
+//#include <Adafruit_MS_PWMServoDriver.h>
 
 int status = WL_IDLE_STATUS;
 char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
@@ -30,12 +30,12 @@ WiFiUDP Udp_listen;
 //DC Motor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 Adafruit_DCMotor *RMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *LMotor = AFMS.getMotor(4);// Select which 'port' M1, M2, M3 or M4. In this case, M4
-
+Adafruit_DCMotor *LMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M4
 void setup() 
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
   Serial.begin(9600);//Initialize serial and wait for port to open:
+  AFMS.begin();
   if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
   {
     Serial.println("WiFi shield not present");
@@ -82,21 +82,32 @@ void loop()
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
         char RorLMotor[1];
-        char Direction[10];
         messageIn.getString(0, RorLMotor, 1);
-        messageIn.getString(1, Direction, 10);
-        Serial.println(RorLMotor);
+        uint8_t Direction = (uint8_t)messageIn.getInt(1);
+        uint8_t speedNum = (uint8_t)messageIn.getInt(2);
+        Serial.println(RorLMotor[0]);
         Serial.println(Direction);
-        Serial.println(messageIn.getInt(2));
+        Serial.println(speedNum);
         if(RorLMotor[0] == 'R')
         {
-           RMotor->run(Direction);
-           RMotor->setSpeed(messageIn.getInt(2));  
-        }
+           RMotor->setSpeed(speedNum); 
+           if(Direction == 1) 
+              RMotor->run(FORWARD);
+           else if(Direction == 2)
+              RMotor->run(BACKWARD);
+           else if(Direction == 0)
+              RMotor->run(RELEASE);
+        } 
+        
         else
         {
-           LMotor->run(Direction);
-           LMotor->setSpeed(messageIn.getInt(2));  
+           LMotor->setSpeed(speedNum);  
+            if(Direction == 1) 
+              LMotor->run(FORWARD);
+           else if(Direction == 2)
+              LMotor->run(BACKWARD);
+           else if(Direction == 0)
+              LMotor->run(RELEASE);
         }
     }
   }

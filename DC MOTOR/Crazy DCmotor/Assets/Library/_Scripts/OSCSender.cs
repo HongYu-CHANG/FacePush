@@ -23,7 +23,7 @@ public class OSCSender : UniOSCEventDispatcher
         ClearData();
         //now we could add data;
         AppendData("0");//哪顆馬達
-        AppendData("0");//旋轉方向
+        AppendData(1);//旋轉方向
         AppendData(1);//旋轉速度
 
     }
@@ -53,17 +53,17 @@ public class OSCSender : UniOSCEventDispatcher
 
     private void _updateOscMessageData(OscMessage msg, string direction, int speed, int time)
     {
+        msg.UpdateDataAt(0, whichMotor);
         if(direction == "FORWARD")
         {
             totalMove += speed * time;
+            msg.UpdateDataAt(1, 1);
         }
-        else if (direction == "REVERSE")
+        else if (direction == "BACKWARD")
         {
             totalMove -= speed * time;
+             msg.UpdateDataAt(1, 2);
         }
-
-        msg.UpdateDataAt(0, whichMotor);
-        msg.UpdateDataAt(1, direction);
         msg.UpdateDataAt(2, speed);
 
     }
@@ -72,22 +72,22 @@ public class OSCSender : UniOSCEventDispatcher
     {
         int temp = totalMove/255;
         msg.UpdateDataAt(0, whichMotor);
-        if(totalMove > 0)
+        if(totalMove > 0)//"BACKWARD"
         {
             totalMove = 0;
-            msg.UpdateDataAt(1, "REVERSE");
+            msg.UpdateDataAt(1, 2);
             msg.UpdateDataAt(2, 255);
 
         }
-        else if (totalMove < 0)
+        else if (totalMove < 0)//"FORWARD"
         {
             totalMove = 0;
-            msg.UpdateDataAt(1, "FORWARD");
+            msg.UpdateDataAt(1, 1);
             msg.UpdateDataAt(2, 255);
         }
-        else if (totalMove == 0)
+        else if (totalMove == 0)//"RELEASE"
         {
-            msg.UpdateDataAt(1, "RELEASE");
+            msg.UpdateDataAt(1, 0);
             msg.UpdateDataAt(2, 0);
         }            
     }

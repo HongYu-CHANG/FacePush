@@ -14,6 +14,8 @@ public class VideoContoller : MonoBehaviour {
     public GameObject RMotor;
     public GameObject LMotor;
     private bool In = false;
+    private int RMove = 0;
+    private int LMove =0;
     private OSCSender ROSCSender;
     private OSCSender LOSCSender;
 	
@@ -43,8 +45,8 @@ public class VideoContoller : MonoBehaviour {
 		}
 		else if(videoTime == 7  && In)
 		{
-            ROSCSender.SendOSCMessageTriggerMethod("REVERSE", 100, 1);
-            LOSCSender.SendOSCMessageTriggerMethod("REVERSE", 100, 1);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 1);
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 1);
             Debug.LogWarning("Video Time: " + videoTime);
             In = false;
 		}
@@ -60,8 +62,8 @@ public class VideoContoller : MonoBehaviour {
         else if(videoTime == 15 && In)
 		{
             
-            ROSCSender.SendOSCMessageTriggerMethod("REVERSE", 200, 2);
-            LOSCSender.SendOSCMessageTriggerMethod("REVERSE", 200, 2);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 2);
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 2);
             Debug.LogWarning("Video Time: " + videoTime);
             In = false;
 		}

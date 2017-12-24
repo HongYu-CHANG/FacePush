@@ -17,7 +17,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
+Adafruit_DCMotor *myMotor = AFMS.getMotor(2);
 // You can also make another motor on port M2
 //Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 
@@ -29,40 +29,23 @@ void setup() {
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->setSpeed(150);
-  myMotor->run(FORWARD);
+  myMotor->setSpeed(255);
+ 
   // turn on motor
-  myMotor->run(RELEASE);
+  myMotor->run(REVERSE);
 }
 
 void loop() {
   uint8_t i;
-  
-  Serial.print("tick");
+  String servoCmd = ""; 
+  char* inChar;
+ while (Serial.available())
+  {     
+    inChar += (char)Serial.read();
+    //servoCmd += inChar;
+     myMotor->run((uint8_t)atoi(inChar));
+     Serial.println(inChar);
 
-  myMotor->run(FORWARD);
-  for (i=0; i<255; i++) {
-    myMotor->setSpeed(100);  
-    delay(1000);
   }
-  for (i=255; i!=0; i--) {
-    myMotor->setSpeed(255);  
-    delay(10);
-  }
-  
-  Serial.print("tock");
-
-  myMotor->run(BACKWARD);
-  for (i=0; i<255; i++) {
-    myMotor->setSpeed(255);  
-    delay(10);
-  }
-  for (i=255; i!=0; i--) {
-    myMotor->setSpeed(255);  
-    delay(10);
-  }
-
-  Serial.print("tech");
-  myMotor->run(RELEASE);
   delay(1000);
 }
