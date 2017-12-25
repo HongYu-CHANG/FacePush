@@ -42,10 +42,7 @@ public class OSCSender : UniOSCEventDispatcher
         {
            // Debug.Log(direction);
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
-            if(direction != "RESET")
-                _updateOscMessageData(msg, direction, speed, time);
-            else
-                reset(msg);
+            _updateOscMessageData(msg, direction, speed, time);
 
         }
         _SendOSCMessage(_OSCeArg);
@@ -64,32 +61,12 @@ public class OSCSender : UniOSCEventDispatcher
             totalMove -= speed * time;
              msg.UpdateDataAt(1, 2);
         }
-        msg.UpdateDataAt(2, speed);
-
-    }
-    
-    private void reset(OscMessage msg)
-    {
-        int temp = totalMove/255;
-        msg.UpdateDataAt(0, whichMotor);
-        if(totalMove > 0)//"BACKWARD"
-        {
-            totalMove = 0;
-            msg.UpdateDataAt(1, 2);
-            msg.UpdateDataAt(2, 255);
-
-        }
-        else if (totalMove < 0)//"FORWARD"
-        {
-            totalMove = 0;
-            msg.UpdateDataAt(1, 1);
-            msg.UpdateDataAt(2, 255);
-        }
-        else if (totalMove == 0)//"RELEASE"
+        else if (direction == "RELEASE")
         {
             msg.UpdateDataAt(1, 0);
-            msg.UpdateDataAt(2, 0);
-        }            
+        }
+        msg.UpdateDataAt(2, speed);
+
     }
 }
 

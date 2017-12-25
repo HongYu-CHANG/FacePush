@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Threading;
 using UnityEngine;
@@ -10,6 +10,7 @@ public class VideoContoller : MonoBehaviour {
 
 	//public GameObject Video;
 	public VideoPlayer videoPlayer;
+	public bool stop = false;
 
     public GameObject RMotor;
     public GameObject LMotor;
@@ -28,7 +29,12 @@ public class VideoContoller : MonoBehaviour {
     	LOSCSender = LMotor.GetComponent<OSCSender>();
     	LOSCSender.setWhichMotor("L");
 	}
-	
+	IEnumerator Example()
+    {
+        //Debug.Log(Time.time);
+        yield return new WaitForSeconds(4);
+        stop = true;
+    }
 	// Update is called once per frame
 	void Update () 
 	{
@@ -38,15 +44,15 @@ public class VideoContoller : MonoBehaviour {
 		
 		if(videoTime == 5 && !In)
 		{
-            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 2);//加壓
-            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 2);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 2);//加壓
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 2);
             Debug.LogWarning("Video Time: " + videoTime);
             In = true;
 		}
 		else if(videoTime == 7  && In)
 		{
-            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 1);
-            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 100, 1);
+            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 1);
+            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 1);
             Debug.LogWarning("Video Time: " + videoTime);
             In = false;
 		}
@@ -54,28 +60,28 @@ public class VideoContoller : MonoBehaviour {
 		else if(videoTime == 10 && !In)
 		{
             
-            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 200, 5);
-            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 100, 5);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 5);
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 5);
             Debug.LogWarning("Video Time: " + videoTime);
             In = true;
 		}
         else if(videoTime == 15 && In)
 		{
             
-            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 2);
-            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 2);
+            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 200, 2);
+            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 200, 2);
             Debug.LogWarning("Video Time: " + videoTime);
             In = false;
 		}
 		else if(videoTime == 17 && !In)
 		{
             
-            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 200, 8);
-            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 200, 8);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 8);
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 200, 8);
             Debug.LogWarning("Video Time: " + videoTime);
             In = true;
 		}
-		else if(videoTime == 25 && In)
+		else if(videoTime == 22 && In)
 		{
             
             ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 200, 2);
@@ -86,19 +92,34 @@ public class VideoContoller : MonoBehaviour {
 		else if(videoTime == 27 && !In)
 		{
             
-            ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 255, 2);
-            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 255, 2);
+            ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", 255, 2);
+            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", 255, 2);
             Debug.LogWarning("Video Time: " + videoTime);
             In = true;
 		}
-		Debug.Log(ROSCSender.getMove());
-		Debug.Log(LOSCSender.getMove());
+		else if(videoTime == 29 && In)
+		{
+            
+            ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+            LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+            Debug.LogWarning("Video Time: " + videoTime);
+            In = false;
+		}
+		if(stop && videoTime == 31)
+		{
+			ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+         	LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+		}
+		else if(!stop && videoTime == 31)
+		{
+			
+			ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 255, 2);
+            LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 255, 2);
+            StartCoroutine(Example());
+		}
 	}
-	void onDestroy()
-	{
-		 ROSCSender.SendOSCMessageTriggerMethod("RESET", 255, 2);
-         LOSCSender.SendOSCMessageTriggerMethod("RESET", 255, 2);
-	}
+
+	
 
 }
 
