@@ -29,23 +29,12 @@ void setup() {
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->setSpeed(255);
+  myMotor->setSpeed(0);
  
   // turn on motor
-  myMotor->run(REVERSE);
+  myMotor->run(BACKWARD);
 }
 
 void loop() {
-  uint8_t i;
-  String servoCmd = ""; 
-  char* inChar;
- while (Serial.available())
-  {     
-    inChar += (char)Serial.read();
-    //servoCmd += inChar;
-     myMotor->run((uint8_t)atoi(inChar));
-     Serial.println(inChar);
-
-  }
-  delay(1000);
+ 
 }
