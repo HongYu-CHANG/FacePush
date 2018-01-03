@@ -86,6 +86,8 @@
 -define:UNITY_EDITOR_OSX
 -define:ENABLE_NATIVE_ARRAY_CHECKS
 -define:UNITY_TEAM_LICENSE
+'Assets/DCMotorTeacher.cs'
+'Assets/LButton.cs'
 'Assets/Library/UniOSC/Scripts/ClassBased/Demo/UniOSCClassBasedDemo.cs'
 'Assets/Library/UniOSC/Scripts/ClassBased/Example.Classes/UniOSCEventDispatcherCBImplementation.cs'
 'Assets/Library/UniOSC/Scripts/ClassBased/Example.Classes/UniOSCEventDispatcherCBRawImplementation.cs'
@@ -125,6 +127,7 @@
 'Assets/Library/UniOSC/Scripts/UniOSCUtils.cs'
 'Assets/Library/_Scripts/OSCReciever.cs'
 'Assets/Library/_Scripts/OSCSender.cs'
+'Assets/RButton.cs'
 'Assets/Scripts/DCMotorController.cs'
 'Assets/Scripts/VideoContoller.cs'
 -r:'/Applications/Unity/Unity.app/Contents/Mono/lib/mono/unity/System.Runtime.Serialization.dll'
