@@ -29,8 +29,8 @@ WiFiUDP Udp_listen;
 
 //DC Motor
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *RMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *LMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M4
+Adafruit_DCMotor *RMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M1
+Adafruit_DCMotor *LMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M4
 void setup() 
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
