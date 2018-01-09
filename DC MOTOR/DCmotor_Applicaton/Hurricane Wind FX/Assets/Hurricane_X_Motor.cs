@@ -8,6 +8,7 @@ public class Hurricane_X_Motor : MonoBehaviour {
 	public ParticleSystem Tumbleweed;
 	public ParticleSystem Wind_Particles;
 	public ParticleSystem Leaf;
+	public AudioSource Wind_Audio;
 	public OSCSender R_OSCSender;
     public OSCSender L_OSCSender;
     public int ConvertTime = 3;
@@ -38,6 +39,10 @@ public class Hurricane_X_Motor : MonoBehaviour {
 			Random.seed = System.Guid.NewGuid().GetHashCode();
 			int speed = Random.Range(1, 11);
 		    Debug.Log("Speed = " + speed);
+		    //audio source
+		    Wind_Audio.volume = remapping((float)speed, 1f, 10f, 0.1f, 1f);
+		    Debug.Log("Volume = " + Wind_Audio.volume);
+		    //particlw system setting
 	        var Debrismain = Debris.main;
 	 		Debrismain.simulationSpeed = speed;
 	 		var Tumbleweedmain = Tumbleweed.main;
@@ -51,5 +56,10 @@ public class Hurricane_X_Motor : MonoBehaviour {
 		{
 			HurricaneWork = false;
 		}
+	}
+
+	private float remapping (float value, float low1, float high1, float low2, float high2)
+	{
+		return low2 + (value - low1) * (high2 - low2) / (high1 - low1);
 	}
 }

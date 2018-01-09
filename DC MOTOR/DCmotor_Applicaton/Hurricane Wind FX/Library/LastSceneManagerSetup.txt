@@ -1,1 +1,4 @@
-sceneSetups: []
+sceneSetups:
+- path: Assets/Hurricane_Wind_FX/Hurricane_Wind_FX.unity
+  isLoaded: 1
+  isActive: 1
