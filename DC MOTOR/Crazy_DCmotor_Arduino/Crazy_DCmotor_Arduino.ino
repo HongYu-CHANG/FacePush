@@ -12,7 +12,7 @@
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
 //#include <Adafruit_MS_PWMServoDriver.h>
-
+int sensorPin = A2;
 int status = WL_IDLE_STATUS;
 char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
 char pass[] = "nextinterfaces"; // your network password (use for WPA, or use as key for WEP)
@@ -52,6 +52,16 @@ void setup()
   //OSC Start
   Udp_send.begin(sendToUnityPC_Port);
   Udp_listen.begin(listenPort);
+
+  // Write
+   OSCMessage msg("/1/fader1");
+   msg.add((unsigned int)analogRead(sensorPin));
+   Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
+   msg.send(Udp_send);
+   Udp_send.endPacket();
+   msg.empty();
+   delay(10);
+  
 }
 void printWifiStatus() 
 {
@@ -73,6 +83,7 @@ void printWifiStatus()
 
 void loop() 
 {
+   
   // Read Receive
   OSCMessage messageIn;
   int size;
