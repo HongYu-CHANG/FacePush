@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scene/Crazy DCMotor.unity
+- path: Assets/Scene/Crazy DCMotor (teacher).unity
   isLoaded: 1
   isActive: 1
