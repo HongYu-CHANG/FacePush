@@ -24,7 +24,7 @@ public class BoxingXMotor : MonoBehaviour {
 		
 	}
 
-	public void PrintEvent(string directionAndSpeed)
+	public void Punch(string directionAndSpeed)
     {
         string [] motorParameter= directionAndSpeed.Split(' ');
         print("哪顆馬達" + motorParameter[0] + " 速度: " + motorParameter[1] +  " 秒數: " + float.Parse(motorParameter[2]));

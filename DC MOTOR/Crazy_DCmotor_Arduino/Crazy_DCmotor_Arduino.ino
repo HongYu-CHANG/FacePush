@@ -19,7 +19,7 @@ char pass[] = "nextinterfaces"; // your network password (use for WPA, or use as
 int keyIndex = 0; // your network key Index number (needed only for WEP)
 
 //IP setup
-IPAddress sendToUnityPC_Ip(192, 168, 0, 174); // UnityPC's IP
+IPAddress sendToUnityPC_Ip(192, 168, 0, 154); // UnityPC's IP
 unsigned int sendToUnityPC_Port = 8000; // UnityPC's listening port
 unsigned int listenPort = 9000; // local port to listen on
 char packetBuffer[255]; //buffer to hold incoming packet
