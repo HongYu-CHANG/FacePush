@@ -20,8 +20,15 @@ public class BoxingXMotor : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 		
+	}
+
+	void OnApplicationQuit()
+	{
+		OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
+		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
 	}
 
 	public void Punch(string directionAndSpeed)
