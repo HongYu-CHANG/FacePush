@@ -36,29 +36,42 @@ public class OSCSender : UniOSCEventDispatcher
 
     public void setWhichMotor(string whichMotor){this.whichMotor = whichMotor;}
 
-    public void SendOSCMessageTriggerMethod(string direction, int speed, int time)
+    public void SendOSCMessageTriggerMethod(string direction, int speed, float time)
     {
         if (_OSCeArg.Packet is OscMessage)
         {
            // Debug.Log(direction);
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
-            _updateOscMessageData(msg, direction, speed, time);
-
+            _updateOscMessageData(msg, direction, speed);
+            
+            //_updateOscMessageData(msg, "RELEASE", speed);
         }
         _SendOSCMessage(_OSCeArg);
+        timePause(time);
+        /*if (_OSCeArg.Packet is OscMessage)
+        {
+            OscMessage msg = ((OscMessage)_OSCeArg.Packet);
+            _updateOscMessageData(msg, "RELEASE", speed);
+        }
+        _SendOSCMessage(_OSCeArg);*/
     }
 
-    private void _updateOscMessageData(OscMessage msg, string direction, int speed, int time)
+    IEnumerator timePause(float time)
+    {    
+        //_updateOscMessageData(msg, direction, speed);
+        yield return new WaitForSeconds(time);
+        //_updateOscMessageData(msg, "RELEASE", speed);
+    }
+
+    private void _updateOscMessageData(OscMessage msg, string direction, int speed)
     {
         msg.UpdateDataAt(0, whichMotor);
         if(direction == "FORWARD")
         {
-            totalMove += speed * time;
             msg.UpdateDataAt(1, 1);
         }
         else if (direction == "BACKWARD")
         {
-            totalMove -= speed * time;
              msg.UpdateDataAt(1, 2);
         }
         else if (direction == "RELEASE")

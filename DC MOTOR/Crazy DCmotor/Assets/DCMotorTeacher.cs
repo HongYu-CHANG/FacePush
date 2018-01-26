@@ -73,8 +73,8 @@ public class DCMotorTeacher : MonoBehaviour {
 			time = Lmotor_Time.value;
 		if(click)//奇數次點擊
 		{
-			if(R)ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);//加壓
-	        if(L)LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+			if(R)ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 2f);//加壓
+	        if(L)LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1f);
 	        yield return new WaitForSeconds(time);
 	 		if(R)ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
 	        if(L)LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
