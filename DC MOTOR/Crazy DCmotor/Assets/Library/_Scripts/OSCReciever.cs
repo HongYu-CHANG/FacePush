@@ -21,5 +21,6 @@ public class OSCReciever :  UniOSCEventTarget {
     public override void OnOSCMessageReceived(UniOSCEventArgs args)
     {
         OscMessage msg = (OscMessage)args.Packet;
+        //Debug.Log(msg);
     }
 }
