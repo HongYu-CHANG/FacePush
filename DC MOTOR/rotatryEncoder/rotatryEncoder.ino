@@ -3,7 +3,7 @@
 //these pins can not be changed 2/3 are special pins
 
 //arduino UNO
-int encoderPin1 = 2;
+int encoderPin1 = 2;//Yellow
 int encoderPin2 = 3;
     
 //adafruit

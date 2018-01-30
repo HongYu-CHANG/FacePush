@@ -17,7 +17,7 @@ Adafruit_MotorShield AFMS = Adafruit_MotorShield();
 // Adafruit_MotorShield AFMS = Adafruit_MotorShield(0x61); 
 
 // Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *myMotor = AFMS.getMotor(2);
+Adafruit_DCMotor *myMotor = AFMS.getMotor(1);
 // You can also make another motor on port M2
 //Adafruit_DCMotor *myOtherMotor = AFMS.getMotor(2);
 
@@ -29,7 +29,7 @@ void setup() {
   //AFMS.begin(1000);  // OR with a different frequency, say 1KHz
   
   // Set the speed to start, from 0 (off) to 255 (max speed)
-  myMotor->setSpeed(255);
+  myMotor->setSpeed(100);
  
   // turn on motor
   myMotor->run(FORWARD);//RELEASE  BACKWARD  FORWARD

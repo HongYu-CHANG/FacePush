@@ -11,12 +11,12 @@
 #include <OSCBundle.h>
 #include <Wire.h>
 #include <Adafruit_MotorShield.h>
-//#include <Adafruit_MS_PWMServoDriver.h>
-int sensorPin = A2;
+#define SLAVE_ADDRESS 0x12
+#define SERIAL_BAUD 9600 
+
 int status = WL_IDLE_STATUS;
 char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
 char pass[] = "nextinterfaces"; // your network password (use for WPA, or use as key for WEP)
-int keyIndex = 0; // your network key Index number (needed only for WEP)
 
 //IP setup
 IPAddress sendToUnityPC_Ip(192, 168, 0, 154); // UnityPC's IP
@@ -31,10 +31,11 @@ WiFiUDP Udp_listen;
 Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 Adafruit_DCMotor *RMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M1
 Adafruit_DCMotor *LMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M4
+
 void setup() 
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
-  Serial.begin(9600);//Initialize serial and wait for port to open:
+  Serial.begin(SERIAL_BAUD);//Initialize serial and wait for port to open:
   AFMS.begin();
   if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
   {
@@ -49,12 +50,16 @@ void setup()
     delay(10000);
   }
   printWifiStatus();
+  
   //OSC Start
   Udp_send.begin(sendToUnityPC_Port);
   Udp_listen.begin(listenPort);
 
-  
+  //I2C
+  Wire.begin();
+  Serial.println("I2C Master.02 started");
 }
+
 void printWifiStatus() 
 {
   Serial.println("Connected to wifi");
@@ -75,14 +80,14 @@ void printWifiStatus()
 
 void loop() 
 {
-   /*// Write
+   // Write
    OSCMessage msg("/1/fader1");
-   msg.add("C");
+   msg.add("Connected");
    Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
    msg.send(Udp_send);
    Udp_send.endPacket();
    msg.empty();
-   delay(3000);*/
+   delay(1000);
   
   // Read Receive
   OSCMessage messageIn;
@@ -94,11 +99,16 @@ void loop()
     if (!messageIn.hasError()) {
         char RorLMotor[1];
         messageIn.getString(0, RorLMotor, 1);
-        uint8_t Direction = (uint8_t)messageIn.getInt(1);
-        uint8_t speedNum = (uint8_t)messageIn.getInt(2);
-        Serial.println(RorLMotor[0]);
-        Serial.println(Direction);
-        Serial.println(speedNum);
+        int Degree = (int)messageIn.getInt(1);
+        int speedNum = (int)messageIn.getInt(2);
+        String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum);
+        char buffer[32];
+        temp.toCharArray(buffer, 32);
+        Serial.println(temp);
+        Wire.beginTransmission(SLAVE_ADDRESS);
+        Wire.write(buffer);
+        Wire.endTransmission();
+        /*
         if(RorLMotor[0] == 'R')
         {
            RMotor->setSpeed(speedNum); 
@@ -120,6 +130,7 @@ void loop()
            else if(Direction == 0)
               LMotor->run(RELEASE);
         }
+        */
     }
   }
 }
