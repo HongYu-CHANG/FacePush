@@ -46,4 +46,13 @@ public class BoxingXMotor : MonoBehaviour {
 		yield return new WaitForSeconds(second);
 		OSCSenderS[motor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
 	}
+    /*
+    IEnumerator SHAKEWORK(int motor, float angle, int speed, float second)
+    {
+        OSCSenderS[motor].SendOSCMessageTriggerMethod(angle, speed);//加壓
+        yield return new WaitForSeconds(second);
+        OSCSenderS[motor].SendOSCMessageTriggerMethod(angle, speed);//放鬆
+        yield return new WaitForSeconds(second);
+        //OSCSenderS[motor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
+    }*/
 }

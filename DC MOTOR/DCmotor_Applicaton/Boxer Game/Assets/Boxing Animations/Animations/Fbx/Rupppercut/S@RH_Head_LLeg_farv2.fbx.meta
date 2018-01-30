@@ -124,7 +124,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.4816387
+      - time: 0.41470957
         functionName: Punch
         data: 0 255 0.5
         objectReferenceParameter: {instanceID: 0}
