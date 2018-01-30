@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class RButton : MonoBehaviour 
 	,IPointerDownHandler
 	,IPointerUpHandler
-	,IPointerExitHandler
 {
 	public int MotorSpeed;
 	public GameObject RMotor;
@@ -37,16 +36,11 @@ public class RButton : MonoBehaviour
 	public void OnPointerDown(PointerEventData eventData)
 	{
   		Debug.Log("RDown");
-  		ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);
+  		ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);
  	}
  	public void OnPointerUp(PointerEventData eventData)
  	{
   		Debug.Log("RUp");
-  		ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);
- 	}
- 	public void OnPointerExit(PointerEventData eventData)
- 	{
- 	 	Debug.Log("LExit");
- 	 	ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+  		ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
  	}
 }

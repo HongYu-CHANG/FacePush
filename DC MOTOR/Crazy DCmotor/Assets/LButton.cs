@@ -7,7 +7,6 @@ using UnityEngine.EventSystems;
 public class LButton : MonoBehaviour 
 	,IPointerDownHandler
 	,IPointerUpHandler
-	,IPointerExitHandler
 {
 	public int MotorSpeed;
 	public GameObject LMotor;
@@ -37,16 +36,11 @@ public class LButton : MonoBehaviour
 	public void OnPointerDown(PointerEventData eventData)
 	{
   		Debug.Log("LDown");
-  		LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+  		LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
  	}
  	public void OnPointerUp(PointerEventData eventData)
  	{
   		Debug.Log("LUp");
-  		LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
- 	}
- 	public void OnPointerExit(PointerEventData eventData)
- 	{
- 	 	Debug.Log("LExit");
- 	 	LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+  		LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
  	}
 }
