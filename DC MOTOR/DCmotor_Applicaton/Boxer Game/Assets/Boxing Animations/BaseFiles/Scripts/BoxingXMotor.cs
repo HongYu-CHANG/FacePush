@@ -27,32 +27,24 @@ public class BoxingXMotor : MonoBehaviour {
 
 	void OnApplicationQuit()
 	{
-		OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
-		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
+		OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod( 0, 1);
+		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod( 0, 1);
 	}
 
 	public void Punch(string directionAndSpeed)
     {
         string [] motorParameter= directionAndSpeed.Split(' ');
-        print("哪顆馬達" + motorParameter[0] + " 速度: " + motorParameter[1] +  " 秒數: " + float.Parse(motorParameter[2]));
-        StartCoroutine(SHAKEWORK(int.Parse(motorParameter[0]), int.Parse(motorParameter[1]), float.Parse(motorParameter[2])));
+        print("哪顆馬達" + motorParameter[0] + " 角度: " + motorParameter[1] + " 速度: " + motorParameter[2] +  " 秒數: " + float.Parse(motorParameter[3]));
+        StartCoroutine(SHAKEWORK(int.Parse(motorParameter[0]), int.Parse(motorParameter[1]), int.Parse(motorParameter[2]), float.Parse(motorParameter[3])));
     }
 
-    IEnumerator SHAKEWORK(int motor, int speed, float second)
+    IEnumerator SHAKEWORK(int motor, int degree, int speed, float second)
 	{
-		OSCSenderS[motor].SendOSCMessageTriggerMethod("FORWARD", speed , 1);//加壓
+		OSCSenderS[motor].SendOSCMessageTriggerMethod(degree, speed);//加壓
 		yield return new WaitForSeconds(second);
-		OSCSenderS[motor].SendOSCMessageTriggerMethod("BACKWARD", speed, 1);//放鬆
+		OSCSenderS[motor].SendOSCMessageTriggerMethod(degree, speed);//放鬆
 		yield return new WaitForSeconds(second);
-		OSCSenderS[motor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
+		//OSCSenderS[motor].SendOSCMessageTriggerMethod( 0, 1);
 	}
-    /*
-    IEnumerator SHAKEWORK(int motor, float angle, int speed, float second)
-    {
-        OSCSenderS[motor].SendOSCMessageTriggerMethod(angle, speed);//加壓
-        yield return new WaitForSeconds(second);
-        OSCSenderS[motor].SendOSCMessageTriggerMethod(angle, speed);//放鬆
-        yield return new WaitForSeconds(second);
-        //OSCSenderS[motor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
-    }*/
+    
 }

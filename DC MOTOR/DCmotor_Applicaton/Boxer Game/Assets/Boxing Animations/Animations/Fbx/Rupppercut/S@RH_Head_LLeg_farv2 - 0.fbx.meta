@@ -126,7 +126,7 @@ ModelImporter:
       events:
       - time: 0.4527559
         functionName: Punch
-        data: 0 200 0.3
+        data: 0 30 200 0.3
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
