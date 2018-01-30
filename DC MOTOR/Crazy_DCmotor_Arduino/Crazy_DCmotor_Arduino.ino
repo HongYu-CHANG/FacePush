@@ -10,7 +10,7 @@
 #include <OSCMessage.h>
 #include <OSCBundle.h>
 #include <Wire.h>
-#include <Adafruit_MotorShield.h>
+//#include <Adafruit_MotorShield.h>
 #define SLAVE_ADDRESS 0x12
 #define SERIAL_BAUD 9600 
 
@@ -28,15 +28,15 @@ WiFiUDP Udp_send;
 WiFiUDP Udp_listen;
 
 //DC Motor
-Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
-Adafruit_DCMotor *RMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M1
-Adafruit_DCMotor *LMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M4
+//Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
+//Adafruit_DCMotor *RMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M1
+//Adafruit_DCMotor *LMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M4
 
 void setup() 
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
   Serial.begin(SERIAL_BAUD);//Initialize serial and wait for port to open:
-  AFMS.begin();
+//  AFMS.begin();
   if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
   {
     Serial.println("WiFi shield not present");
