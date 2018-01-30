@@ -55,12 +55,6 @@ public class DCMotorController : MonoBehaviour {
 		LText.text = Lmotor_Power.value + " / " + NumberToRPM (Lmotor_Power.value).ToString("0.00") + " RPM";
 	}
 
-	public void stop()
-	{
-		LOSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
-		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
-	}
-
 	private double NumberToRPM (float sliderValue)
 	{
 		return sliderValue*MotorSpeed/255;
@@ -91,15 +85,13 @@ public class DCMotorController : MonoBehaviour {
 	    Debug.Log(R);
 	    for(int i = 0 ; i < number ; i++)
 		{
-			if(R)ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+			if(R)ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
             yield return new WaitForSeconds(time);
-            if(R)ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
+            if(R)ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
             yield return new WaitForSeconds(time);
 		}
-		if(R)ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
-        if(L)LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
 	}
 
 	public void No2()
@@ -128,15 +120,14 @@ public class DCMotorController : MonoBehaviour {
 	    if(LSpeed < 100) LSpeed = 101;
 	    for(int i = 0 ; i < number ; i++)
 		{
-			if(R)ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+			if(R)ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
             yield return new WaitForSeconds(time);
-            if(R)ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed-100, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed-100, 1);
+            if(R)ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed-100);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed-100);
             yield return new WaitForSeconds(time);
 		}
-		if(R)ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
-        if(L)LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+
 	}
 
 	public void No3R()
@@ -159,29 +150,27 @@ public class DCMotorController : MonoBehaviour {
 		{
 			if(R)
 			{
-				ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);//加壓
+				ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);//加壓
 				yield return new WaitForSeconds(time/2);
-				LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+				LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
 				yield return new WaitForSeconds(time/2);
-				ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);//加壓
+				ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);//加壓
 				yield return new WaitForSeconds(time/2);
-				LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
+				LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
 				yield return new WaitForSeconds(time/2);
 			}
 			else if(L)
 			{
-				LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+				LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
             	yield return new WaitForSeconds(time/2);
-            	ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);//加壓
+            	ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);//加壓
             	yield return new WaitForSeconds(time/2);
-            	LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
+            	LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
             	yield return new WaitForSeconds(time/2);
-            	ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);//加壓
+            	ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);//加壓
             	yield return new WaitForSeconds(time/2);
 			}
 		}
-		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
-        LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
 	}
 
 	public void No4()
@@ -223,26 +212,23 @@ public class DCMotorController : MonoBehaviour {
 
 	    for(int i = 0 ; i < number ; i++)
 		{
-			if(R)ROSCSender.SendOSCMessageTriggerMethod("FORWARD", 70, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("FORWARD", 70, 1);
+			if(R)ROSCSender.SendOSCMessageTriggerMethod(170, 70);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(170, 70);
             yield return new WaitForSeconds(20);
-            if(R)ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);//加壓
-            if(L)LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
+            if(R)ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);//加壓
+            if(L)LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
             if(IsR)
             {
             	yield return new WaitForSeconds(1400/RSpeed);
-            	if(R)ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
             	yield return new WaitForSeconds((1400/DiffSpeed));
             }
             else
             {
             	yield return new WaitForSeconds(1400/LSpeed);
-            	if(L)LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
             	yield return new WaitForSeconds(1400/DiffSpeed);
             }
 		}
-		if(R)ROSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
-        if(L)LOSCSender.SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+
 	}
 
 	public void No5R()
@@ -263,36 +249,26 @@ public class DCMotorController : MonoBehaviour {
 		   if(R)
 		   {
 		   		float needTime = 1400/RSpeed;
-		   		ROSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);
+		   		ROSCSender.SendOSCMessageTriggerMethod(170, RSpeed);
 		   		yield return new WaitForSeconds(needTime/2);
-		   		LOSCSender.SendOSCMessageTriggerMethod("FORWARD", RSpeed, 1);
-		   		yield return new WaitForSeconds(needTime/2);
-		   		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", RSpeed, 1);
-		   		yield return new WaitForSeconds(needTime/2);
-		   		LOSCSender.SendOSCMessageTriggerMethod("RELEASE", RSpeed, 1);
+		   		LOSCSender.SendOSCMessageTriggerMethod(170, RSpeed);
 		   		yield return new WaitForSeconds(1);
-		   		ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);//加壓
-	            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", RSpeed, 1);
+		   		ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);//加壓
+	            LOSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
 	            yield return new WaitForSeconds(needTime);
-	           	LOSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
-		   		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
+
 		   }
 		   else if(L)
 		   {
 		   		float needTime = 1400/LSpeed;
-		   		LOSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
+		   		LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
 		   		yield return new WaitForSeconds(needTime/2);
-		   		ROSCSender.SendOSCMessageTriggerMethod("FORWARD", LSpeed, 1);
-		   		yield return new WaitForSeconds(needTime/2);
-		   		LOSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
-		   		yield return new WaitForSeconds(needTime/2);
-		   		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
+		   		ROSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
 		   		yield return new WaitForSeconds(1);
-		   		ROSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);//加壓
-	            LOSCSender.SendOSCMessageTriggerMethod("BACKWARD", LSpeed, 1);
+		   		ROSCSender.SendOSCMessageTriggerMethod(10, LSpeed);//加壓
+	            LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
 	            yield return new WaitForSeconds(needTime);
-	           	LOSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
-		   		ROSCSender.SendOSCMessageTriggerMethod("RELEASE", LSpeed, 1);
+
 		   }
 		}
 	}

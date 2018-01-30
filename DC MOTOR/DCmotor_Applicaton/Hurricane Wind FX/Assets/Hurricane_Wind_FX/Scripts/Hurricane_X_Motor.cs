@@ -69,7 +69,6 @@ public class Hurricane_X_Motor : MonoBehaviour {
 
 		if ((timer_i - ConvertTime) % (ConvertTime + StopTime) == 0 && !HurricaneStop)
 		{
-			motorStop();
 			Debug.Log(Cube.transform.rotation.eulerAngles.y - initialY);
 			if (Cube.transform.rotation.eulerAngles.y > initialY)
 			{
@@ -134,10 +133,6 @@ public class Hurricane_X_Motor : MonoBehaviour {
     {
         return value < 0 ? -value : value;
     }
-	void OnApplicationQuit() 
-	{
-        motorStop();
-    }
 
 	private float remapping (float value, float low1, float high1, float low2, float high2)
 	{
@@ -161,8 +156,7 @@ public class Hurricane_X_Motor : MonoBehaviour {
 		{
 			FirstMotor = motorActive;
 			SecondMotor = FirstMotor == (int)Motors.Left ? (int)Motors.Right : (int)Motors.Left;
-			OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
-			OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+			OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 		}
 		headDegree = remapping((float)tempSpeed, 85f, 255f, 0.5f, 5);
 		for (int i = 0 ; i < ((ConvertTime-1)/2); i++)
@@ -175,41 +169,40 @@ public class Hurricane_X_Motor : MonoBehaviour {
 				turnDir = FirstMotor == (int)Motors.Left ? 1 : -1;
 
 				
-				OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);//加壓
+				OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod(170, tempSpeed);//加壓
 				headDegree *= turnDir;
 				yield return new WaitForSeconds(0.8f - tempTime);
 
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 				headDegree *= (turnDir * (-1));
 				yield return new WaitForSeconds(0.8f + tempTime);
 
-				OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);//放鬆
+				OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod(10, tempSpeed);//放鬆
 				yield return new WaitForSeconds(0.15f - tempTime);
 
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(10, tempSpeed);
 				yield return new WaitForSeconds(0.15f + tempTime);
 			}
 			else 
 			{
 				FirstMotor = motorActive;
 				SecondMotor = FirstMotor == (int)Motors.Left ? (int)Motors.Right : (int)Motors.Left;
-				OSCSenderS[FirstMotor].SendOSCMessageTriggerMethod("RELEASE", 0, 1);
 
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(10, tempSpeed);
 				yield return new WaitForSeconds(0.2f - tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 				yield return new WaitForSeconds(0.2f + tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(10, tempSpeed);
 				yield return new WaitForSeconds(0.2f - tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 				yield return new WaitForSeconds(0.2f + tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(10, tempSpeed);
 				yield return new WaitForSeconds(0.2f - tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 				yield return new WaitForSeconds(0.2f + tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("BACKWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(10, tempSpeed);
 				yield return new WaitForSeconds(0.2f - tempTime);
-				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod("FORWARD", tempSpeed, 1);
+				OSCSenderS[SecondMotor].SendOSCMessageTriggerMethod(170, tempSpeed);
 				yield return new WaitForSeconds(0.2f + tempTime);
 			}
     	}
@@ -218,20 +211,14 @@ public class Hurricane_X_Motor : MonoBehaviour {
 
 	private void motorPressure(int speed)
 	{
-		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod("FORWARD", speed, 1);//加壓
-	    OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod("FORWARD", speed, 1);
+		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod(170, speed);//加壓
+	    OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod(170, speed);
 	}
 
 	private void motorRelease(int speed)
 	{
-		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod("BACKWARD", speed, 1);//放鬆
-	    OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod("BACKWARD", speed, 1);
-	}
-
-	private void motorStop()
-	{
-		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod("RELEASE", 255, 2);
-        OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod("RELEASE", 255, 2);
+		OSCSenderS[(int)Motors.Right].SendOSCMessageTriggerMethod(10, speed);//放鬆
+	    OSCSenderS[(int)Motors.Left].SendOSCMessageTriggerMethod(10, speed);
 	}
 
 	private void particleSystemIsStart(bool isStart)

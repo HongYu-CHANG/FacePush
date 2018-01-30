@@ -7,13 +7,11 @@ using UniOSC;
 
 public class OSCSender : UniOSCEventDispatcher
 {
-    private int totalMove;
     private string whichMotor;
 
     public override void Awake()
     {
         base.Awake();
-        totalMove = 0;
     }
 
     public override void OnEnable()
@@ -32,54 +30,31 @@ public class OSCSender : UniOSCEventDispatcher
         //Don't forget this!!!!
         base.OnDisable();
     }
-    public int getMove(){return totalMove;}
 
     public void setWhichMotor(string whichMotor){this.whichMotor = whichMotor;}
 
-    public void SendOSCMessageTriggerMethod(string direction, int speed, float time)
+    public void SendOSCMessageTriggerMethod(int degree, int speed)
     {
         if (_OSCeArg.Packet is OscMessage)
         {
-           // Debug.Log(direction);
             OscMessage msg = ((OscMessage)_OSCeArg.Packet);
-            _updateOscMessageData(msg, direction, speed);
+            _updateOscMessageData(msg, degree, speed);
             
-            //_updateOscMessageData(msg, "RELEASE", speed);
         }
         _SendOSCMessage(_OSCeArg);
-        timePause(time);
-        /*if (_OSCeArg.Packet is OscMessage)
-        {
-            OscMessage msg = ((OscMessage)_OSCeArg.Packet);
-            _updateOscMessageData(msg, "RELEASE", speed);
-        }
-        _SendOSCMessage(_OSCeArg);*/
     }
 
-    IEnumerator timePause(float time)
-    {    
-        //_updateOscMessageData(msg, direction, speed);
-        yield return new WaitForSeconds(time);
-        //_updateOscMessageData(msg, "RELEASE", speed);
-    }
-
-    private void _updateOscMessageData(OscMessage msg, string direction, int speed)
+    private void _updateOscMessageData(OscMessage msg, int degree, int speed)
     {
         msg.UpdateDataAt(0, whichMotor);
-        if(direction == "FORWARD")
-        {
-            msg.UpdateDataAt(1, 1);
-        }
-        else if (direction == "BACKWARD")
-        {
-             msg.UpdateDataAt(1, 2);
-        }
-        else if (direction == "RELEASE")
-        {
-            msg.UpdateDataAt(1, 0);
-        }
+        msg.UpdateDataAt(1, degreeConvertToRotaryCoder(degree));
         msg.UpdateDataAt(2, speed);
 
+    }
+
+    private int degreeConvertToRotaryCoder(int degree)
+    {
+        return (degree * 1024/360);
     }
 }
 
