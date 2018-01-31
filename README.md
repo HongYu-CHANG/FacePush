@@ -22,6 +22,7 @@ Unity 5.6.3
 * [Arduino I2C Tutorial](https://arduino169.blogspot.tw/2015/07/arduino-i2c.html?m=1)
 * [Tutorial for Monster Motor Shield VNH2SP30 ](http://www.instructables.com/id/Monster-Motor-Shield-VNH2SP30/)
 * [Arduino Interrupt ](https://chtseng.wordpress.com/2015/12/25/arduino-%E4%B8%AD%E6%96%B7%E5%8A%9F%E8%83%BD/)
+* [PID – Introduction](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/)
 
 ### unity package
 * [Hurricane Wind FX ](https://assetstore.unity.com/packages/vfx/particles/environment/hurricane-wind-fx-104948)
