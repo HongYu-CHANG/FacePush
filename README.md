@@ -18,18 +18,18 @@ Unity 5.6.3
 
 ## API Reference
 
-###Arduino
+### Arduino
 * [Arduino I2C Tutorial](https://arduino169.blogspot.tw/2015/07/arduino-i2c.html?m=1)
 * [Tutorial for Monster Motor Shield VNH2SP30 ](http://www.instructables.com/id/Monster-Motor-Shield-VNH2SP30/)
 * [Arduino Interrupt ](https://chtseng.wordpress.com/2015/12/25/arduino-%E4%B8%AD%E6%96%B7%E5%8A%9F%E8%83%BD/)
 
-###unity package
+### unity package
 * [Hurricane Wind FX ](https://assetstore.unity.com/packages/vfx/particles/environment/hurricane-wind-fx-104948)
 * [Boxer Animations ](https://assetstore.unity.com/packages/3d/animations/boxer-animations-96950)
 * [White Swimmer ](https://assetstore.unity.com/packages/3d/white-swimmer-10686-tris-39121)
 * [Underwater FX ](https://assetstore.unity.com/packages/vfx/particles/environment/underwater-fx-61157)
 
-###Motor
+### Motor
 * [Metal Gearmotor](https://www.robotshop.com/en/12v-170rpm-econ-metal-gearmotor.html#Specifications)
 
 
@@ -40,5 +40,3 @@ Unity 5.6.3
 
 Available under [the BSD-3-Clause license](https://opensource.org/licenses/BSD-3-Clause).
 
------------------------------------
-This File reference is [README.md - Gist - GitHub](https://gist.github.com/zenorocha/4526327) and [README.md template · GitHub](https://gist.github.com/jxson/1784669)
