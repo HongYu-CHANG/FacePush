@@ -1,8 +1,11 @@
+//====================================================================================
+// I2C
 #include <Wire.h>
 
 #define SLAVE_ADDRESS 0x12
 #define SERIAL_BAUD 57600 
-
+//====================================================================================
+// Interrupt and Rotary encoders
 // Arduino Leonardo has 4 interrupt Pin, D3, D2, D0, D1
 // D0, D1, D2, and D3 for two rotary encoders
 int encoderLeftPin1 = 3; // interrupt 0
@@ -17,6 +20,7 @@ volatile int rightLastEncoded = 0;
 volatile long encoderLeftValue = 0;
 volatile long encoderRightValue = 0;
 
+//====================================================================================
 // Monster Motor Driver VNH2SP30
 #define BRAKE 0
 #define CW    1
@@ -46,6 +50,19 @@ volatile long encoderRightValue = 0;
 #define MOTOR_L 0
 #define MOTOR_R 1
 
+//====================================================================================
+// PID motor control
+#include <PID_v1.h>
+double kp = 5, ki = 1, kd = 0.01;
+// input: current position (value of rotary encoder)
+// output: result (where to go)
+// setPoint: target position (position cmd from Feather)
+double input = 0, output = 0, setPoint = 0;
+
+PID leftPID(&input, &output, &setPoint, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
+PID rightPID(&input, &output, &setPoint, kp, ki, kd, DIRECT);
+
+// some variables could be removed, but we have to check with driver shield first
 short usSpeed = 150;  //default motor speed
 // variables for handling command from Feather
 unsigned short usMotor_Status = BRAKE;
@@ -56,7 +73,7 @@ String cmdSpeed = "";
 long goToAngle = 0;
 short goWithSpeed = 0;
 
-
+//====================================================================================
 //Command Table for Pins
 //Motor 0:
 //STOP : D7 0, D8 0 & D7 1, D7 1
@@ -88,7 +105,8 @@ void setup() {
   digitalWrite(encoderRightPin2, HIGH); //turn pullup resistor on
 
   //call updateEncoder() when any high/low changed seen
-  //on interrupt 0 (pin 2), or interrupt 1 (pin 3) 
+  //on interrupt 0 (pin 2), or interrupt 1 (pin 3)
+  //on interrupt 2 (pin 0), or interrupt 3 (pin 1) 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin1), updateLeftEncoder, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin2), updateLeftEncoder, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encoderRightPin1), updateRightEncoder, CHANGE); 
@@ -109,23 +127,29 @@ void setup() {
 
   pinMode(EN_PIN_L, OUTPUT);
   pinMode(EN_PIN_R, OUTPUT);
+
+  // PID control setup
+  leftPID.SetMode(AUTOMATIC);
+  leftPID.SetOutputLimits(-255, 255);
+  rightPID.SetMode(AUTOMATIC);
+  rightPID.SetOutputLimits(-255, 255);
   
 }
 
 void loop() {
 
-  // print encoded values of both motor
+  // for debug
   //Serial.print(encoderLeftValue); Serial.print(" ");
   //Serial.println(encoderRightValue);
-  delay(10);
+
 }
 
 void receiveEvent(int count) {
   Serial.println("Receive Data:");
   while(Wire.available()) {
 //    Serial.print((char) Wire.read());
-	digitalWrite(EN_PIN_L, HIGH);
-	digitalWrite(EN_PIN_R, HIGH);
+	  digitalWrite(EN_PIN_L, HIGH);
+	  digitalWrite(EN_PIN_R, HIGH);
     char inChar = (char) Wire.read();
     inputString += inChar;
     if (inChar == '\n') {
@@ -136,35 +160,66 @@ void receiveEvent(int count) {
   if (stringComplete) {
     // which motor
     if (inputString.startsWith("L")) {
-      usMotor_Status = MOTOR_L;
-	}
-	else {
-	  usMotor_Status = MOTOR_R;
-	}
-    inputString = inputString.substring(2);
-
-    // split cmd into angle and speed
-    for (int i = 0; i < inputString.length(); i++)
-    {
-      if (inputString.substring(i, i + 1) == " ")
-      {	
-        cmdAngle = inputString.substring(0, i);
-	    cmdSpeed = inputString.substring(i + 1);
-		break;
+      inputString = inputString.substring(2);
+      // split cmd into angle and speed
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {	
+          cmdAngle = inputString.substring(0, i);
+          cmdSpeed = inputString.substring(i + 1);
+  	      break;
+        }
       }
+  	  // send target position to setPoint
+  	  goToAngle = cmdAngle.toInt();
+  	  setPoint = (double) goToAngle;
+      // send current position of left motor to input
+      input = (double) encoderLeftValue;
+      leftPID.Compute();
+      goWithSpeed = (short)cmdSpeed.toInt();
+
+      // need to test here!!!!!!!!! it seems goWithSpeed didn't use
+      if (output > 0) {
+	      motorGo(MOTOR_L, CW, output);
+	    }
+	    else {
+        motorGo(MOTOR_L, CCW, abs(output));
+	    }
+	  }
+	  else {
+      inputString = inputString.substring(2);
+      // split cmd into angle and speed
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {	
+          cmdAngle = inputString.substring(0, i);
+          cmdSpeed = inputString.substring(i + 1);
+    	    break;
+        }
+      }
+  	  // send target position to setPoint
+  	  goToAngle = cmdAngle.toInt();
+  	  setPoint = (double) goToAngle;
+  	  // send current position of right motor to input
+      input = (double) encoderRightValue;
+      rightPID.Compute();
+      goWithSpeed = (short)cmdSpeed.toInt();
+
+      // need to test here!!!!!!!!! it seems goWithSpeed didn't use
+      if (output > 0) {
+  	    motorGo(MOTOR_R, CW, output);
+      }
+  	  else {
+  	    motorGo(MOTOR_R, CCW, abs(output));
+  	  }
+  
     }
-	goToAngle = cmdAngle.toInt();
-	// goToAngle has to transfer to 
-    goWithSpeed = (short)cmdSpeed.toInt();
-    // check encoder position to decide direction
+  inputString = "";
+  stringComplete = false;
 
-
-    // after sending cmd to DC motor, set inputString and stringComplete back
-    inputString = "";
-    stringComplete = false;
   }
-  
-  
   Serial.println("\n");
 }
 
@@ -195,12 +250,11 @@ void updateRightEncoder() {
 }
 
 
-void motorGo(uint8_t motor, uint8_t direct, long goToAngle, uint8_t pwm)         
+void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)         
 {
   // Function that controls the variables:
   //   motor (0 or 1)
   //   direction (cw or ccw)
-  //   the value for stopping motor at a position
   //   pwm (0 to 255)
   
   if(motor == MOTOR_L)

@@ -20,7 +20,7 @@ public class anim_change_hitted : MonoBehaviour {
 	void Update () {
 
         if (s != anim_change.s) {
-            Debug.Log("s: " + anim_change.s);
+            //Debug.Log("s: " + anim_change.s);
             _animator.SetInteger("change", anim_change.s);
             s = anim_change.s;
         }
