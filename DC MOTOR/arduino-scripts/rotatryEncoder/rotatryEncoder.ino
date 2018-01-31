@@ -68,15 +68,10 @@ void loop() {
 
   // Serial.println(encoderValue);
 
-  if (encoderLeftValue >= 0) {
-    encoderLeftValue %= 1024;
-  }
-  else {
-    encoderLeftValue %= 1024;
-    encoderLeftValue += 1024;
+  if (encoderLeftValue < 0) {
+    encoderLeftValue = abs(encoderLeftValue);
   }
   
-  encoderRightValue %= 1024;
   Serial.print(encoderLeftValue); Serial.print(" ");
   Serial.println(encoderRightValue);
 

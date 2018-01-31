@@ -1,31 +1,43 @@
-# CrazyMotor
-https://github.com/maniacbug/StandardCplusplus
+# FacePush
+[![License](https://poser.pugx.org/padraic/humbug_get_contents/license)](https://opensource.org/licenses/BSD-3-Clause)
 
-https://github.com/RedFishChang/arduino
-
-https://github.com/tobiastoft/ArduinoEasing/blob/master/Easing.cpp
+## Synopsis
 
 
-#Unity com port number 要小於10
 
-#unity 影片 要選另一個選項 她才可以讀的到
+## Code Need
 
-#https://github.com/CNMAT/OSC
+Unity 5.6.3
 
-指令 速度 時間(右) 指令 速度 時間(左)
-最後要計算移動了多少
-把一個檔案做成sAMPLE
-uint8_t n 可傳int 也可以傳CHAR
+## Motivation
 
-指令
-FORWARD - Rotate in a forward direction
-REVERSE - Rotate in the reverse direction
-RELEASE - Stop rotation
-速度0~255
 
-# Motor Compare
-    1. MG996R 扭力 1.275 N-m
-    2. 2 RPM  扭力 10.571 N-m
-    3. 30RPM  扭力 0.967 N-m
-    4. 10RPM  扭力 2.599 N-m
-    5. 4 RPM  扭力 7.005 N-m
+
+## Installation
+
+
+## API Reference
+
+### Arduino
+* [Arduino I2C Tutorial](https://arduino169.blogspot.tw/2015/07/arduino-i2c.html?m=1)
+* [Tutorial for Monster Motor Shield VNH2SP30 ](http://www.instructables.com/id/Monster-Motor-Shield-VNH2SP30/)
+* [Arduino Interrupt ](https://chtseng.wordpress.com/2015/12/25/arduino-%E4%B8%AD%E6%96%B7%E5%8A%9F%E8%83%BD/)
+* [PID – Introduction](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/)
+
+### unity package
+* [Hurricane Wind FX ](https://assetstore.unity.com/packages/vfx/particles/environment/hurricane-wind-fx-104948)
+* [Boxer Animations ](https://assetstore.unity.com/packages/3d/animations/boxer-animations-96950)
+* [White Swimmer ](https://assetstore.unity.com/packages/3d/white-swimmer-10686-tris-39121)
+* [Underwater FX ](https://assetstore.unity.com/packages/vfx/particles/environment/underwater-fx-61157)
+
+### Motor
+* [Metal Gearmotor](https://www.robotshop.com/en/12v-170rpm-econ-metal-gearmotor.html#Specifications)
+
+
+## Contributors
+
+
+## License
+
+Available under [the BSD-3-Clause license](https://opensource.org/licenses/BSD-3-Clause).
+

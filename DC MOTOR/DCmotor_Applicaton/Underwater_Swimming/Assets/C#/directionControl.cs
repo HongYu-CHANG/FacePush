@@ -30,7 +30,18 @@ public class directionControl : MonoBehaviour {
         cube1pos = new Vector3(cube1.transform.position.x, cube1.transform.position.y, cube1.transform.position.z);
         cube2pos = new Vector3(cube2.transform.position.x, cube2.transform.position.y, cube2.transform.position.z);
 
+        /*
+        Debug.Log("==cubepos==============");
+        Debug.Log(cubepos.ToString("F4"));
+        Debug.Log(cube1pos.ToString("F4"));
+        Debug.Log(cube2pos.ToString("F4"));
+        */
+
         plane = new Plane(cubepos, cube1pos, cube2pos);
+
+        //draw raycast to check the plane is correct or not
+        Debug.DrawRay(cubepos, cubepos - cube1pos, Color.red, 10);
+        Debug.DrawRay(cubepos, cube2pos - cubepos, Color.green, 10);
 
         Lpos = new Vector3(Ltracker.transform.position.x, Ltracker.transform.position.y, Ltracker.transform.position.z);
         Rpos = new Vector3(Rtracker.transform.position.x, Rtracker.transform.position.y, Rtracker.transform.position.z);
@@ -38,24 +49,14 @@ public class directionControl : MonoBehaviour {
         plane.GetDistanceToPoint(Lpos);
         plane.GetDistanceToPoint(Rpos);
 
-        Debug.Log("L:" + plane.GetDistanceToPoint(Lpos));
-        Debug.Log("R:" + plane.GetDistanceToPoint(Rpos));
-
-        cube.transform.position = new Vector3(cube.transform.position.x + 0.01f, cube.transform.position.y, cube.transform.position.z);
-
         /*
-        //Raycast (left tracker)
-        RaycastHit[] Lhits;
-        Lhits = Physics.RaycastAll(Ltracker.transform.position, Ltracker.transform.forward, 1.01F);
-        Debug.DrawRay(Ltracker.transform.position, Ltracker.transform., Color.green);
-
-        for (int i = 0; i < Lhits.Length; i++)
-        {
-            RaycastHit Lhit = Lhits[i];    
-        }
+        Debug.Log("==tracker pos==============");
+        Debug.Log(Lpos.ToString("F4"));
+        Debug.Log(Rpos.ToString("F4"));
         */
 
-
+        Debug.Log("L:" + plane.GetDistanceToPoint(Lpos));
+        Debug.Log("R:" + plane.GetDistanceToPoint(Rpos));
 
     }
 }
