@@ -2,27 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class movingControl : MonoBehaviour {
+public class movingControl : MonoBehaviour
+{
+
+    public GameObject headpos;
+    public GameObject bodypos;
+    private Vector3 body_head_direction;
+
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
 
     }
-	
-	// Update is called once per frame
-	void Update () {
 
-        transform.position = new Vector3(transform.position.x + 0.01f, transform.position.y, transform.position.z);
-        Debug.Log("=== move: " + transform.position.ToString("F4") + " ===");
+    // Update is called once per frame
+    void Update()
+    {
 
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            transform.Rotate(Vector3.down);
-        }
+        body_head_direction = headpos.transform.position - bodypos.transform.position;
+        transform.position = transform.position + body_head_direction * (0.01f);
 
-        if(Input.GetKeyDown(KeyCode.S))
-        {
-            transform.Rotate(Vector3.up);
-        }
     }
 }

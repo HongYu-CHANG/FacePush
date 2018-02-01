@@ -209,10 +209,10 @@ void receiveEvent(int count) {
 
       // need to test here!!!!!!!!! it seems goWithSpeed didn't use
       if (output > 0) {
-  	    motorGo(MOTOR_R, CW, output);
+  	    motorGo(MOTOR_R, CCW, output);
       }
   	  else {
-  	    motorGo(MOTOR_R, CCW, abs(output));
+  	    motorGo(MOTOR_R, CW, abs(output));
   	  }
   
     }

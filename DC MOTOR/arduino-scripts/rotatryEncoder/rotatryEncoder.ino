@@ -67,20 +67,16 @@ void loop() {
   // put your main code here, to run repeatedly:
 
   // Serial.println(encoderValue);
-
-  if (encoderLeftValue < 0) {
-    encoderLeftValue = abs(encoderLeftValue);
-  }
   
-  Serial.print(encoderLeftValue); Serial.print(" ");
-  Serial.println(encoderRightValue);
+//  Serial.print(encoderLeftValue); Serial.print(" ");
+//  Serial.println(encoderRightValue);
 
   delay(10); //just here to slow down the output, and show it will work  even during a delay
 }
 
 //void updateEncoder(){
-//  int MSB = digitalRead(encoderRightPin1); //MSB = most significant bit
-//  int LSB = digitalRead(encoderRightPin2); //LSB = least significant bit
+//  int MSB = digitalRead(encoderPin1); //MSB = most significant bit
+//  int LSB = digitalRead(encoderPin2); //LSB = least significant bit
 //
 //  int encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
 //  int sum  = (lastEncoded << 2) | encoded; //adding it to the previous encoded value
