@@ -40,7 +40,7 @@ volatile int lastEncoded = 0;
 volatile long encoderValue = 0;
 // PID motor control
 #include <PID_v1.h>
-double kp = 0.5, ki = 0, kd = 0;
+double kp = 10, ki = 0, kd = 0;
 // input: current position (value of rotary encoder)
 // output: result (where to go)
 // setPoint: target position (position cmd from Feather)
@@ -48,6 +48,9 @@ double input = 0, output = 0, setPoint = 0;
 
 PID myPID(&input, &output, &setPoint, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
 int Degree;
+int speedNum;
+char RorLMotor[1];
+
 void setup() 
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
@@ -62,7 +65,6 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(encoderPin1), updateEncoder, CHANGE);
   attachInterrupt(digitalPinToInterrupt(encoderPin2), updateEncoder, CHANGE);
   myPID.SetMode(AUTOMATIC);
-  myPID.SetOutputLimits(-100,100);
   
   if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
   {
@@ -114,16 +116,30 @@ void loop()
    msg.send(Udp_send);
    Udp_send.endPacket();
    msg.empty();
-   delay(1000);  
+//   delay(1000);  
 
   Serial.print("before update: ");
   Serial.print(encoderValue); Serial.print(" ");
   Serial.print(setPoint); Serial.print(" ");
 //  Serial.print(input); Serial.print(" ");
   Serial.println(output);
+  myPID.SetOutputLimits(-speedNum,speedNum);
   setPoint = Degree;
   input = encoderValue;
   myPID.Compute();
+
+
+       
+        if(RorLMotor[0] == 'R')
+        {
+           RMotor->setSpeed(output); 
+           if (output > 0) {
+            RMotor->run(FORWARD);
+           }
+           else {
+            RMotor->run(BACKWARD);
+           }
+        }
   Serial.print("After update: ");
   Serial.print(encoderValue); Serial.print(" ");
   Serial.print(setPoint); Serial.print(" ");
@@ -139,10 +155,10 @@ void loop()
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
-        char RorLMotor[1];
+        RorLMotor[1];
         messageIn.getString(0, RorLMotor, 1);
         Degree = (int)messageIn.getInt(1);
-        int speedNum = (int)messageIn.getInt(2);
+        speedNum = (int)messageIn.getInt(2);
         
         // I2C message
         String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum);
@@ -160,19 +176,19 @@ void loop()
 
 //  pwmOut(output);
 
-        
-        if(RorLMotor[0] == 'R')
-        {
-           RMotor->setSpeed(output); 
-           if (output > 0) {
-            RMotor->run(FORWARD);
-           }
-           else if (output == 0) {
-            RMotor->run(RELEASE);
-           }
-           else {
-            RMotor->run(BACKWARD);
-           }
+//        
+//        if(RorLMotor[0] == 'R')
+//        {
+//           RMotor->setSpeed(output); 
+//           if (output > 0) {
+//            RMotor->run(FORWARD);
+//           }
+//           else if (output == 0) {
+//            RMotor->run(RELEASE);
+//           }
+//           else {
+//            RMotor->run(BACKWARD);
+//           }
 
         
 
@@ -182,7 +198,7 @@ void loop()
 //              RMotor->run(BACKWARD);
 //           else if(Direction == 0)
 //              RMotor->run(RELEASE);
-        } 
+//        } 
         
 //        else
 //        {
