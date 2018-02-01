@@ -7,6 +7,8 @@ TagManager:
   - Boxer_02
   - R
   - L
+  - LHand
+  - RHand
   layers:
   - Default
   - TransparentFX
