@@ -9,6 +9,8 @@ TagManager:
   - L
   - LHand
   - RHand
+  - Hit
+  - Face
   layers:
   - Default
   - TransparentFX

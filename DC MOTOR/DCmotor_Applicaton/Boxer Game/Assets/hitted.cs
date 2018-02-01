@@ -8,10 +8,22 @@ public class hitted : MonoBehaviour {
     int s = 0;
     int state = 0;
 
+    //hit_pos_on_face
+    private GameObject hit;
+    private Transform face;
+    private Vector3 hit_position;
+    int count = 0;
+    Color color = Color.black;
+
     // Use this for initialization
     void Start () {
-		
-	}
+        //hit_pos_on_face
+        hit = GameObject.FindGameObjectWithTag("Hit");
+        face = GameObject.FindGameObjectWithTag("Face").transform;
+        hit_position = hit.transform.position;
+        hit.transform.localScale = new Vector3(0, 0, 0);
+        color = hit.GetComponent<Renderer>().material.color;
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -37,6 +49,8 @@ public class hitted : MonoBehaviour {
                 l = 1f;
                 //moving rotation
                 r = 10f;
+                //hit
+                color.a = 0.8f;
             }
             else if (state == 3)
             {
@@ -45,6 +59,8 @@ public class hitted : MonoBehaviour {
                 l = 0.7f;
                 //moving rotation
                 r = 5f;
+                //hit
+                color.a = 0.5f;
             }
 
             Vector3 pos = this.transform.position + collider_dir.Rdir * l;
@@ -61,6 +77,12 @@ public class hitted : MonoBehaviour {
             mySequence.Join(rot2);
             Debug.Log("Rhit ");
             collider_dir.Rhit = 0;
+
+            //hit_pos_on_face
+            hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
+            hit.transform.position = new Vector3(hit_position.x + collider_dir.hit_pos.x , hit_position.y + collider_dir.hit_pos.y, hit_position.z);
+            hit.GetComponent<Renderer>().material.color = color;
+            count ++ ;
         }
         else if (collider_dir.Lhit == 1)
         {
@@ -71,6 +93,8 @@ public class hitted : MonoBehaviour {
                 l = 1.2f;
                 //moving rotation
                 r = 10f;
+                //hit
+                color.a = 0.8f;
             }
             else if (state == 4)
             {
@@ -79,6 +103,8 @@ public class hitted : MonoBehaviour {
                 l = 1f;
                 //moving rotation
                 r = 5f;
+                //hit
+                color.a = 0.5f;
             }
 
             Vector3 pos = this.transform.position + collider_dir.Ldir * l;
@@ -95,6 +121,20 @@ public class hitted : MonoBehaviour {
             mySequence.Join(rot2);
             Debug.Log("Lhit ");
             collider_dir.Lhit = 0;
+
+            //hit_pos_on_face
+            hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
+            hit.transform.position = new Vector3(hit_position.x + collider_dir.hit_pos.x , hit_position.y + collider_dir.hit_pos.y , hit_position.z);
+            hit.GetComponent<Renderer>().material.color = color;
+            count++;
         }
+
+
+        if (count != 0) count++;
+        if (count == 80) {
+            count = 0;
+            hit.transform.localScale = new Vector3(0, 0, 0);
+        } 
+
     }
 }
