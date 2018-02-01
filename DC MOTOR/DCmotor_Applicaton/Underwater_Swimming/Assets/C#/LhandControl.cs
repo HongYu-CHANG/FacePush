@@ -14,14 +14,16 @@ public class LhandControl : MonoBehaviour {
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+	{
 
         if(LhandMoveObj.transform.position != LlastPos)
         {
             transform.Rotate((Vector3.down) * (LhandMoveObj.transform.position.z - LlastPos.z));
-            Debug.Log("lastPos = " + LlastPos);
-            Debug.Log("nowPos = " + transform.position);
-            LlastPos = LhandMoveObj.transform.position;
+            Debug.Log("LlastPos = " + LlastPos);
+			Debug.Log("LhandPos = " + LhandMoveObj.transform.position);
+			Debug.Log("LnowPos = " + transform.position);
+			LlastPos = LhandMoveObj.transform.position;
         }
         else
         {

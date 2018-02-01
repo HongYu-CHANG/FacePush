@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class RhandControl : MonoBehaviour
 {
-
     public GameObject RhandMoveObj;
     private Vector3 RlastPos;
 
@@ -21,8 +20,9 @@ public class RhandControl : MonoBehaviour
         if (RhandMoveObj.transform.position != RlastPos)
         {
             transform.Rotate((Vector3.down) * (RhandMoveObj.transform.position.z - RlastPos.z));
-            Debug.Log("lastPos = " + RlastPos);
-            Debug.Log("nowPos = " + transform.position);
+            Debug.Log("RlastPos = " + RlastPos);
+			Debug.Log("RhandPos = " + RhandMoveObj.transform.position);
+			Debug.Log("RnowPos = " + transform.position);
             RlastPos = RhandMoveObj.transform.position;
         }
         else
