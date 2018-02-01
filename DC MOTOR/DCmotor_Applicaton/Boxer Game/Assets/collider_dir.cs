@@ -42,8 +42,7 @@ public class collider_dir : MonoBehaviour {
         Rpos[Rcount % 100] = Rtarget.position;
         Lcount ++;
         Rcount ++;
-        Rhit = 0;
-        Lhit = 0;
+        
 
         if (s != anim_change.s) {
             if (anim_change.s == 1 || anim_change.s == 3)
@@ -62,26 +61,28 @@ public class collider_dir : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("RHand")){
-            if(Rcount > 90)
+            if(Rcount > 80)
             {
                 int num = (Rcount - frame) % 100;
                 if (num < 0) num += 100; 
                 Rdir = Rtarget.position - Rpos[num];
                 Debug.Log("R  " + Rdir.ToString("f4") + " " + Rcount);
                 Rhit = 1;
-            }  
+            }
+            else Debug.Log("R  " + Rcount);
             Rcount = 0;
         }
         else if (other.gameObject.CompareTag("LHand"))
         {
-            if (Lcount > 90)
+            if (Lcount > 80)
             {
                 int num = (Lcount - frame) % 100;
                 if (num < 0) num += 100;  
                 Ldir = Ltarget.position - Lpos[num];
                 Debug.Log("L  " + Ldir.ToString("f4") + " " + Lcount);
                 Lhit = 1;
-            }    
+            }
+            else Debug.Log("L  " + Lcount);
             Lcount = 0;
         }
     }
