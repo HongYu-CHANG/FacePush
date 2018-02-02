@@ -94,13 +94,17 @@ public class directionControl : MonoBehaviour {
 				//get the degree
 			}
 
-			else if (LRdistDifference < 0.1f)
+			else if (LRdistDifference < -0.1f)
 			{
 				//turn left
 				transform.Rotate(Vector3.down * LRdistDifference * (-0.2f));
 				Debug.Log("L<R");
 				//get the degree
 			}
+            else
+            {
+                Debug.Log("L~=R");
+            }
 
 		}
 
