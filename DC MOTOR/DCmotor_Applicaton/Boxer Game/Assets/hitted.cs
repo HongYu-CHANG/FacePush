@@ -15,6 +15,13 @@ public class hitted : MonoBehaviour {
     int count = 0;
     Color color = Color.black;
     private Vector3 offset;
+    private Vector3 move;
+
+    //when hitted
+    float time = 0.5f;
+    float l = 0.7f;
+    float r = 0.7f;
+    float k = 0.7f;
 
     // Use this for initialization
     void Start () {
@@ -37,12 +44,9 @@ public class hitted : MonoBehaviour {
             if(anim_change.s != 5) state = anim_change.s;
         }
 
-        //when hitted
-        float time = 0.5f;
-        float l = 0.7f;
-        float r = 0.7f;
+        
 
-        if(collider_dir.Rhit == 1)
+        if (collider_dir.Rhit == 1)
         {
             
             if (state == 1)
@@ -54,6 +58,8 @@ public class hitted : MonoBehaviour {
                 r = 10f;
                 //hit
                 color.a = 0.8f;
+                //
+                k = 1f;
             }
             else if (state == 3)
             {
@@ -64,7 +70,12 @@ public class hitted : MonoBehaviour {
                 r = 5f;
                 //hit
                 color.a = 0.5f;
+                //
+                k = 0.5f;
             }
+
+            move = collider_dir.Rdir;
+            move = move.normalized ;
 
             Vector3 pos = this.transform.position + collider_dir.Rdir * l;
             Sequence mySequence = DOTween.Sequence(); 
@@ -83,7 +94,7 @@ public class hitted : MonoBehaviour {
 
             //hit_pos_on_face
             
-            hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
+            hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z); ;
             hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
@@ -99,6 +110,8 @@ public class hitted : MonoBehaviour {
                 r = 10f;
                 //hit
                 color.a = 0.8f;
+                //
+                k = 1f;
             }
             else if (state == 4)
             {
@@ -109,7 +122,12 @@ public class hitted : MonoBehaviour {
                 r = 5f;
                 //hit
                 color.a = 0.5f;
+                //
+                k = 0.5f;
             }
+
+            move = collider_dir.Ldir;
+            move = move.normalized ;
 
             Vector3 pos = this.transform.position + collider_dir.Ldir * l;
             Sequence mySequence = DOTween.Sequence();
@@ -127,18 +145,24 @@ public class hitted : MonoBehaviour {
             collider_dir.Lhit = 0;
 
             //hit_pos_on_face
-            hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
+            hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
             hit.GetComponent<Renderer>().material.color = color;
             count++;
+            //Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
+
         }
 
 
-        if (count != 0) count++;
+        if (count != 0) {
+            count++;  
+            Debug.DrawRay(hit.transform.position - move*k*2, move*k*2, Color.red);
+        }
         if (count == 80) {
             count = 0;
             hit.transform.localScale = new Vector3(0, 0, 0);
-        } 
+        }
 
+       
     }
 }
