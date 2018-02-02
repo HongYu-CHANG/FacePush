@@ -25,39 +25,7 @@
 
 short usSpeed = 150;  //default motor speed
 unsigned short usMotor_Status = BRAKE;
-
-//====================================================================================
-// Interrupt and Rotary encoders
-// Arduino Leonardo has 4 interrupt Pin, D3, D2, D0, D1
-// D0, D1, D2, and D3 for two rotary encoders
-int encoderLeftPin1 = 3; // interrupt 0
-int encoderLeftPin2 = 2; // interrupt 1
-//int encoderRightPin1 = 0;// interrupt 2
-//int encoderRightPin2 = 1;// interrupt 3
-
-// rotary encoders
-volatile int leftLastEncoded = 0;
-//volatile int rightLastEncoded = 0;
-
-volatile long encoderLeftValue = 0;
-//volatile long encoderRightValue = 0;
-
-//====================================================================================
-// PID motor control
-#include <PID_v1.h>
-double kp = 0.5, ki = 0.1, kd = 0.031;
-// input: current position (value of rotary encoder)
-// output: result (where to go)
-// setPoint: target position (position cmd from Feather)
-double input = 0, output = 0, setPoint = 0;
-
-PID leftPID(&input, &output, &setPoint, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
-//PID rightPID(&input, &output, &setPoint, kp, ki, kd, DIRECT);
-
-String inputString = "";
-bool stringComplete = false;
-
-
+ 
 void setup()                         
 {
   pinMode(MOTOR_A1_PIN, OUTPUT);
@@ -75,33 +43,7 @@ void setup()
   pinMode(EN_PIN_1, OUTPUT);
   pinMode(EN_PIN_2, OUTPUT);
 
- // rotary encoder setup
-  pinMode(encoderLeftPin1, INPUT); 
-  pinMode(encoderLeftPin2, INPUT);
-//  pinMode(encoderRightPin1, INPUT); 
-//  pinMode(encoderRightPin2, INPUT);
-
-  digitalWrite(encoderLeftPin1, HIGH); //turn pullup resistor on
-  digitalWrite(encoderLeftPin2, HIGH); //turn pullup resistor on
-//  digitalWrite(encoderRightPin1, HIGH); //turn pullup resistor on
-//  digitalWrite(encoderRightPin2, HIGH); //turn pullup resistor on
-
-  //call updateEncoder() when any high/low changed seen
-  //on interrupt 0 (pin 2), or interrupt 1 (pin 3)
-  //on interrupt 2 (pin 0), or interrupt 3 (pin 1) 
-  attachInterrupt(digitalPinToInterrupt(encoderLeftPin1), updateLeftEncoder, CHANGE); 
-  attachInterrupt(digitalPinToInterrupt(encoderLeftPin2), updateLeftEncoder, CHANGE);
-//  attachInterrupt(digitalPinToInterrupt(encoderRightPin1), updateRightEncoder, CHANGE); 
-//  attachInterrupt(digitalPinToInterrupt(encoderRightPin2), updateRightEncoder, CHANGE);
-  
-  // PID control setup
-  leftPID.SetMode(AUTOMATIC);
-//  rightPID.SetMode(AUTOMATIC);
-  leftPID.SetOutputLimits(-255, 255);
-//  rightPID.SetOutputLimits(-255, 255);
-
   Serial.begin(9600);              // Initiates the serial to do the monitoring 
-  while(!Serial);
   Serial.println("Begin motor control");
   Serial.println(); //Print function list for user selection
   Serial.println("Enter number for control option:");
@@ -115,73 +57,44 @@ void setup()
 
 }
 
-
-
-
-
-
 void loop() 
 {
-//  char user_input;
-  input = encoderLeftValue;
-  leftPID.Compute();
-  if (output > 0) {
-    motorGo(MOTOR_1, CW, output);
-  }
-  else {
-    motorGo(MOTOR_1, CCW, abs(output));
-  }
-  Serial.print(input); Serial.print(" ");
-  Serial.print(setPoint); Serial.print(" ");
-  Serial.println(output);
+  char user_input;   
 
-  if (encoderLeftValue == setPoint) {
-
-    motorGo(MOTOR_1, BRAKE, 0);
-  }
+  
   
   while(Serial.available())
   {
+    user_input = Serial.read(); //Read user input and trigger appropriate function
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
-    char c = Serial.read();
-    inputString += c;
-    if (c == '\n') {
-      stringComplete = true;   
+     
+    if (user_input =='1')
+    {
+       Stop();
     }
-  }
-  if (stringComplete) {
-    setPoint = inputString.toInt();
-    stringComplete = false;
-    inputString = "";
-  }
-//    user_input = Serial.read(); //Read user input and trigger appropriate function
-//     
-//    if (user_input =='1')
-//    {
-//       Stop();
-//    }
-//    else if(user_input =='2')
-//    {
-//      Forward();
-//    }
-//    else if(user_input =='3')
-//    {
-//      Reverse();
-//    }
-//    else if(user_input =='+')
-//    {
-//      IncreaseSpeed();
-//    }
-//    else if(user_input =='-')
-//    {
-//      DecreaseSpeed();
-//    }
-//    else
-//    {
-//      Serial.println("Invalid option entered.");
-//    }
+    else if(user_input =='2')
+    {
+      Forward();
+    }
+    else if(user_input =='3')
+    {
+      Reverse();
+    }
+    else if(user_input =='+')
+    {
+      IncreaseSpeed();
+    }
+    else if(user_input =='-')
+    {
+      DecreaseSpeed();
+    }
+    else
+    {
+      Serial.println("Invalid option entered.");
+    }
       
+  }
 }
 
 void Stop()
@@ -281,31 +194,5 @@ void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)         //Function that
     analogWrite(PWM_MOTOR_2, pwm);
   }
 }
-
-void updateLeftEncoder() {
-  int MSB = digitalRead(encoderLeftPin1); //MSB = most significant bit
-  int LSB = digitalRead(encoderLeftPin2); //LSB = least significant bit
-
-  int encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
-  int sum  = (leftLastEncoded << 2) | encoded; //adding it to the previous encoded value
-
-  if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) encoderLeftValue ++;
-  if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) encoderLeftValue --;
-
-  leftLastEncoded = encoded; //store this value for next time
-}
-
-//void updateRightEncoder() {
-//  int MSB = digitalRead(encoderRightPin1); //MSB = most significant bit
-//  int LSB = digitalRead(encoderRightPin2); //LSB = least significant bit
-//
-//  int encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
-//  int sum  = (rightLastEncoded << 2) | encoded; //adding it to the previous encoded value
-//
-//  if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) encoderRightValue ++;
-//  if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) encoderRightValue --;
-//
-//  rightLastEncoded = encoded; //store this value for next time
-//}
 
 
