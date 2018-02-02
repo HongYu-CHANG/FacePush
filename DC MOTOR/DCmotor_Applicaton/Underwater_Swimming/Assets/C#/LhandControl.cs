@@ -17,9 +17,10 @@ public class LhandControl : MonoBehaviour {
 	void Update ()
 	{
 
-        if(LhandMoveObj.transform.position != LlastPos)
+        //if(LhandMoveObj.transform.position != LlastPos)
+		if(Vector3.Distance(LhandMoveObj.transform.position, LlastPos) > 0.5)
         {
-            transform.Rotate((Vector3.down) * (LhandMoveObj.transform.position.z - LlastPos.z));
+            transform.Rotate((Vector3.up) * (LhandMoveObj.transform.position.z - LlastPos.z) * 50);
             Debug.Log("LlastPos = " + LlastPos);
 			Debug.Log("LhandPos = " + LhandMoveObj.transform.position);
 			Debug.Log("LnowPos = " + transform.position);
