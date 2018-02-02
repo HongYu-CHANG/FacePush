@@ -20,6 +20,8 @@ public class collider_dir : MonoBehaviour {
     int s = 0;
     int frame = 80;
 
+    public static Vector3 hit_pos;
+
     // Use this for initialization
     void Start () {
         Ltarget = GameObject.FindGameObjectWithTag("LHand").transform;
@@ -61,28 +63,34 @@ public class collider_dir : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("RHand")){
-            if(Rcount > 80)
+            if(Rcount > 60)
             {
                 int num = (Rcount - frame) % 100;
                 if (num < 0) num += 100; 
                 Rdir = Rtarget.position - Rpos[num];
                 Debug.Log("R  " + Rdir.ToString("f4") + " " + Rcount);
                 Rhit = 1;
+
+                //distant between boxer's hand and face
+                hit_pos = Rtarget.position - this.transform.position;
             }
-            else Debug.Log("R  " + Rcount);
+            //else Debug.Log("R  " + Rcount);
             Rcount = 0;
         }
         else if (other.gameObject.CompareTag("LHand"))
         {
-            if (Lcount > 80)
+            if (Lcount > 60)
             {
                 int num = (Lcount - frame) % 100;
                 if (num < 0) num += 100;  
                 Ldir = Ltarget.position - Lpos[num];
                 Debug.Log("L  " + Ldir.ToString("f4") + " " + Lcount);
                 Lhit = 1;
+
+                //distant between boxer's hand and face
+                hit_pos = Ltarget.position - this.transform.position;
             }
-            else Debug.Log("L  " + Lcount);
+            //else Debug.Log("L  " + Lcount);
             Lcount = 0;
         }
     }

@@ -53,7 +53,7 @@ volatile long encoderRightValue = 0;
 //====================================================================================
 // PID motor control
 #include <PID_v1.h>
-double kp = 5, ki = 1, kd = 0.01;
+double kp = 0.5, ki = 0.1, kd = 0.031;
 // input: current position (value of rotary encoder)
 // output: result (where to go)
 // setPoint: target position (position cmd from Feather)
@@ -72,6 +72,7 @@ String cmdAngle = "";
 String cmdSpeed = "";
 long goToAngle = 0;
 short goWithSpeed = 0;
+short whichMotor = 0;
 
 //====================================================================================
 //Command Table for Pins
@@ -130,19 +131,56 @@ void setup() {
 
   // PID control setup
   leftPID.SetMode(AUTOMATIC);
-  leftPID.SetOutputLimits(-255, 255);
   rightPID.SetMode(AUTOMATIC);
-  rightPID.SetOutputLimits(-255, 255);
   
 }
 
 void loop() {
 
-  // for debug
-  //Serial.print(encoderLeftValue); Serial.print(" ");
-  //Serial.println(encoderRightValue);
+// make this into leftInput, rightInput
+//    if (!whichMotor) {
+      input = encoderLeftValue;
+//    }
+//    else {
+//      input = encoderRightValue;
+//    }
+
+
+      leftPID.Compute();
+//      rightPID.Compute();
+      // need to test here!!!!!!!!! it seems goWithSpeed didn't use
+      
+        if (output > 0) {
+          motorGo(MOTOR_L, CW, output);
+        }
+        else {
+          motorGo(MOTOR_L, CCW, abs(output));
+        }
+
+        if (encoderLeftValue == setPoint) {
+          motorGo(MOTOR_L, BRAKE, 0);
+        }
+        // need to test here!!!!!!!!! it seems goWithSpeed didn't use
+//        if (output > 0) {
+//          motorGo(MOTOR_R, CCW, output);
+//        }
+//        else {
+//          motorGo(MOTOR_R, CW, abs(output));
+//        }
+
+
+// debug
+//  Serial.print(encoderLeftValue); Serial.print(" ");
+//  Serial.print(encoderRightValue); Serial.print(" ");
+//  Serial.print(inputString); Serial.print(" ");
+//  Serial.print(cmdAngle); Serial.print(" ");
+//  Serial.print(goToAngle); Serial.print(" ");
+  Serial.print(input); Serial.print(" ");
+  Serial.print(setPoint); Serial.print(" ");
+  Serial.println(output);
 
 }
+
 
 void receiveEvent(int count) {
   Serial.println("Receive Data:");
@@ -160,64 +198,60 @@ void receiveEvent(int count) {
   if (stringComplete) {
     // which motor
     if (inputString.startsWith("L")) {
-      inputString = inputString.substring(2);
-      // split cmd into angle and speed
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {	
-          cmdAngle = inputString.substring(0, i);
-          cmdSpeed = inputString.substring(i + 1);
-  	      break;
-        }
-      }
-  	  // send target position to setPoint
-  	  goToAngle = cmdAngle.toInt();
-  	  setPoint = (double) goToAngle;
-      // send current position of left motor to input
-      input = (double) encoderLeftValue;
-      leftPID.Compute();
-      goWithSpeed = (short)cmdSpeed.toInt();
-
-      // need to test here!!!!!!!!! it seems goWithSpeed didn't use
-      if (output > 0) {
-	      motorGo(MOTOR_L, CW, output);
-	    }
-	    else {
-        motorGo(MOTOR_L, CCW, abs(output));
-	    }
-	  }
-	  else {
-      inputString = inputString.substring(2);
-      // split cmd into angle and speed
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {	
-          cmdAngle = inputString.substring(0, i);
-          cmdSpeed = inputString.substring(i + 1);
-    	    break;
-        }
-      }
-  	  // send target position to setPoint
-  	  goToAngle = cmdAngle.toInt();
-  	  setPoint = (double) goToAngle;
-  	  // send current position of right motor to input
-      input = (double) encoderRightValue;
-      rightPID.Compute();
-      goWithSpeed = (short)cmdSpeed.toInt();
-
-      // need to test here!!!!!!!!! it seems goWithSpeed didn't use
-      if (output > 0) {
-  	    motorGo(MOTOR_R, CCW, output);
-      }
-  	  else {
-  	    motorGo(MOTOR_R, CW, abs(output));
-  	  }
-  
+      whichMotor = MOTOR_L;
     }
-  inputString = "";
-  stringComplete = false;
+    else {
+      whichMotor = MOTOR_R;
+    }
+    inputString = inputString.substring(2);
+    // split cmd into angle and speed
+    for (int i = 0; i < inputString.length(); i++)
+    {
+      if (inputString.substring(i, i + 1) == " ")
+      {	
+        cmdAngle = inputString.substring(0, i);
+        cmdSpeed = inputString.substring(i + 1);
+  	    break;
+      }
+    }
+
+  	// send target position to setPoint
+  	goToAngle = cmdAngle.toInt();
+  	setPoint = goToAngle;
+    // send current position of left motor to input
+//    if (!whichMotor) {
+//      input = encoderLeftValue;
+//    }
+//    else {
+//      input = encoderRightValue;
+//    }
+    goWithSpeed = cmdSpeed.toInt();
+    
+    leftPID.SetOutputLimits(-goWithSpeed, goWithSpeed);
+//    rightPID.SetOutputLimits(-goWithSpeed, goWithSpeed);
+    inputString = "";
+    stringComplete = false;
+
+	
+//	  else {
+//      inputString = inputString.substring(2);
+//      // split cmd into angle and speed
+//      for (int i = 0; i < inputString.length(); i++)
+//      {
+//        if (inputString.substring(i, i + 1) == " ")
+//        {	
+//          cmdAngle = inputString.substring(0, i);
+//          cmdSpeed = inputString.substring(i + 1);
+//    	    break;
+//        }
+//      }
+//  	  // send target position to setPoint
+//  	  goToAngle = cmdAngle.toInt();
+//  	  setPoint = (double) goToAngle;
+//  	  // send current position of right motor to input
+//      input = (double) encoderRightValue;
+//      goWithSpeed = (short)cmdSpeed.toInt();
+
 
   }
   Serial.println("\n");
@@ -274,6 +308,7 @@ void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)
       digitalWrite(MOTOR_AL_PIN, LOW);
       digitalWrite(MOTOR_BL_PIN, LOW);            
     }
+
     
     analogWrite(PWM_MOTOR_L, pwm); 
   }
