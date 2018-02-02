@@ -14,6 +14,7 @@ public class hitted : MonoBehaviour {
     private Vector3 hit_position;
     int count = 0;
     Color color = Color.black;
+    private Vector3 offset;
 
     // Use this for initialization
     void Start () {
@@ -23,10 +24,12 @@ public class hitted : MonoBehaviour {
         hit_position = hit.transform.position;
         hit.transform.localScale = new Vector3(0, 0, 0);
         color = hit.GetComponent<Renderer>().material.color;
+        offset = face.position - hit.transform.position;
     }
 	
 	// Update is called once per frame
 	void Update () {
+        //offset = face.position - hit.transform.position;
         //get animater in which state
         if (s != anim_change.s)
         {
@@ -79,8 +82,9 @@ public class hitted : MonoBehaviour {
             collider_dir.Rhit = 0;
 
             //hit_pos_on_face
+            
             hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
-            hit.transform.position = new Vector3(hit_position.x + collider_dir.hit_pos.x , hit_position.y + collider_dir.hit_pos.y, hit_position.z);
+            hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z); ;
             hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
         }
@@ -124,7 +128,7 @@ public class hitted : MonoBehaviour {
 
             //hit_pos_on_face
             hit.transform.localScale = new Vector3(0.015f, 0.02f, 0.02f);
-            hit.transform.position = new Vector3(hit_position.x + collider_dir.hit_pos.x , hit_position.y + collider_dir.hit_pos.y , hit_position.z);
+            hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
             hit.GetComponent<Renderer>().material.color = color;
             count++;
         }
