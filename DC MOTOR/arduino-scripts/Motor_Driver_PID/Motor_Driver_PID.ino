@@ -1,3 +1,17 @@
+/* This sketch supports NILab Project FacePush. It has the following features:
+ * - Leonardo receives message from Adafruit Feather M0 through I2C communication.
+ * - uses Arduino Leonardo and Monster Motor Shield VNH2SP30 to control 2 DC motors.
+ * - control DC motors by rotary encoders and PID
+ * 
+ * 03.02.18 wjtseng93
+ */
+//====================================================================================
+// I2C
+#include <Wire.h>
+#define SLAVE_ADDRESS 0x12
+#define SERIAL_BAUD 57600 
+//====================================================================================
+// Monster Motor Driver VNH2SP30
 #define BRAKE 0
 #define CW    1
 #define CCW   2
@@ -58,13 +72,18 @@ PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
 String inputString = "";
 bool stringComplete = false;
-//unsigned long previousMillis = 0;
-
-
 
 void setup()                         
 {
+  // Debug
+  pinMode(LED_BUILTIN, OUTPUT);
   
+  // I2C setup
+  Wire.begin(SLAVE_ADDRESS);    // join I2C bus as a slave with address 1
+  Wire.onReceive(receiveEvent); // register event
+  Serial.begin(SERIAL_BAUD);
+
+  // DC motor setup
   pinMode(MOTOR_A1_PIN, OUTPUT);
   pinMode(MOTOR_B1_PIN, OUTPUT);
 
@@ -99,15 +118,13 @@ void setup()
   attachInterrupt(digitalPinToInterrupt(encoderRightPin1), updateRightEncoder, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(encoderRightPin2), updateRightEncoder, CHANGE);
 
-
-  
   // PID control setup
   leftPID.SetMode(AUTOMATIC);
   rightPID.SetMode(AUTOMATIC);
   leftPID.SetOutputLimits(-speedLeft, speedLeft);
   rightPID.SetOutputLimits(-speedRight, speedRight);
 
-  Serial.begin(9600);              // Initiates the serial to do the monitoring 
+//  Serial.begin(9600);              // Initiates the serial to do the monitoring 
 }
 
 void loop() 
@@ -115,14 +132,13 @@ void loop()
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
 
-  Serial.print(inputLeft); Serial.print(" ");
-  Serial.print(setPointLeft); Serial.print(" ");
-  Serial.print(outputLeft); Serial.print(" ");
-
-  Serial.print(inputRight); Serial.print(" ");
-  Serial.print(setPointRight); Serial.print(" ");
-  Serial.println(outputRight); Serial.print(" ");
-
+//  Serial.print(inputLeft); Serial.print(" ");
+//  Serial.print(setPointLeft); Serial.print(" ");
+//  Serial.print(outputLeft); Serial.print(" ");
+//
+//  Serial.print(inputRight); Serial.print(" ");
+//  Serial.print(setPointRight); Serial.print(" ");
+//  Serial.println(outputRight); Serial.print(" ");
 
   // control encoderLeftValue
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
@@ -142,19 +158,89 @@ void loop()
   }
   if (stringComplete) {
     if (inputString.startsWith("L")) {
-      inputString = inputString.substring(1);
-      setPointLeft = (double) inputString.toInt();
-      stringComplete = false;
-      inputString = "";
+      inputString = inputString.substring(2);
+      // split cmd into angle and speed
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {  
+          setPointLeft = (double) inputString.substring(0, i).toInt();
+          speedLeft = (short) inputString.substring(i + 1).toInt();
+          break;
+        }
+      }
+      leftPID.SetOutputLimits(-speedLeft, speedLeft);
+//      setPointLeft = (double) inputString.toInt();
+//      stringComplete = false;
+//      inputString = "";
     }
     else if (inputString.startsWith("R")) {
-      inputString = inputString.substring(1);
-      setPointRight = (double) inputString.toInt();
-      stringComplete = false;
-      inputString = "";      
+      inputString = inputString.substring(2);
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {  
+          setPointRight = (double) inputString.substring(0, i).toInt();
+          speedRight = (short) inputString.substring(i + 1).toInt();
+          break;
+        }
+      }
+      rightPID.SetOutputLimits(-speedLeft, speedLeft);
+//      setPointRight = (double) inputString.toInt();
+//      stringComplete = false;
+//      inputString = "";      
+    }
+    stringComplete = false;
+    inputString = "";
+  } 
+}
+
+// add I2C receive data code here 03.02
+void receiveEvent(int count) {
+  while (Wire.available()) {
+    digitalWrite(LED_BUILTIN, HIGH);
+    digitalWrite(EN_PIN_1, HIGH);
+    digitalWrite(EN_PIN_2, HIGH); 
+    char c = (char) Wire.read();
+    inputString += c;
+    if (c == '\n') {
+      stringComplete = true;   
     }
   }
-}
+  if (stringComplete) {
+    if (inputString.startsWith("L")) {
+      inputString = inputString.substring(2);
+      // split cmd into angle and speed
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {  
+          setPointLeft = (double) inputString.substring(0, i).toInt();
+          speedLeft = (short) inputString.substring(i + 1).toInt();
+          break;
+        }
+      }
+      leftPID.SetOutputLimits(-speedLeft, speedLeft);
+    }
+    else if (inputString.startsWith("R")) {
+      inputString = inputString.substring(2);
+      for (int i = 0; i < inputString.length(); i++)
+      {
+        if (inputString.substring(i, i + 1) == " ")
+        {  
+          setPointRight = (double) inputString.substring(0, i).toInt();
+          speedRight = (short) inputString.substring(i + 1).toInt();
+          break;
+        }
+      }
+      rightPID.SetOutputLimits(-speedLeft, speedLeft);
+      
+    }
+    stringComplete = false;
+    inputString = "";
+    digitalWrite(LED_BUILTIN, LOW);
+  }
+} 
 
 void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)         //Function that controls the variables: motor(0 ou 1), direction (cw ou ccw) e pwm (entra 0 e 255);
 {
