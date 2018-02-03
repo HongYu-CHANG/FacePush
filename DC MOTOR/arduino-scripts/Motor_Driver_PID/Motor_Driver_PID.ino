@@ -47,7 +47,7 @@ volatile long encoderRightValue = 0;
 //====================================================================================
 // PID motor control
 #include <PID_v1.h>
-double kp = 0.5, ki = 0.05, kd = 0.01;
+double kp = 0.4, ki = 0.06, kd = 0.01;
 // input: current position (value of rotary encoder)
 // output: result (where to go)
 // setPoint: target position (position cmd from Feather)
@@ -115,6 +115,15 @@ void loop()
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
 
+  Serial.print(inputLeft); Serial.print(" ");
+  Serial.print(setPointLeft); Serial.print(" ");
+  Serial.print(outputLeft); Serial.print(" ");
+
+  Serial.print(inputRight); Serial.print(" ");
+  Serial.print(setPointRight); Serial.print(" ");
+  Serial.println(outputRight); Serial.print(" ");
+
+
   // control encoderLeftValue
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
@@ -122,7 +131,7 @@ void loop()
   // receive data from serial port
   while(Serial.available())
   {
-    Serial.println("get data");
+//    Serial.println("get data");
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
     char c = Serial.read();
@@ -174,14 +183,14 @@ void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)         //Function that
     if(direct == CW)
     {
       // CW input for right motor is actually CCW
-      digitalWrite(MOTOR_A2_PIN, LOW);
-      digitalWrite(MOTOR_B2_PIN, HIGH);
+      digitalWrite(MOTOR_A2_PIN, HIGH);
+      digitalWrite(MOTOR_B2_PIN, LOW);
     }
     else if(direct == CCW)
     {
       // CCW input for right motor is actually CW
-      digitalWrite(MOTOR_A2_PIN, HIGH);
-      digitalWrite(MOTOR_B2_PIN, LOW);      
+      digitalWrite(MOTOR_A2_PIN, LOW);
+      digitalWrite(MOTOR_B2_PIN, HIGH);      
     }
     else
     {
@@ -220,28 +229,28 @@ void updateRightEncoder() {
 }
 
 void motorPIDControl(volatile long *encoderValue, double *setPoint, double *output, PID *motorPID, uint8_t EN_PIN, uint8_t MOTOR) {
-  if (*encoderValue > 500) {
-    *setPoint = 475;
-    motorPID->Compute();
-    motorGo(MOTOR, CCW, abs(*output));
-    if (*encoderValue == 490) {
-      motorGo(MOTOR, BRAKE, 0);
-      *output = 0;
-      digitalWrite(EN_PIN, LOW); 
-    }
-  } 
-  else if (*encoderValue < 0) {
-    *setPoint = 10;
-    motorPID->Compute();
+//  if (*encoderValue > 500) {
+//    *setPoint = 500;
+//    motorPID->Compute();
+//    motorGo(MOTOR, CCW, abs(*output));
+//    if (*encoderValue == 500) {
+//      motorGo(MOTOR, BRAKE, 0);
+//      *output = 0;
+//      digitalWrite(EN_PIN, LOW); 
+//    }
+//  } 
+//  else if (*encoderValue < 0) {
+//    setPoint = 0;
+//    motorPID->Compute();
 
-    motorGo(MOTOR, CW, *output);
-    if (*encoderValue == 10) {
-      motorGo(MOTOR, BRAKE, 0);
-      *output = 0;
-      digitalWrite(EN_PIN, LOW);
-    }
-  }
-  else {
+//    motorGo(MOTOR, CW, *output);
+//    if (*encoderValue == 0) {
+//      motorGo(MOTOR, BRAKE, 0);
+//      *output = 0;
+//      digitalWrite(EN_PIN, LOW);
+//    }
+//  }
+//  else {
     motorPID->Compute();
 
     if (*output > 0) {
@@ -254,7 +263,7 @@ void motorPIDControl(volatile long *encoderValue, double *setPoint, double *outp
       motorGo(MOTOR, BRAKE, 0);
       *output = 0;
     }
-  }
+//  }
 }
 
 // old version code
