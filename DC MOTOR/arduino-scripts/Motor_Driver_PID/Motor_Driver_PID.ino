@@ -124,7 +124,7 @@ void setup()
   leftPID.SetOutputLimits(-speedLeft, speedLeft);
   rightPID.SetOutputLimits(-speedRight, speedRight);
 
-//  Serial.begin(9600);              // Initiates the serial to do the monitoring 
+  Serial.begin(9600);              // Initiates the serial to do the monitoring 
 }
 
 void loop() 
@@ -194,6 +194,7 @@ void loop()
     inputString = "";
   } 
 }
+
 
 // add I2C receive data code here 03.02
 void receiveEvent(int count) {
