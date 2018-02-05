@@ -11,6 +11,10 @@ TagManager:
   - RHand
   - Hit
   - Face
+  - view_c
+  - view_l
+  - view_r
+  - hitted
   layers:
   - Default
   - TransparentFX

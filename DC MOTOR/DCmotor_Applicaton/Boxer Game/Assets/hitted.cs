@@ -16,6 +16,9 @@ public class hitted : MonoBehaviour {
     Color color = Color.black;
     private Vector3 offset;
     private Vector3 move;
+    private Vector3 hit_move;
+
+    private Transform hit_face;
 
     //when hitted
     float time = 0.5f;
@@ -32,6 +35,8 @@ public class hitted : MonoBehaviour {
         hit.transform.localScale = new Vector3(0, 0, 0);
         color = hit.GetComponent<Renderer>().material.color;
         offset = face.position - hit.transform.position;
+
+        hit_face = GameObject.FindGameObjectWithTag("hitted").transform;
     }
 	
 	// Update is called once per frame
@@ -41,7 +46,7 @@ public class hitted : MonoBehaviour {
         if (s != anim_change.s)
         {
             s = anim_change.s;
-            if(anim_change.s != 5) state = anim_change.s;
+            if(anim_change.s != 0) state = anim_change.s;
         }
 
         
@@ -60,6 +65,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.8f;
                 //
                 k = 1f;
+                Debug.Log("R 重 ");
             }
             else if (state == 3)
             {
@@ -72,6 +78,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.5f;
                 //
                 k = 0.5f;
+                Debug.Log("R 輕 ");
             }
 
             move = collider_dir.Rdir;
@@ -93,9 +100,30 @@ public class hitted : MonoBehaviour {
             collider_dir.Rhit = 0;
 
             //hit_pos_on_face
-            
+            if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
+            else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
+            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
             hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
-            hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z); ;
+            hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
+
+            hit_face.position = collider_dir.pos;
+            if (collider_dir.hit_pos.x > 0.16)
+            {
+                hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;
+            }
+            else if (collider_dir.hit_pos.x < -0.16)
+            {
+                hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;
+            }
+            else
+            {
+                hit.transform.position = face.position;
+                hit_move = hit.transform.position - hit_position;
+                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);
+            }
             hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
         }
@@ -112,6 +140,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.8f;
                 //
                 k = 1f;
+                Debug.Log("L 重 ");
             }
             else if (state == 4)
             {
@@ -124,6 +153,20 @@ public class hitted : MonoBehaviour {
                 color.a = 0.5f;
                 //
                 k = 0.5f;
+                Debug.Log("L 輕 ");
+            }
+            else if (state == 5 )
+            {
+                //moving position
+                time = 0.2f;
+                l = 1.2f;
+                //moving rotation
+                r = 10f;
+                //hit
+                color.a = 0.8f;
+                //
+                k = 1f;
+                Debug.Log("L 重 ");
             }
 
             move = collider_dir.Ldir;
@@ -145,8 +188,30 @@ public class hitted : MonoBehaviour {
             collider_dir.Lhit = 0;
 
             //hit_pos_on_face
+            if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
+            else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
+
+            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
             hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
+
+            hit_face.position = collider_dir.pos;
+            if (collider_dir.hit_pos.x > 0.16) {
+                hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;
+            }
+            else if (collider_dir.hit_pos.x < -0.16)
+            {
+                hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;   
+            }
+            else
+            {
+                hit.transform.position = face.position;
+                hit_move = hit.transform.position - hit_position;
+                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);
+            } 
             hit.GetComponent<Renderer>().material.color = color;
             count++;
             //Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
@@ -155,8 +220,9 @@ public class hitted : MonoBehaviour {
 
 
         if (count != 0) {
-            count++;  
-            Debug.DrawRay(hit.transform.position - move*k*2, move*k*2, Color.red);
+            count++;
+            offset = hit.transform.position - hit_move - hit_position;
+            Debug.DrawRay(hit_position + offset - move*k*2, move*k*2, Color.red);
         }
         if (count == 80) {
             count = 0;
