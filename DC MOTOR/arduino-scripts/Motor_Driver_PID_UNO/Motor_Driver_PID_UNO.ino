@@ -136,74 +136,74 @@ void loop()
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
 
-  Serial.print(inputLeft); Serial.print(" ");
-  Serial.print(setPointLeft); Serial.print(" ");
-  Serial.print(outputLeft); Serial.print(" ");
-
-  Serial.print(inputRight); Serial.print(" ");
-  Serial.print(setPointRight); Serial.print(" ");
-  Serial.println(outputRight); Serial.print(" ");
+//  Serial.print(inputLeft); Serial.print(" ");
+//  Serial.print(setPointLeft); Serial.print(" ");
+//  Serial.print(outputLeft); Serial.print(" ");
+//
+//  Serial.print(inputRight); Serial.print(" ");
+//  Serial.print(setPointRight); Serial.print(" ");
+//  Serial.println(outputRight); Serial.print(" ");
 
   // control encoderLeftValue
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
 
-  // receive data from serial port
-  while(Serial.available())
-  {
+//  // receive data from serial port
+//  while(Serial.available())
+//  {
 //    Serial.println("get data");
-    digitalWrite(EN_PIN_1, HIGH);
-    digitalWrite(EN_PIN_2, HIGH); 
-    char c = Serial.read();
-    inputString += c;
-    if (c == '\n') {
-      stringComplete = true;   
-    }
-  }
-  if (stringComplete) {
-    if (inputString.startsWith("L")) {
-      inputString = inputString.substring(2);
-      // split cmd into angle and speed
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointLeft = (double) inputString.substring(0, i).toInt();
-          speedLeft = (short) inputString.substring(i + 1).toInt();
-          break;
-        }
-      }
-      leftPID.SetOutputLimits(-speedLeft, speedLeft);
+//    digitalWrite(EN_PIN_1, HIGH);
+//    digitalWrite(EN_PIN_2, HIGH); 
+//    char c = Serial.read();
+//    inputString += c;
+//    if (c == '\n') {
+//      stringComplete = true;   
+//    }
+//  }
+//  if (stringComplete) {
+//    if (inputString.startsWith("L")) {
+//      inputString = inputString.substring(2);
+//      // split cmd into angle and speed
+//      for (int i = 0; i < inputString.length(); i++)
+//      {
+//        if (inputString.substring(i, i + 1) == " ")
+//        {  
+//          setPointLeft = (double) inputString.substring(0, i).toInt();
+//          speedLeft = (short) inputString.substring(i + 1).toInt();
+//          break;
+//        }
+//      }
+//      leftPID.SetOutputLimits(-speedLeft, speedLeft);
 //      setPointLeft = (double) inputString.toInt();
 //      stringComplete = false;
 //      inputString = "";
-    }
-    else if (inputString.startsWith("R")) {
-      inputString = inputString.substring(2);
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointRight = (double) inputString.substring(0, i).toInt();
-          speedRight = (short) inputString.substring(i + 1).toInt();
-          break;
-        }
-      }
-      rightPID.SetOutputLimits(-speedLeft, speedLeft);
+//    }
+//    else if (inputString.startsWith("R")) {
+//      inputString = inputString.substring(2);
+//      for (int i = 0; i < inputString.length(); i++)
+//      {
+//        if (inputString.substring(i, i + 1) == " ")
+//        {  
+//          setPointRight = (double) inputString.substring(0, i).toInt();
+//          speedRight = (short) inputString.substring(i + 1).toInt();
+//          break;
+//        }
+//      }
+//      rightPID.SetOutputLimits(-speedLeft, speedLeft);
 //      setPointRight = (double) inputString.toInt();
 //      stringComplete = false;
 //      inputString = "";      
-    }
-    stringComplete = false;
-    inputString = "";
-  } 
+//    }
+//    stringComplete = false;
+//    inputString = "";
+//  } 
 }
 
 
 // add I2C receive data code here 03.02
 void receiveEvent(int count) {
   while (Wire.available()) {
-    Serial.println("in wire.available");
+//    Serial.println("in wire.available");
 //    digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
@@ -214,7 +214,7 @@ void receiveEvent(int count) {
     }
   }
   if (stringComplete) {
-    Serial.println("in stringComplete");
+//    Serial.println("in stringComplete");
     if (inputString.startsWith("L")) {
       inputString = inputString.substring(2);
       // split cmd into angle and speed
@@ -222,16 +222,14 @@ void receiveEvent(int count) {
       {
         if (inputString.substring(i, i + 1) == " ")
         {  
-          Serial.println("before assign value");
-          Serial.print(setPointLeft); Serial.print(" ");
-          Serial.println(speedLeft);
+//          Serial.println("before assign value");
+//          Serial.print(setPointLeft); Serial.print(" ");
+//          Serial.println(speedLeft);
           setPointLeft = (double) inputString.substring(0, i).toInt();
           speedLeft = (short) inputString.substring(i + 1).toInt();
-          Serial.println("after assign value");
-          Serial.print(setPointLeft); Serial.print(" ");
-          Serial.println(speedLeft);
-
-          
+//          Serial.println("after assign value");
+//          Serial.print(setPointLeft); Serial.print(" ");
+//          Serial.println(speedLeft);
           break;
         }
       }
