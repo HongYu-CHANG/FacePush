@@ -1,9 +1,11 @@
 /* This sketch supports NILab Project FacePush. It has the following features:
- * - Leonardo receives message from Adafruit Feather M0 through I2C communication.
- * - uses Arduino Leonardo and Monster Motor Shield VNH2SP30 to control 2 DC motors.
+ * - UNO receives message from Adafruit Feather M0 through I2C communication.
+ * - uses Arduino UNO and Monster Motor Shield VNH2SP30 to control 2 DC motors.
  * - control DC motors by rotary encoders and PID
+ * - In Leonardo interrupt pins and I2C are the same position (D2, D3),
+ *   we switch back to UNO plus PinChangeInterrupt library avoid this.
  * 
- * 03.02.18 wjtseng93
+ * 05.02.18 wjtseng93
  */
 //====================================================================================
 // I2C
@@ -43,13 +45,15 @@ short speedRight = 255;
 unsigned short usMotor_Status = BRAKE;
 
 //====================================================================================
-// Interrupt and Rotary encoders
-// Arduino Leonardo has 4 interrupt Pin, D3, D2, D0, D1
-// D0, D1, D2, and D3 for two rotary encoders
+// Interrupt and Rotary encoder
+// Arduino UNO has 2 interrupt Pins, D2, D3
+// use PinChangeInt to add another two
+#include <PinChangeInt.h>
 int encoderLeftPin1 = 3; // interrupt 0
 int encoderLeftPin2 = 2; // interrupt 1
-int encoderRightPin1 = 0;// interrupt 2
-int encoderRightPin2 = 1;// interrupt 3
+int encoderRightPin1 = 10; // use PinChangeInt make it into interrupt pin
+int encoderRightPin2 = 11;
+
 
 // rotary encoders
 volatile long leftLastEncoded = 0;
@@ -76,7 +80,7 @@ bool stringComplete = false;
 void setup()                         
 {
   // Debug
-  pinMode(LED_BUILTIN, OUTPUT);
+//  pinMode(LED_BUILTIN, OUTPUT);
   
   // I2C setup
   Wire.begin(SLAVE_ADDRESS);    // join I2C bus as a slave with address 1
@@ -115,8 +119,8 @@ void setup()
   //on interrupt 2 (pin 0), or interrupt 3 (pin 1) 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin1), updateLeftEncoder, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin2), updateLeftEncoder, CHANGE);
-  attachInterrupt(digitalPinToInterrupt(encoderRightPin1), updateRightEncoder, CHANGE); 
-  attachInterrupt(digitalPinToInterrupt(encoderRightPin2), updateRightEncoder, CHANGE);
+  attachPinChangeInterrupt(encoderRightPin1, updateRightEncoder, CHANGE); 
+  attachPinChangeInterrupt(encoderRightPin2, updateRightEncoder, CHANGE);
 
   // PID control setup
   leftPID.SetMode(AUTOMATIC);
@@ -132,13 +136,13 @@ void loop()
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
 
-//  Serial.print(inputLeft); Serial.print(" ");
-//  Serial.print(setPointLeft); Serial.print(" ");
-//  Serial.print(outputLeft); Serial.print(" ");
-//
-//  Serial.print(inputRight); Serial.print(" ");
-//  Serial.print(setPointRight); Serial.print(" ");
-//  Serial.println(outputRight); Serial.print(" ");
+  Serial.print(inputLeft); Serial.print(" ");
+  Serial.print(setPointLeft); Serial.print(" ");
+  Serial.print(outputLeft); Serial.print(" ");
+
+  Serial.print(inputRight); Serial.print(" ");
+  Serial.print(setPointRight); Serial.print(" ");
+  Serial.println(outputRight); Serial.print(" ");
 
   // control encoderLeftValue
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
@@ -200,7 +204,7 @@ void loop()
 void receiveEvent(int count) {
   while (Wire.available()) {
     Serial.println("in wire.available");
-    digitalWrite(LED_BUILTIN, HIGH);
+//    digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
     char c = (char) Wire.read();
@@ -249,7 +253,7 @@ void receiveEvent(int count) {
     }
     stringComplete = false;
     inputString = "";
-    digitalWrite(LED_BUILTIN, LOW);
+//    digitalWrite(LED_BUILTIN, LOW);
   }
 } 
 
@@ -326,28 +330,6 @@ void updateRightEncoder() {
 }
 
 void motorPIDControl(volatile long *encoderValue, double *setPoint, double *output, PID *motorPID, uint8_t EN_PIN, uint8_t MOTOR) {
-//  if (*encoderValue > 500) {
-//    *setPoint = 500;
-//    motorPID->Compute();
-//    motorGo(MOTOR, CCW, abs(*output));
-//    if (*encoderValue == 500) {
-//      motorGo(MOTOR, BRAKE, 0);
-//      *output = 0;
-//      digitalWrite(EN_PIN, LOW); 
-//    }
-//  } 
-//  else if (*encoderValue < 0) {
-//    setPoint = 0;
-//    motorPID->Compute();
-
-//    motorGo(MOTOR, CW, *output);
-//    if (*encoderValue == 0) {
-//      motorGo(MOTOR, BRAKE, 0);
-//      *output = 0;
-//      digitalWrite(EN_PIN, LOW);
-//    }
-//  }
-//  else {
     motorPID->Compute();
 
     if (*output > 0) {
@@ -360,44 +342,4 @@ void motorPIDControl(volatile long *encoderValue, double *setPoint, double *outp
       motorGo(MOTOR, BRAKE, 0);
       *output = 0;
     }
-//  }
 }
-
-// old version code
-//  if (encoderLeftValue > 500) {
-//    setPointLeft = 475;
-//    leftPID.Compute();
-//    motorGo(MOTOR_1, CCW, abs(outputLeft));
-//    if (encoderLeftValue == 490) {
-//      motorGo(MOTOR_1, BRAKE, 0);
-//      outputLeft = 0;
-//         digitalWrite(EN_PIN_1, LOW); 
-//    }
-//  } 
-//  else if (encoderLeftValue < 0) {
-//    setPointLeft = 10;
-//    leftPID.Compute();
-//
-//    motorGo(MOTOR_1, CW, outputLeft);
-//    if (encoderLeftValue == 10) {
-//      motorGo(MOTOR_1, BRAKE, 0);
-//      outputLeft = 0;
-//      digitalWrite(EN_PIN_1, LOW);
-//
-//    }
-//  }
-//  else {
-//    leftPID.Compute();
-//
-//    if (outputLeft > 0) {
-//      motorGo(MOTOR_1, CW, outputLeft);
-//    }
-//    else {
-//      motorGo(MOTOR_1, CCW, abs(outputLeft));
-//    }
-//    if (encoderLeftValue == setPointLeft) {
-//      motorGo(MOTOR_1, BRAKE, 0);
-//      outputLeft = 0;
-//    }
-//  }
-
