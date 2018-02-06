@@ -74,7 +74,7 @@ ModelImporter:
     400064: spine02
     400066: spine03
     4300000: Boxer
-    7400000: Take 001
+    7400000: Lhook_Head_LLeg_Far
     9500000: //RootNode
     13700000: Boxer
   materials:
@@ -84,9 +84,11 @@ ModelImporter:
   animations:
     legacyGenerateAnimations: 4
     bakeSimulation: 0
-    resampleRotations: 1
+    resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -97,7 +99,103 @@ ModelImporter:
     animationScaleError: 0.5
     animationWrapMode: 0
     extraExposedTransformPaths: []
-    clipAnimations: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Lhook_Head_LLeg_Far
+      takeName: Take 001
+      firstFrame: 0
+      lastFrame: 30
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Boxer
+        weight: 1
+      - path: root
+        weight: 1
+      - path: root/l_thigh
+        weight: 1
+      - path: root/l_thigh/l_calf
+        weight: 1
+      - path: root/l_thigh/l_calf/l_foot
+        weight: 1
+      - path: root/l_thigh/l_calf/l_foot/l_toe01
+        weight: 1
+      - path: root/l_thigh/l_calf/l_foot/l_toe01/l_toeend
+        weight: 1
+      - path: root/r_thigh
+        weight: 1
+      - path: root/r_thigh/r_calf
+        weight: 1
+      - path: root/r_thigh/r_calf/r_foot
+        weight: 1
+      - path: root/r_thigh/r_calf/r_foot/r_toe01
+        weight: 1
+      - path: root/r_thigh/r_calf/r_foot/r_toe01/r_toeend
+        weight: 1
+      - path: root/spine01
+        weight: 1
+      - path: root/spine01/spine02
+        weight: 1
+      - path: root/spine01/spine02/spine03
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm/l_hand
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm/l_hand/l_finger01
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm/l_hand/l_finger01/l_finger02
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm/l_hand/l_finger03
+        weight: 1
+      - path: root/spine01/spine02/spine03/l_clavicle/l_upperarm/l_forearm/l_hand/l_finger03/l_finger04
+        weight: 1
+      - path: root/spine01/spine02/spine03/Neck
+        weight: 1
+      - path: root/spine01/spine02/spine03/Neck/head
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm/r_hand
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm/r_hand/r_finger01
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm/r_hand/r_finger01/r_finger02
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm/r_hand/r_finger03
+        weight: 1
+      - path: root/spine01/spine02/spine03/r_clavicle/r_upperarm/r_forearm/r_hand/r_finger03/r_finger04
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
     isReadable: 1
   meshes:
     lODScreenPercentages: []
@@ -123,6 +221,7 @@ ModelImporter:
   importAnimation: 1
   copyAvatar: 0
   humanDescription:
+    serializedVersion: 2
     human: []
     skeleton: []
     armTwist: 0.5
@@ -133,7 +232,10 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {instanceID: 0}
   animationType: 2
   humanoidOversampling: 1

@@ -24,7 +24,7 @@ public class anim_change : MonoBehaviour {
         {
             if (count == 0)
             {
-                s = Random.Range(1, 5);
+                s = Random.Range(1, 6);
                 _animator.SetInteger("change", s);
                 Debug.Log(s);
             }
@@ -34,10 +34,10 @@ public class anim_change : MonoBehaviour {
         {
             if (count == 1)
             {
-                s = 5;
+                s = 0;
                 _animator.SetInteger("change", s);
                 count = 0;
-                Debug.Log("stop");
+                //Debug.Log("stop");
             }
         } 
 
