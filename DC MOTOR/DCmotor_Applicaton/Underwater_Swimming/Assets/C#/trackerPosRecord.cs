@@ -24,6 +24,7 @@ public class trackerPosRecord : MonoBehaviour {
 	private float speed = 1.5f;
 	private float offset = 0;
 
+    //motor
     public GameObject RMotor;
     public GameObject LMotor;
     private OSCSender ROSCSender;
@@ -87,20 +88,14 @@ public class trackerPosRecord : MonoBehaviour {
                 Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
 
 				
-
                 //L direction
 
-                //if ((Lvector + body_head_direction).magnitude > body_head_direction.magnitude)
 				if ((Lvector + body_head_direction).magnitude - body_head_direction.magnitude > 0.001f)
 				//if(Vector3.Angle(Lvector, body_head_direction) < 90)
                 {
-					//Lvector has the same direction as body_hear_direction
+                    Debug.Log("L rotate !");
 
-					//rotation
-					//transform.Rotate(Lvector - body_head_direction).magnitude);
-					//transform.Rotate(Vector3.up * (body_head_direction + Lvector).magnitude);
-					//transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
-
+                    //rotation
 					/*
 					if (Lvector.z < 0) 
 						transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
@@ -108,11 +103,15 @@ public class trackerPosRecord : MonoBehaviour {
 						transform.Rotate(Vector3.down * (Lvector - body_head_direction).magnitude);
 					*/
 
-					//if ((initial_body_head_direction + body_head_direction).magnitude > initial_body_head_direction.magnitude)
-					//if (Vector3.Angle(initial_body_head_direction, body_head_direction) < 150) //超過160會有問題?????
-					//if (Vector3.Angle(body_head_direction, Lvector) < 150)
-					
-					if (Ltracker.transform.position.x > transform.position.x)
+                    if((Ltracker.transform.position.x + Rtracker.transform.position.x <= 0.1 || Ltracker.transform.position.x + Rtracker.transform.position.x >= -0.1)
+                        && (Ltracker.transform.position.y + Rtracker.transform.position.y <= 0.1 || Ltracker.transform.position.y + Rtracker.transform.position.y >= -0.1)
+                        && (Ltracker.transform.position.z + Rtracker.transform.position.z <= 0.1 || Ltracker.transform.position.z + Rtracker.transform.position.z >= -0.1))
+                    {
+                        // vectos of 2 hands seem to be the same -> don't rotate, just add some speed and offset
+                        Debug.Log("L & R are almost the same");
+                    }
+
+					else if (Ltracker.transform.position.x > transform.position.x)
 					{
 						if (Lvector.z < 0)
 							transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
@@ -127,7 +126,6 @@ public class trackerPosRecord : MonoBehaviour {
 							transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
 					}
 					
-
 
 					//speed
 					speed += (Lvector - body_head_direction).magnitude * 2;
@@ -140,48 +138,32 @@ public class trackerPosRecord : MonoBehaviour {
 					else if (speed > 3.12f && speed < 3.14f) offset += 0.2f;
 					else if (speed > 3.14f && speed < 3.16f) offset += 0.4f;
 					else if (speed > 3.16f) offset += 0.8f;
-					Debug.Log("L offset: " + offset);
 
-					/////////////
-
+                    Debug.Log("L offset: " + offset);
 					Debug.Log("angle:" + Vector3.Angle(initial_body_head_direction, body_head_direction));
 					Debug.Log("Lvector.z: " + Lvector.z);
-
-
-									
-
-					//transform.position = transform.position + Lvector * 2f;
-					//transform.position = transform.position + new Vector3(Lvector.x, 0, 0)*2f;
-
 					Debug.Log("L turn, pos: " + transform.position);
 					
-
 				}
+
 
                 //R direction
 
                 //if ((Rvector + body_head_direction).magnitude > body_head_direction.magnitude)
 				if ((Rvector + body_head_direction).magnitude - body_head_direction.magnitude > 0.001f)
                 {
-					//Rvector has the same direction as body_hear_direction
+                    Debug.Log("R rotate !");
 
-					//rotation
-					//transform.Rotate((Rvector - body_head_direction) * 0.5f);
-					//transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude);
-					//transform.Rotate(body_head_direction - Vector3.Reflect(Rvector, body_head_direction) * (Rvector - body_head_direction).magnitude);
-
-					Debug.Log("angle:" + Vector3.Angle(initial_body_head_direction, body_head_direction));
-					Debug.Log("Rvector.z: " + Rvector.z);
-
-					/*
+                    //rotation
+                    /*
 					if (Rvector.z < 0)
 						transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
 					else
 						transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude);
 					*/
-					
-					
-					if (Rtracker.transform.position.x > transform.position.x)
+
+
+                    if (Rtracker.transform.position.x > transform.position.x)
 					{
 						if (Rvector.z < 0)
 							transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
@@ -195,7 +177,6 @@ public class trackerPosRecord : MonoBehaviour {
 						else
 							transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
 					}
-					
 
 
 					//speed
@@ -209,19 +190,18 @@ public class trackerPosRecord : MonoBehaviour {
 					else if (speed > 4.74f && speed < 4.76f) offset += 0.4f;
 					else if (speed > 4.76f) offset += 0.8f;
 					Debug.Log("R offset: " + offset);
+                    Debug.Log("angle:" + Vector3.Angle(initial_body_head_direction, body_head_direction));
+                    Debug.Log("Rvector.z: " + Rvector.z);
 
+                    //transform.position = transform.position + Rvector * 2f;
+                    //transform.position = transform.position - Vector3.Reflect(Rvector, body_head_direction) * 2f;
+                    //transform.position = transform.position + new Vector3(Rvector.x,0,0)*2f;
 
-					//transform.position = transform.position + Rvector * 2f;
-					//transform.position = transform.position - Vector3.Reflect(Rvector, body_head_direction) * 2f;
-					//transform.position = transform.position + new Vector3(Rvector.x,0,0)*2f;
-
-					Debug.Log("R turn, pos: " + transform.position);
+                    Debug.Log("R turn, pos: " + transform.position);
 				}
 
 
 				//default: swim forward
-				//transform.position = transform.position + body_head_direction * 0.1f;
-
 				transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (speed + offset) * 0.01f; 
 
 
@@ -237,9 +217,7 @@ public class trackerPosRecord : MonoBehaviour {
 
             }
 
-
         }
-
         
     }
 
