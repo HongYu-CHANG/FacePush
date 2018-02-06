@@ -33,6 +33,8 @@ public class hitted : MonoBehaviour {
     public GameObject superGameObject;
     public Texture[] myTextures = new Texture[7];
     public GameObject head;
+    private GameObject myLine;
+    private Vector3 Line;
 
     // Use this for initialization
     void Start () {
@@ -118,7 +120,7 @@ public class hitted : MonoBehaviour {
             
             //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
-            hit_position = new Vector3(face.position.x - collider_dir.hit_pos.x*0.1f, face.position.y - collider_dir.hit_pos.y * 0.1f, face.position.z - collider_dir.hit_pos.z * 0.1f);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x*0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
             if (collider_dir.hit_pos.x > 0.2)
@@ -148,6 +150,7 @@ public class hitted : MonoBehaviour {
 			}
             //hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
+            Line = hit.transform.position;
             DrawLine(hit_position + move * k * 2, hit_position, 1f);
 
         }
@@ -219,7 +222,7 @@ public class hitted : MonoBehaviour {
             
             //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
-            hit_position = new Vector3(face.position.x - collider_dir.hit_pos.x * 0.1f, face.position.y - collider_dir.hit_pos.y * 0.1f, face.position.z - collider_dir.hit_pos.z * 0.1f);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x * 0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
             if (collider_dir.hit_pos.x > 0.2) {
@@ -249,6 +252,7 @@ public class hitted : MonoBehaviour {
             //hit.GetComponent<Renderer>().material.color = color;
             count++;
             //Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
+            Line = hit.transform.position;
             DrawLine(hit_position  + move * k * 2, hit_position , 1f);
 
         }
@@ -257,6 +261,14 @@ public class hitted : MonoBehaviour {
         if (count != 0) {
             count++;
             offset = hit.transform.position - hit_move - hit_position;
+            offset = hit.transform.position - Line;
+            if(myLine != null)
+            {
+                myLine.transform.position = hit_position + move * k * 2 + offset;
+                LineRenderer lr = myLine.GetComponent<LineRenderer>();
+                lr.SetPosition(0, hit_position + move * k * 2 + offset);
+                lr.SetPosition(1, hit_position + offset);
+            }
             //Debug.DrawRay(hit_position + offset - move*k*2, move*k*2, Color.red);
         }
         if (count == 80) {
@@ -270,7 +282,7 @@ public class hitted : MonoBehaviour {
 
     void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
     {
-        GameObject myLine = new GameObject();
+        myLine = new GameObject();
         myLine.transform.SetParent(superGameObject.transform);
         myLine.transform.position = start;
         myLine.AddComponent<LineRenderer>();
