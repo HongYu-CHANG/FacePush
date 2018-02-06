@@ -107,22 +107,23 @@ public class hitted : MonoBehaviour {
             Debug.Log("Rhit ");
             collider_dir.Rhit = 0;
 
-            //hit_pos_on_face
-            if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
-            else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
-            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
+			//hit_pos_on_face
+			Debug.Log(collider_dir.hit_pos.ToString("f4"));
+            if (collider_dir.hit_pos.x > 1.8) collider_dir.hit_pos.x = 0.42f;
+            else if (collider_dir.hit_pos.x < -1.8) collider_dir.hit_pos.x = -0.42f;
+            
             hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.16)
+            if (collider_dir.hit_pos.x > 0.2)
             {
                 hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
                 hit_move = hit.transform.position - hit_position;
 				StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.16)
+            else if (collider_dir.hit_pos.x < -0.2)
             {
                 hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
                 hit_move = hit.transform.position - hit_position;
@@ -199,22 +200,23 @@ public class hitted : MonoBehaviour {
             Debug.Log("Lhit ");
             collider_dir.Lhit = 0;
 
-            //hit_pos_on_face
-            if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
-            else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
+			//hit_pos_on_face
+			Debug.Log(collider_dir.hit_pos.ToString("f4"));
+            if (collider_dir.hit_pos.x > 1.8) collider_dir.hit_pos.x = 0.8f;
+            else if (collider_dir.hit_pos.x < -1.8) collider_dir.hit_pos.x = -0.8f;
 
-            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
+            
             hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.16) {
+            if (collider_dir.hit_pos.x > 0.2) {
                 hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
                 hit_move = hit.transform.position - hit_position;
 				StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.16)
+            else if (collider_dir.hit_pos.x < -0.2)
             {
                 hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
                 hit_move = hit.transform.position - hit_position;
@@ -248,37 +250,41 @@ public class hitted : MonoBehaviour {
 	}
 	IEnumerator No1Work(bool R, bool L, int state )
 	{
-		float time = 1;
-		int RSpeed = 10;
-		int LSpeed = 10;
-		int angle = 10;
+		float time = 0.5f;
+		int RSpeed = 50;
+		int LSpeed = 50;
+		int angle = 150;
 		
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }		
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; }
+			Debug.Log("state " + state);		
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
 		}
 		else if(L)
 		{
-			if(state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }
+			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; }
+			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; }
+			Debug.Log("state "+state);
 			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+			
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; }
+			Debug.Log("state " + state);
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);
 			yield return new WaitForSeconds(time);
 			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
-			LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
 		}
-
+		
 	}
 }
