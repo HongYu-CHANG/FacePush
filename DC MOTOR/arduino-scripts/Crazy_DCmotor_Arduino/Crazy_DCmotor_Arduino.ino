@@ -63,7 +63,7 @@ void setup()
 {
   WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
   Serial.begin(SERIAL_BAUD);//Initialize serial and wait for port to open:
-  AFMS.begin();
+  //AFMS.begin();
 
 //  // encoder and PID
 //  pinMode(encoderPin1, HIGH);
@@ -150,10 +150,10 @@ void loop()
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
-        RorLMotor[1];
+        char RorLMotor[1];
         messageIn.getString(0, RorLMotor, 1);
-        Degree = (int)messageIn.getInt(1);
-        speedNum = (int)messageIn.getInt(2);
+        int Degree = (int)messageIn.getInt(1);
+        int speedNum = (int)messageIn.getInt(2);
         
         // I2C message
         String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum);
