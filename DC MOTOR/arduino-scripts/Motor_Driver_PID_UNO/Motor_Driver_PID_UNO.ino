@@ -74,6 +74,20 @@ double inputRight = 0, outputRight = 0, setPointRight = 0;
 PID leftPID(&inputLeft, &outputLeft, &setPointLeft, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
 PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
+//====================================================================================
+//Thread
+//#include <Thread.h>
+//Thread LMotorThread = Thread();
+//Thread RMotorThread = Thread();
+//void RMotorThreadMethod()
+//{
+//  motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
+//}
+//
+//void LMotorThreadMethod()
+//{
+//  motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
+//}
 String inputString = "";
 bool stringComplete = false;
 
@@ -128,7 +142,11 @@ void setup()
   leftPID.SetOutputLimits(-speedLeft, speedLeft);
   rightPID.SetOutputLimits(-speedRight, speedRight);
 
-//  Serial.begin(9600);              // Initiates the serial to do the monitoring 
+//  //Thread
+//  RMotorThread.onRun(RMotorThreadMethod);
+//  RMotorThread.setInterval(500);
+//  LMotorThread.onRun(LMotorThreadMethod);
+//  LMotorThread.setInterval(500);
 }
 
 void loop() 
