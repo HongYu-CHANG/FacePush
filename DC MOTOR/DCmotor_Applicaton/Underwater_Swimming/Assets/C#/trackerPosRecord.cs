@@ -21,7 +21,8 @@ public class trackerPosRecord : MonoBehaviour {
 
 	private bool posInitialized = false;
     public float drawRayTime;
-	private float speed = 1.5f;
+	private float Lspeed = 0.75f;
+	private float Rspeed = 0.75f;
 	private float offset = 0;
 
     //motor
@@ -98,20 +99,26 @@ public class trackerPosRecord : MonoBehaviour {
                     //rotation
 					/*
 					if (Lvector.z < 0) 
-						transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
+						transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude * 0.8f);
 					else 
-						transform.Rotate(Vector3.down * (Lvector - body_head_direction).magnitude);
+						transform.Rotate(Vector3.down * (Lvector - body_head_direction).magnitude * 0.8f);
 					*/
 
-                    if((Ltracker.transform.position.x + Rtracker.transform.position.x <= 0.1 || Ltracker.transform.position.x + Rtracker.transform.position.x >= -0.1)
-                        && (Ltracker.transform.position.y + Rtracker.transform.position.y <= 0.1 || Ltracker.transform.position.y + Rtracker.transform.position.y >= -0.1)
-                        && (Ltracker.transform.position.z + Rtracker.transform.position.z <= 0.1 || Ltracker.transform.position.z + Rtracker.transform.position.z >= -0.1))
+					transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude * 0.8f);
+
+					/*
+                    if((Ltracker.transform.position.x + Rtracker.transform.position.x <= 0.1 && Ltracker.transform.position.x + Rtracker.transform.position.x >= -0.1)
+                        && (Ltracker.transform.position.y + Rtracker.transform.position.y <= 0.1 && Ltracker.transform.position.y + Rtracker.transform.position.y >= -0.1)
+                        && (Ltracker.transform.position.z + Rtracker.transform.position.z <= 0.1 && Ltracker.transform.position.z + Rtracker.transform.position.z >= -0.1))
                     {
                         // vectos of 2 hands seem to be the same -> don't rotate, just add some speed and offset
                         Debug.Log("L & R are almost the same");
+						Debug.Log(Ltracker.transform.position.x + Rtracker.transform.position.x);
                     }
+					*/
 
-					else if (Ltracker.transform.position.x > transform.position.x)
+					/*
+					if (Ltracker.transform.position.x > transform.position.x)
 					{
 						if (Lvector.z < 0)
 							transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
@@ -125,22 +132,22 @@ public class trackerPosRecord : MonoBehaviour {
 						else
 							transform.Rotate(Vector3.up * (Lvector - body_head_direction).magnitude);
 					}
-					
+					*/
 
 					//speed
-					speed += (Lvector - body_head_direction).magnitude * 2;
+					Lspeed = (Lvector - body_head_direction).magnitude * 2;
 
-					Debug.Log("L speed " + speed);
+					Debug.Log("L speed " + Lspeed);
 
 					//速度夠快，之後就算沒有划手臂，身體也會有往前滑行的速度
-					if (speed > 3.00f && speed < 3.10f) offset += 0.05f;
-					if (speed > 3.10f && speed < 3.12f) offset += 0.1f;
-					else if (speed > 3.12f && speed < 3.14f) offset += 0.2f;
-					else if (speed > 3.14f && speed < 3.16f) offset += 0.4f;
-					else if (speed > 3.16f) offset += 0.8f;
+					if (Lspeed > 1.50f && Lspeed < 1.60f) offset += 0.05f;
+					if (Lspeed > 1.60f && Lspeed < 1.62f) offset += 0.1f;
+					else if (Lspeed > 1.62f && Lspeed < 1.64f) offset += 0.2f;
+					else if (Lspeed > 1.64f && Lspeed < 1.66f) offset += 0.4f;
+					else if (Lspeed > 1.66f) offset += 0.8f;
 
                     Debug.Log("L offset: " + offset);
-					Debug.Log("angle:" + Vector3.Angle(initial_body_head_direction, body_head_direction));
+					Debug.Log("angle:" + Vector3.Angle(body_head_direction, Vector3.forward));
 					Debug.Log("Lvector.z: " + Lvector.z);
 					Debug.Log("L turn, pos: " + transform.position);
 					
@@ -155,16 +162,22 @@ public class trackerPosRecord : MonoBehaviour {
                     Debug.Log("R rotate !");
 
                     //rotation
-                    /*
+                    
+					/*
 					if (Rvector.z < 0)
-						transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
+						transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude * 0.8f);
 					else
-						transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude);
+						transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude * 0.8f);
 					*/
 
+					transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude * 0.8f);
 
-                    if (Rtracker.transform.position.x > transform.position.x)
+					/*
+                    //if (Rtracker.transform.position.x > transform.position.x)
+					//if (Vector3.Angle(initial_body_head_direction,body_head_direction) < 160)
+					if(Vector3.Angle(body_head_direction, Vector3.forward) > 22)
 					{
+						Debug.Log("> 22");
 						if (Rvector.z < 0)
 							transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
 						else
@@ -172,26 +185,27 @@ public class trackerPosRecord : MonoBehaviour {
 					}
 					else
 					{
+						Debug.Log("< 22");
 						if (Rvector.z < 0)
 							transform.Rotate(Vector3.down * (Rvector - body_head_direction).magnitude);
 						else
 							transform.Rotate(Vector3.up * (Rvector - body_head_direction).magnitude);
 					}
-
+					*/
 
 					//speed
-					speed += (Rvector - body_head_direction).magnitude * 2;
-					Debug.Log("R speed " + speed);
+					Rspeed = (Rvector - body_head_direction).magnitude * 2;
+					Debug.Log("R speed " + Rspeed);
 
 					//速度夠快，之後就算沒有划手臂，身體也會有往前滑行的速度，會隨時間漸慢
-					if (speed > 4.00f && speed < 4.70f) offset += 0.05f;
-					if (speed > 4.70f && speed < 4.72f) offset += 0.1f;
-					else if (speed > 4.72f && speed < 4.74f) offset += 0.2f;
-					else if (speed > 4.74f && speed < 4.76f) offset += 0.4f;
-					else if (speed > 4.76f) offset += 0.8f;
+					if (Rspeed > 1.50f && Rspeed < 1.60f) offset += 0.05f;
+					if (Rspeed > 1.60f && Rspeed < 1.62f) offset += 0.1f;
+					else if (Rspeed > 1.62f && Rspeed < 1.64f) offset += 0.2f;
+					else if (Rspeed > 1.64f && Rspeed < 1.66f) offset += 0.4f;
+					else if (Rspeed > 1.66f) offset += 0.8f;
 					Debug.Log("R offset: " + offset);
-                    Debug.Log("angle:" + Vector3.Angle(initial_body_head_direction, body_head_direction));
-                    Debug.Log("Rvector.z: " + Rvector.z);
+					Debug.Log("angle:" + Vector3.Angle(body_head_direction, Vector3.forward));
+					Debug.Log("Rvector.z: " + Rvector.z);
 
                     //transform.position = transform.position + Rvector * 2f;
                     //transform.position = transform.position - Vector3.Reflect(Rvector, body_head_direction) * 2f;
@@ -201,8 +215,9 @@ public class trackerPosRecord : MonoBehaviour {
 				}
 
 
+
 				//default: swim forward
-				transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (speed + offset) * 0.01f; 
+				transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (Lspeed + Rspeed + offset) * 0.01f; 
 
 
 				//reset
@@ -211,8 +226,9 @@ public class trackerPosRecord : MonoBehaviour {
                 Lvector = Vector3.zero;
                 Rvector = Vector3.zero;
                 counter = 0;
-				speed = 1.5f;
-				if (offset > 0.1f) offset -= 0.1f;
+				Lspeed = 0.75f;
+				Rspeed = 0.75f;
+				if (offset > 0.15f) offset -= 0.15f;
 				else offset = 0;
 
             }
