@@ -30,6 +30,12 @@ public class hitted : MonoBehaviour {
     float r = 0.7f;
     float k = 0.7f;
 
+    public GameObject superGameObject;
+    public Texture[] myTextures = new Texture[7];
+    public GameObject head;
+    private GameObject myLine;
+    private Vector3 Line;
+
     // Use this for initialization
     void Start () {
 		ROSCSender = RMotor.GetComponent<OSCSender>();
@@ -73,7 +79,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.8f;
                 //
                 k = 1f;
-                Debug.Log("R 重 ");
+                //Debug.Log("R 重 ");
             }
             else if (state == 3)
             {
@@ -86,7 +92,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.5f;
                 //
                 k = 0.5f;
-                Debug.Log("R 輕 ");
+                //Debug.Log("R 輕 ");
             }
 
             move = collider_dir.Rdir;
@@ -107,38 +113,47 @@ public class hitted : MonoBehaviour {
             Debug.Log("Rhit ");
             collider_dir.Rhit = 0;
 
-            //hit_pos_on_face
+			//hit_pos_on_face
+			//Debug.Log(collider_dir.hit_pos.ToString("f4"));
             if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
             else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
-            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
-            hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
+            
+            //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
-            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x*0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.16)
+            if (collider_dir.hit_pos.x > 0.2)
             {
-                hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;
-				StartCoroutine(No1Work(true, false, state));
+                /*hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;*/
+                if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
+                StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.16)
+            else if (collider_dir.hit_pos.x < -0.2)
             {
-                hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;
-				StartCoroutine(No1Work(false, true, state));
+                /*hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;*/
+                if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
+                StartCoroutine(No1Work(false, true, state));
 			}
             else
             {
-                hit.transform.position = face.position;
+                /*hit.transform.position = face.position;
                 hit_move = hit.transform.position - hit_position;
-                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);
-				StartCoroutine(No1Work(false, false, state));
+                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);*/
+                if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
+                StartCoroutine(No1Work(false, false, state));
 			}
-            hit.GetComponent<Renderer>().material.color = color;
+            //hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
-			
-		}
+            Line = hit.transform.position;
+            DrawLine(hit_position + move * k * 2, hit_position, 1f);
+
+        }
         else if (collider_dir.Lhit == 1)
         {
             if (state == 2)
@@ -152,7 +167,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.8f;
                 //
                 k = 1f;
-                Debug.Log("L 重 ");
+                //Debug.Log("L 重 ");
             }
             else if (state == 4)
             {
@@ -165,7 +180,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.5f;
                 //
                 k = 0.5f;
-                Debug.Log("L 輕 ");
+                //Debug.Log("L 輕 ");
             }
             else if (state == 5 )
             {
@@ -178,7 +193,7 @@ public class hitted : MonoBehaviour {
                 color.a = 0.8f;
                 //
                 k = 1f;
-                Debug.Log("L 重 ");
+                //Debug.Log("L 重 ");
             }
 
             move = collider_dir.Ldir;
@@ -199,86 +214,126 @@ public class hitted : MonoBehaviour {
             Debug.Log("Lhit ");
             collider_dir.Lhit = 0;
 
-            //hit_pos_on_face
+			//hit_pos_on_face
+			//Debug.Log(collider_dir.hit_pos.ToString("f4"));
             if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
             else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
 
-            //Debug.Log(collider_dir.hit_pos.ToString("f4"));
-            hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
+            
+            //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
-            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
+            hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x * 0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.16) {
-                hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;
-				StartCoroutine(No1Work(true, false, state));
+            if (collider_dir.hit_pos.x > 0.2) {
+                /*hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;*/
+                if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
+                StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.16)
+            else if (collider_dir.hit_pos.x < -0.2)
             {
-                hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;
-				StartCoroutine(No1Work(false, true, state));
+                /*hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
+                hit_move = hit.transform.position - hit_position;*/
+                if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
+                StartCoroutine(No1Work(false, true, state));
 			}
             else
             {
-                hit.transform.position = face.position;
+                /*hit.transform.position = face.position;
                 hit_move = hit.transform.position - hit_position;
-                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);
-				StartCoroutine(No1Work(false, false, state));
+                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);*/
+                if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
+                else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
+                StartCoroutine(No1Work(false, false, state));
 			} 
-            hit.GetComponent<Renderer>().material.color = color;
+            //hit.GetComponent<Renderer>().material.color = color;
             count++;
-			//Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
-			
-		}
+            //Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
+            Line = hit.transform.position;
+            DrawLine(hit_position  + move * k * 2, hit_position , 1f);
+
+        }
 
 
         if (count != 0) {
             count++;
             offset = hit.transform.position - hit_move - hit_position;
-            Debug.DrawRay(hit_position + offset - move*k*2, move*k*2, Color.red);
+            offset = hit.transform.position - Line;
+            if(myLine != null)
+            {
+                myLine.transform.position = hit_position + move * k * 2 + offset;
+                LineRenderer lr = myLine.GetComponent<LineRenderer>();
+                lr.SetPosition(0, hit_position + move * k * 2 + offset);
+                lr.SetPosition(1, hit_position + offset);
+            }
+            //Debug.DrawRay(hit_position + offset - move*k*2, move*k*2, Color.red);
         }
         if (count == 80) {
             count = 0;
             hit.transform.localScale = new Vector3(0, 0, 0);
+            head.GetComponent<Renderer>().material.mainTexture = myTextures[0];
         }
 		
 
 	}
-	IEnumerator No1Work(bool R, bool L, int state )
+
+    void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
+    {
+        myLine = new GameObject();
+        myLine.transform.SetParent(superGameObject.transform);
+        myLine.transform.position = start;
+        myLine.AddComponent<LineRenderer>();
+        LineRenderer lr = myLine.GetComponent<LineRenderer>();
+        lr.material = new Material(Shader.Find("Particles/Alpha Blended Premultiply"));
+        lr.startColor = Color.red;
+        lr.endColor = Color.gray;
+        lr.startWidth = 0.05f;
+        lr.endWidth = 0.01f;
+        lr.SetPosition(0, start);
+        lr.SetPosition(1, end);
+        GameObject.Destroy(myLine, duration);
+    }
+
+    IEnumerator No1Work(bool R, bool L, int state )
 	{
-		float time = 1;
-		int RSpeed = 10;
-		int LSpeed = 10;
-		int angle = 10;
+		float time = 0.5f;
+		int RSpeed = 50;
+		int LSpeed = 50;
+		int angle = 150;
 		
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }		
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; Debug.Log("R 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; Debug.Log("R 輕 "); }
+			//Debug.Log("state " + state);		
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
 		}
 		else if(L)
 		{
-			if(state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }
+			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); }
+			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
+			//Debug.Log("state "+state);
 			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+			
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 100; angle = 150; }
-			else if (state == 3 || state == 4) { RSpeed = 60; angle = 100; }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; Debug.Log("C 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; Debug.Log("C 輕 "); }
+			//Debug.Log("state " + state);
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);
 			yield return new WaitForSeconds(time);
 			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
-			LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
 		}
-
+		
 	}
 }

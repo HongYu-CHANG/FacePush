@@ -10,15 +10,19 @@ public class LButton : MonoBehaviour
 {
 	public int MotorSpeed;
 	public GameObject LMotor;
+	public GameObject RMotor;
 	public Slider Lmotor_Speed;
 	public Text LText;
 	private int LSpeed;
 	private OSCSender LOSCSender;
+	private OSCSender ROSCSender;
 
 	void Start () 
 	{
 		LOSCSender = LMotor.GetComponent<OSCSender>();
-    	LOSCSender.setWhichMotor("L");	
+    	LOSCSender.setWhichMotor("L");
+    	ROSCSender = RMotor.GetComponent<OSCSender>();
+    	ROSCSender.setWhichMotor("R");	
 	}
 	
 	// Update is called once per frame
@@ -37,10 +41,12 @@ public class LButton : MonoBehaviour
 	{
   		Debug.Log("LDown");
   		LOSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
+  		ROSCSender.SendOSCMessageTriggerMethod(170, LSpeed);
  	}
  	public void OnPointerUp(PointerEventData eventData)
  	{
   		Debug.Log("LUp");
   		LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
+  		ROSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
  	}
 }

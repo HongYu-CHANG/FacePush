@@ -50,21 +50,22 @@ public class collider_dir : MonoBehaviour {
         if (s != anim_change.s) {
             if (anim_change.s == 1 || anim_change.s == 3)
             {
-                Rcount = 0;
-                s = anim_change.s;
+                //Rcount = 0; Lcount = 0;
+				s = anim_change.s;
             }
-            else if (anim_change.s == 2 || anim_change.s == 4)
-            {
-                Lcount = 0;
-                s = anim_change.s;
+            else if (anim_change.s == 2 || anim_change.s == 4 || anim_change.s == 5)
+			{
+                //Lcount = 0; Rcount = 0;
+				s = anim_change.s;
             }
-        }
+			s = anim_change.s;
+		}
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("RHand")){
-            if(Rcount > 60)
+            if(Rcount > 100 && Lcount > 100 && Rhit != 1 && Lhit != 1)
             {
                 int num = (Rcount - frame) % 100;
                 if (num < 0) num += 100; 
@@ -77,11 +78,11 @@ public class collider_dir : MonoBehaviour {
                 pos = Rtarget.position;
             }
             //else Debug.Log("R  " + Rcount);
-            Rcount = 0;
-        }
+            Rcount = 0; Lcount = 0;
+		}
         else if (other.gameObject.CompareTag("LHand"))
         {
-            if (Lcount > 60)
+            if (Lcount > 100 && Rcount > 100 && Rhit != 1 && Lhit != 1)
             {
                 int num = (Lcount - frame) % 100;
                 if (num < 0) num += 100;  
@@ -94,8 +95,8 @@ public class collider_dir : MonoBehaviour {
                 pos = Ltarget.position;
                 //hit_pos = GameObject.FindGameObjectWithTag("L").transform.position - this.transform.position;
             }
-            //else Debug.Log("L  " + Lcount);
-            Lcount = 0;
-        }
+           // else Debug.Log("L  " + Lcount);
+            Lcount = 0; Rcount = 0;
+		}
     }
 }
