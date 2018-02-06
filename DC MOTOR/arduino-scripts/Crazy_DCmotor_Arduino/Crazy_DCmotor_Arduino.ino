@@ -40,24 +40,7 @@ WiFiUDP Udp_listen;
 //Adafruit_MotorShield AFMS = Adafruit_MotorShield(); 
 //Adafruit_DCMotor *RMotor = AFMS.getMotor(2);// Select which 'port' M1, M2, M3 or M4. In this case, M1
 //Adafruit_DCMotor *LMotor = AFMS.getMotor(1);// Select which 'port' M1, M2, M3 or M4. In this case, M4
-
-//// rotary encoder
-//int encoderPin1 = 12;
-//int encoderPin2 = 13;
-//volatile int lastEncoded = 0;
-//volatile long encoderValue = 0;
-//// PID motor control
-//#include <PID_v1.h>
-//double kp = 10, ki = 0, kd = 0;
-//// input: current position (value of rotary encoder)
-//// output: result (where to go)
-//// setPoint: target position (position cmd from Feather)
-//double input = 0, output = 0, setPoint = 0;
-//
-//PID myPID(&input, &output, &setPoint, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
-//int Degree;
-//int speedNum;
-//char RorLMotor[1];
+bool Sending = true;
 
 void setup() 
 {
@@ -118,13 +101,16 @@ void printWifiStatus()
 void loop() 
 {
    // Write
-   OSCMessage msg("/1/fader1");
-   msg.add("Connected");
-   Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
-   msg.send(Udp_send);
-   Udp_send.endPacket();
-   msg.empty();
-   delay(1000);  
+   if(Sending)
+   {
+     OSCMessage msg("/1/fader1");
+     msg.add("Connected");
+     Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
+     msg.send(Udp_send);
+     Udp_send.endPacket();
+     msg.empty();
+     delay(1000);  
+   }
 
   // PID control update should be done in every cycle
 //  myPID.SetOutputLimits(-speedNum,speedNum);
@@ -147,22 +133,29 @@ void loop()
   int size;
   if ( (size = Udp_listen.parsePacket()) > 0)
   {
+    //Serial.println(millis());
     while (size--)
       messageIn.fill(Udp_listen.read());
     if (!messageIn.hasError()) {
+        Sending = false;
         char RorLMotor[1];
         messageIn.getString(0, RorLMotor, 1);
         int Degree = (int)messageIn.getInt(1);
         int speedNum = (int)messageIn.getInt(2);
-        
+//        Serial.println(RorLMotor[0]);
+//        Serial.println(Degree);
+//        Serial.println(speedNum);
+
         // I2C message
-        String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum);
+        String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum) + "\n";
         char buffer[32];
         temp.toCharArray(buffer, 32);
         Serial.println(temp);
+        
         Wire.beginTransmission(SLAVE_ADDRESS);
         Wire.write(buffer);
         Wire.endTransmission();
+        //Serial.println(millis());
 //           if(Direction == 1)  //CCW
 //              RMotor->run(FORWARD);
 //           else if(Direction == 2) //CW

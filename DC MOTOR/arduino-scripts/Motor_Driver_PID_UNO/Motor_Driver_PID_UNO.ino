@@ -76,18 +76,18 @@ PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
 //====================================================================================
 //Thread
-#include <Thread.h>
-Thread LMotorThread = Thread();
-Thread RMotorThread = Thread();
-void RMotorThreadMethod()
-{
-  motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
-}
-
-void LMotorThreadMethod()
-{
-  motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
-}
+//#include <Thread.h>
+//Thread LMotorThread = Thread();
+//Thread RMotorThread = Thread();
+//void RMotorThreadMethod()
+//{
+//  motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
+//}
+//
+//void LMotorThreadMethod()
+//{
+//  motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
+//}
 String inputString = "";
 bool stringComplete = false;
 
@@ -142,11 +142,11 @@ void setup()
   leftPID.SetOutputLimits(-speedLeft, speedLeft);
   rightPID.SetOutputLimits(-speedRight, speedRight);
 
-  //Thread
-  RMotorThread.onRun(RMotorThreadMethod);
-  RMotorThread.setInterval(500);
-  LMotorThread.onRun(LMotorThreadMethod);
-  LMotorThread.setInterval(500);
+//  //Thread
+//  RMotorThread.onRun(RMotorThreadMethod);
+//  RMotorThread.setInterval(500);
+//  LMotorThread.onRun(LMotorThreadMethod);
+//  LMotorThread.setInterval(500);
 }
 
 void loop() 
@@ -163,7 +163,7 @@ void loop()
 //  Serial.println(outputRight); Serial.print(" ");
 
   // control encoderLeftValue
-  //motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
+  motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
 
 //  // receive data from serial port
