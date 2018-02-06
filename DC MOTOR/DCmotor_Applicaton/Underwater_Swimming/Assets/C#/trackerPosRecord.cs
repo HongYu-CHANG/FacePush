@@ -23,9 +23,18 @@ public class trackerPosRecord : MonoBehaviour {
     public float drawRayTime;
 	private float speed = 1;
 
+    public GameObject RMotor;
+    public GameObject LMotor;
+    private OSCSender ROSCSender;
+    private OSCSender LOSCSender;
+
 
     // Use this for initialization
     void Start () {
+        ROSCSender = RMotor.GetComponent<OSCSender>();
+        ROSCSender.setWhichMotor("R");
+        LOSCSender = LMotor.GetComponent<OSCSender>();
+        LOSCSender.setWhichMotor("L");
 
         LlastPos = Ltracker.transform.position;
         RlastPos = Rtracker.transform.position;
@@ -190,10 +199,36 @@ public class trackerPosRecord : MonoBehaviour {
             }
 
 
-
-
         }
 
         
     }
+
+    //motor control
+
+    //StartCoroutine(No1Work(false, true, Rbutton));
+    /*
+    IEnumerator No1Work(bool R, bool L, bool click)
+    {
+        float time;
+        if (R)
+            time = Rmotor_Time.value;
+        else
+            time = Lmotor_Time.value;
+        if (click)//奇數次點擊
+        {
+            if (R) ROSCSender.SendOSCMessageTriggerMethod(100, RSpeed);//加壓
+            if (L) LOSCSender.SendOSCMessageTriggerMethod(100, LSpeed);
+            yield return new WaitForSeconds(time);
+        }
+        else
+        {
+            if (R) ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);//加壓
+            if (L) LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+            yield return new WaitForSeconds(time);
+        }
+
+    }
+    */
+
 }

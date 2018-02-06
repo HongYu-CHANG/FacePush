@@ -22,7 +22,8 @@ public class LhandControl : MonoBehaviour {
         {
             //if(transform.rotation.y <= 90 && transform.rotation.y >=-90)
             {
-                transform.Rotate((Vector3.up) * (LhandMoveObj.transform.position.z - LlastPos.z) * 50);
+                //transform.Rotate((Vector3.up) * (LhandMoveObj.transform.position.z - LlastPos.z) * 50);
+                transform.Rotate((Vector3.down) * (LhandMoveObj.transform.position.z - LlastPos.z) * 50);
                 Debug.Log("LlastPos = " + LlastPos);
                 Debug.Log("LhandPos = " + LhandMoveObj.transform.position);
                 Debug.Log("LnowPos = " + transform.position);
