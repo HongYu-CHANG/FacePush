@@ -65,7 +65,7 @@ public class collider_dir : MonoBehaviour {
     void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("RHand")){
-            if(Rcount > 30 && Lcount > 30)
+            if(Rcount > 100 && Lcount > 100 && Rhit != 1 && Lhit != 1)
             {
                 int num = (Rcount - frame) % 100;
                 if (num < 0) num += 100; 
@@ -82,7 +82,7 @@ public class collider_dir : MonoBehaviour {
 		}
         else if (other.gameObject.CompareTag("LHand"))
         {
-            if (Lcount > 30 && Rcount > 30)
+            if (Lcount > 100 && Rcount > 100 && Rhit != 1 && Lhit != 1)
             {
                 int num = (Lcount - frame) % 100;
                 if (num < 0) num += 100;  
