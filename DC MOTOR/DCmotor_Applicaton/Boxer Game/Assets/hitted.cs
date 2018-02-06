@@ -303,15 +303,16 @@ public class hitted : MonoBehaviour {
 		int RSpeed = 50;
 		int LSpeed = 50;
 		int angle = 150;
-		
+		int langle = 150;
+
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; Debug.Log("R 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; Debug.Log("R 輕 "); }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; Debug.Log("R 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; Debug.Log("R 輕 "); }
 			//Debug.Log("state " + state);		
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
+			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
 		}
 		else if(L)
 		{
@@ -320,19 +321,19 @@ public class hitted : MonoBehaviour {
 			//Debug.Log("state "+state);
 			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
 			yield return new WaitForSeconds(time);
-			LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
 			
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 150; Debug.Log("C 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 100; Debug.Log("C 輕 "); }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; langle = 150; Debug.Log("C 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; langle = 100; Debug.Log("C 輕 "); }
 			//Debug.Log("state " + state);
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			LOSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);
 			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
-			LOSCSender.SendOSCMessageTriggerMethod(20, RSpeed);
+			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
+			LOSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
 		}
 		
 	}
