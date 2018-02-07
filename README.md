@@ -23,6 +23,9 @@ Unity 5.6.3
 * [Tutorial for Monster Motor Shield VNH2SP30 ](http://www.instructables.com/id/Monster-Motor-Shield-VNH2SP30/)
 * [Arduino Interrupt ](https://chtseng.wordpress.com/2015/12/25/arduino-%E4%B8%AD%E6%96%B7%E5%8A%9F%E8%83%BD/)
 * [PID – Introduction](http://brettbeauregard.com/blog/2011/04/improving-the-beginners-pid-introduction/)
+* [Arduino-PID-Library](https://github.com/br3ttb/Arduino-PID-Library)
+* [ArduinoThread](https://github.com/ivanseidel/ArduinoThread)
+* [PinChangeInt](https://github.com/GreyGnome/PinChangeInt)
 
 ### unity package
 * [Hurricane Wind FX ](https://assetstore.unity.com/packages/vfx/particles/environment/hurricane-wind-fx-104948)
