@@ -153,7 +153,7 @@ void loop()
 {
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
-
+//
 //  Serial.print(inputLeft); Serial.print(" ");
 //  Serial.print(setPointLeft); Serial.print(" ");
 //  Serial.print(outputLeft); Serial.print(" ");
@@ -193,8 +193,6 @@ void loop()
 //      }
 //      leftPID.SetOutputLimits(-speedLeft, speedLeft);
 //      setPointLeft = (double) inputString.toInt();
-//      stringComplete = false;
-//      inputString = "";
 //    }
 //    else if (inputString.startsWith("R")) {
 //      inputString = inputString.substring(2);
@@ -208,9 +206,7 @@ void loop()
 //        }
 //      }
 //      rightPID.SetOutputLimits(-speedLeft, speedLeft);
-//      setPointRight = (double) inputString.toInt();
-//      stringComplete = false;
-//      inputString = "";      
+//      setPointRight = (double) inputString.toInt();      
 //    }
 //    stringComplete = false;
 //    inputString = "";
@@ -232,8 +228,10 @@ void receiveEvent(int count) {
     }
   }
   if (stringComplete) {
-//    Serial.println("in stringComplete");
+//    Serial.println(inputString);
     if (inputString.startsWith("L")) {
+//      Serial.println("Left");
+//      Serial.println("========================================");
       inputString = inputString.substring(2);
       // split cmd into angle and speed
       for (int i = 0; i < inputString.length(); i++)
@@ -254,6 +252,9 @@ void receiveEvent(int count) {
       leftPID.SetOutputLimits(-speedLeft, speedLeft);
     }
     else if (inputString.startsWith("R")) {
+//      Serial.println("Right");
+//      Serial.println("+++++++++++++++++++++++++++++++++++++++");
+
       inputString = inputString.substring(2);
       for (int i = 0; i < inputString.length(); i++)
       {
@@ -264,8 +265,7 @@ void receiveEvent(int count) {
           break;
         }
       }
-      rightPID.SetOutputLimits(-speedLeft, speedLeft);
-      
+      rightPID.SetOutputLimits(-speedLeft, speedLeft);      
     }
     stringComplete = false;
     inputString = "";
