@@ -150,7 +150,7 @@ void loop()
         String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum) + "\n";
         char buffer[32];
         temp.toCharArray(buffer, 32);
-        //Serial.print(temp);
+        Serial.print(temp);
         
         Wire.beginTransmission(SLAVE_ADDRESS);
         Wire.write(buffer);
