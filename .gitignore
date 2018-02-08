@@ -30,12 +30,11 @@ ExportedObj/
 sysinfo.txt
 
 # Builds
-*.apk
-*.unitypackage
+*.apke
 
 #Mac
 *.DS_Store
 
-#Big Fiel
+#Big File
 *.mp4
 *.mov
