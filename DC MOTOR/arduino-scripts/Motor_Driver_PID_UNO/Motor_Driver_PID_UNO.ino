@@ -153,7 +153,6 @@ void loop()
 {
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
-//
 //  Serial.print(inputLeft); Serial.print(" ");
 //  Serial.print(setPointLeft); Serial.print(" ");
 //  Serial.print(outputLeft); Serial.print(" ");
@@ -169,7 +168,7 @@ void loop()
 //  // receive data from serial port
 //  while(Serial.available())
 //  {
-//    Serial.println("get data");
+////    Serial.println("get data");
 //    digitalWrite(EN_PIN_1, HIGH);
 //    digitalWrite(EN_PIN_2, HIGH); 
 //    char c = Serial.read();
