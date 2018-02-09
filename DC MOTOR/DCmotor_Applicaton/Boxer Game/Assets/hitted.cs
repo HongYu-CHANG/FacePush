@@ -307,8 +307,8 @@ public class hitted : MonoBehaviour {
 
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; Debug.Log("R 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; Debug.Log("R 輕 "); }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }
 			//Debug.Log("state " + state);		
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			yield return new WaitForSeconds(time);
@@ -326,8 +326,8 @@ public class hitted : MonoBehaviour {
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; langle = 150; Debug.Log("C 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; langle = 100; Debug.Log("C 輕 "); }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); }
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; langle = 120; Debug.Log("C 輕 "); }
 			//Debug.Log("state " + state);
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);

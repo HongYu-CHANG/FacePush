@@ -40,6 +40,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	void Start()
 	{
 
+		Ltracker.gameObject.SetActive(true);
+
 		//motor control
 		ROSCSender = RMotor.GetComponent<OSCSender>();
 		ROSCSender.setWhichMotor("R");
@@ -108,7 +110,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 						if (Rvector.magnitude < Lvector.magnitude)
 						{
                             // L > R: turn right
-                            transform.Rotate(Vector3.up * body_vector_angle * 0.03f);
+                            transform.Rotate(Vector3.up * body_vector_angle * 0.05f);
                             //transform.DORotate(Vector3.up * body_vector_angle * 0.1f, 0.06f);//旋转动画
 
                             //motor
@@ -116,30 +118,33 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                             //R motor loosen
 
                             //format: StartCoroutine(No1Work(bool R, bool L, int angle, int speed));
-
+							
                             if (rotated == false)
                             {
                                 StartCoroutine(No1Work(true, false, 0, 0));
                                 Debug.Log("turn right, L motor");
                             }
+							
                             
 
                         }
 						else
 						{
                             // R > L: turn left
-                            transform.Rotate(Vector3.down * body_vector_angle * 0.03f);
+                            transform.Rotate(Vector3.down * body_vector_angle * 0.05f);
                             //transform.DORotate(Vector3.down * body_vector_angle * 0.1f, 0.06f);
 
                             //motor
                             //use L motor,to tighten, speed = ?, angle = ?
                             //L motor loosen
-
+							
+							
                             if (rotated == false)
                             {
                                 StartCoroutine(No1Work(false, true, 0, 0));
                                 Debug.Log("turn left, R motor");
                             }
+							
 
                         }
 
@@ -165,30 +170,38 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				
                 //swim forward
 				if(rotated)
-					transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.001f ;
+					transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.0005f ;
                 else
                 {
                     transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
 
-                    //motor
-                    //use L & R motors to tighten, speed = ?, angle = ?
-                    //L motor loosen gradually (offset == 0 -> free)
+					//motor
+					//use L & R motors to tighten, speed = ?, angle = ?
+					//L motor loosen gradually (offset == 0 -> free)
 
-                    /*
-                    Debug.Log(body_vector_angle);
-                    Debug.Log(LRvector.magnitude + offset);
-                    if((int)(LRvector.magnitude + offset) >= ????)
+					Debug.Log("---for go straight---");
+                    Debug.Log("body_vector_angle: " + body_vector_angle);
+                    Debug.Log("LRvector.magnitude + offset：" + (LRvector.magnitude + offset));
+                    
+
+					
+					if((int)(LRvector.magnitude + offset) >= 15)
                     {
-                        StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset), 50));
-                        Debug.Log("move forward, loosen");
+                        StartCoroutine(No1Work(false, false, 150, 100));
+                        Debug.Log("move forward, default");
                     }
+					else if ((int)(LRvector.magnitude + offset) > 1)
+					{
+						StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset) * 10, 100));
+						Debug.Log("move forward, loosen");
+					}
                     else
                     {
                         //放鬆
-                        StartCoroutine(No1Work(false, false, 10, 50));
+                        StartCoroutine(No1Work(false, false, 10, 100));
                         Debug.Log("move forward, free");
                     }
-                    */
+                    
 
                 }
 
@@ -213,12 +226,12 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
     IEnumerator No1Work(bool R, bool L, int angle, int speed)
     {
-        float waitingTime = 2f;
-        int rotateSpeed = 50;
+        float waitingTime = 1f;
+        int rotateSpeed = 150;
 
         if (R)//右轉，要動右馬達 (1,0)
         {
-            ROSCSender.SendOSCMessageTriggerMethod(100, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
+            ROSCSender.SendOSCMessageTriggerMethod(120, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
             LOSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);
             yield return new WaitForSeconds(waitingTime);
             ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
@@ -227,7 +240,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
         else if (L)//左轉，要動左馬達 (0,1)
         {
             ROSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(100, rotateSpeed);
+            LOSCSender.SendOSCMessageTriggerMethod(150, rotateSpeed);
             yield return new WaitForSeconds(waitingTime);
             ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
             LOSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);
@@ -235,8 +248,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
         else //前進，兩馬達都要動 (0,0)
         {
             ROSCSender.SendOSCMessageTriggerMethod(angle, speed);
-            LOSCSender.SendOSCMessageTriggerMethod(angle, speed);
-            yield return new WaitForSeconds(waitingTime);
+            LOSCSender.SendOSCMessageTriggerMethod(angle + 20, speed);
+            //yield return new WaitForSeconds(waitingTime);
         }
     }
 
