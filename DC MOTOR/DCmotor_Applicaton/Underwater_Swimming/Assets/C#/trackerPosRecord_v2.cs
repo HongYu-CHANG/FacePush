@@ -100,7 +100,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				//Debug.Log("R: " + Rvector.ToString("f4") + Rvector.magnitude);
 				LRvector = Lvector + Rvector;
 				body_vector_angle = Vector3.Angle(new Vector3(body_head_direction.x, 0, body_head_direction.z), new Vector3(LRvector.x, 0, LRvector.z));
-                Debug.Log("angle = " + body_vector_angle);
+                //Debug.Log("angle = " + body_vector_angle);
 
                 //rotation
                 if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
@@ -119,7 +119,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
                             //format: StartCoroutine(No1Work(bool R, bool L, int angle, int speed));
 							
-                            if (rotated == false)
+                            if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
                                 StartCoroutine(No1Work(true, false, 0, 0));
                                 Debug.Log("turn right, L motor");
@@ -139,7 +139,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                             //L motor loosen
 							
 							
-                            if (rotated == false)
+                            if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
                                 StartCoroutine(No1Work(false, true, 0, 0));
                                 Debug.Log("turn left, R motor");
@@ -158,8 +158,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
 				}
 
-				Debug.Log("LR: " + LRvector.ToString("f4") + LRvector.magnitude);
-				Debug.Log("offset = " + offset.ToString("F4"));
+				//Debug.Log("LR: " + LRvector.ToString("f4") + LRvector.magnitude);
+				//Debug.Log("offset = " + offset.ToString("F4"));
 
                 //offset control
 				if (LRvector.magnitude > 0.01f && LRvector.magnitude < 0.02f) offset += 0.1f;
@@ -180,12 +180,13 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 					//L motor loosen gradually (offset == 0 -> free)
 
 					Debug.Log("---for go straight---");
-                    Debug.Log("body_vector_angle: " + body_vector_angle);
-                    Debug.Log("LRvector.magnitude + offset：" + (LRvector.magnitude + offset));
-                    
+                    //Debug.Log("body_vector_angle: " + body_vector_angle);
+                    //Debug.Log("LRvector.magnitude + offset：" + (LRvector.magnitude + offset));
 
-					
-					if((int)(LRvector.magnitude + offset) >= 15)
+                    
+                    if (fish_control.fish == 1) Debug.Log("fish!!");
+                    else if (shark_control.shark == 1) Debug.Log("shark!!");
+                    else if((int)(LRvector.magnitude + offset) >= 15)
                     {
                         StartCoroutine(No1Work(false, false, 150, 100));
                         Debug.Log("move forward, default");
