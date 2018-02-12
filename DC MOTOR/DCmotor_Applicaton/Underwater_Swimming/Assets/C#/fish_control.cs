@@ -19,19 +19,28 @@ public class fish_control : MonoBehaviour {
         LOSCSender = LMotor.GetComponent<OSCSender>();
         LOSCSender.setWhichMotor("L");
 
-        transform.DOLocalMove(new Vector3(-20, 0, -0.26f), 5);
-        //transform.DOLocalMoveX(-20, 10);
-    }
+
+		/*transform.DOLocalMove(new Vector3(20, 0, 20), 5);
+		Sequence mySequence = DOTween.Sequence();
+		transform.DOLocalMove(new Vector3(20, 0, -0.26f), 5);
+		 */
+		transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
+		//mySequence.Append(transform.DOLocalMoveX(-10, 3));
+		
+		//transform.DOLocalMoveX(-20, 10);
+	}
 	
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Sequence mySequence = DOTween.Sequence();
-            mySequence.Append(transform.DOLocalMoveX(20, 3));
+			//
+			transform.localPosition = new Vector3(20, 0.8f, -0.07f);
+			Sequence mySequence = DOTween.Sequence();
+            mySequence.Append(transform.DOLocalMoveX(-20, 3));
             mySequence.Append(transform.DOLocalMoveZ(20, 1f).SetDelay(2));
-            mySequence.Append(transform.DOLocalMoveX(-20, 0.5f));
-            mySequence.Append(transform.DOLocalMoveZ(-0.26f, 1f));
+            mySequence.Append(transform.DOLocalMoveX(20, 0.5f));
+            mySequence.Append(transform.DOLocalMoveZ(-0.07f, 1f));
 
             StartCoroutine(No1Work());
             fish = 1;
@@ -39,39 +48,62 @@ public class fish_control : MonoBehaviour {
         }
 
         if (fish == 1 && transform.localPosition.z == 20) fish = 0;
-        
 
-    }
+		if (Input.GetKeyDown(KeyCode.B))
+		{
+			transform.DOLocalMoveX(-20, 3);
+		}
+
+
+	}
 
     IEnumerator No1Work()
     {
-        float waitingTime = 0.4f;
+        float waitingTime = 2f;
         int speed = 100;
         float tempTime = UnityEngine.Random.Range(0.01f, 0.03f);//tempTime = 0;
         yield return new WaitForSeconds(waitingTime);
 
         ROSCSender.SendOSCMessageTriggerMethod(10, speed);
         LOSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f - tempTime);
+        yield return new WaitForSeconds(0.15f - tempTime);
         LOSCSender.SendOSCMessageTriggerMethod(10, speed);
         ROSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f + tempTime);
+        yield return new WaitForSeconds(0.15f + tempTime);
         ROSCSender.SendOSCMessageTriggerMethod(10, speed);
         LOSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f - tempTime);
+        yield return new WaitForSeconds(0.15f - tempTime);
         LOSCSender.SendOSCMessageTriggerMethod(10, speed);
         ROSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f + tempTime);
+        yield return new WaitForSeconds(0.15f + tempTime);
         ROSCSender.SendOSCMessageTriggerMethod(10, speed);
         LOSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f - tempTime);
+        yield return new WaitForSeconds(0.15f - tempTime);
         LOSCSender.SendOSCMessageTriggerMethod(10, speed);
         ROSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f + tempTime);
+        yield return new WaitForSeconds(0.15f + tempTime);
         ROSCSender.SendOSCMessageTriggerMethod(10, speed);
         LOSCSender.SendOSCMessageTriggerMethod(170, speed);
-        yield return new WaitForSeconds(0.07f - tempTime);
-        ROSCSender.SendOSCMessageTriggerMethod(10, speed);
-        LOSCSender.SendOSCMessageTriggerMethod(10, speed);
-    }
+		yield return new WaitForSeconds(0.15f - tempTime);
+		LOSCSender.SendOSCMessageTriggerMethod(10, speed);
+		ROSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		ROSCSender.SendOSCMessageTriggerMethod(10, speed);
+		LOSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		LOSCSender.SendOSCMessageTriggerMethod(10, speed);
+		ROSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		ROSCSender.SendOSCMessageTriggerMethod(10, speed);
+		LOSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		LOSCSender.SendOSCMessageTriggerMethod(10, speed);
+		ROSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		ROSCSender.SendOSCMessageTriggerMethod(10, speed);
+		LOSCSender.SendOSCMessageTriggerMethod(170, speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		ROSCSender.SendOSCMessageTriggerMethod(10, speed);
+		LOSCSender.SendOSCMessageTriggerMethod(10, speed);
+	}
 }

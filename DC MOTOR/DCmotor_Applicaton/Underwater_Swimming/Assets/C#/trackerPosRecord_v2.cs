@@ -110,7 +110,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 						if (Rvector.magnitude < Lvector.magnitude)
 						{
                             // L > R: turn right
-                            transform.Rotate(Vector3.up * body_vector_angle * 0.05f);
+                            transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
                             //transform.DORotate(Vector3.up * body_vector_angle * 0.1f, 0.06f);//旋转动画
 
                             //motor
@@ -131,7 +131,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 						else
 						{
                             // R > L: turn left
-                            transform.Rotate(Vector3.down * body_vector_angle * 0.05f);
+                            transform.Rotate(Vector3.down * body_vector_angle * 0.08f);
                             //transform.DORotate(Vector3.down * body_vector_angle * 0.1f, 0.06f);
 
                             //motor

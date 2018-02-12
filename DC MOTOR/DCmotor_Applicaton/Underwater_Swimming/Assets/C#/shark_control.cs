@@ -18,7 +18,7 @@ public class shark_control : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        transform.localPosition = new Vector3(-20f, 0, -0.26f);
+        transform.localPosition = new Vector3(-30f, 0.31f, -0.26f);
         Random.InitState(1337);
         _animator = this.GetComponent<Animator>();
         _animator.SetInteger("count", 0);
@@ -36,12 +36,12 @@ public class shark_control : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            transform.localPosition = new Vector3(-1.02f, 0, -0.26f);
             t = Random.Range(1, 3);
             s = 1;
             _animator.SetInteger("count", s);
             _animator.SetInteger("start", 1);
             _animator.SetInteger("turn", t);
+			transform.localPosition = new Vector3(35.5f, 0.31f, -0.26f);
         }
 
         if (!AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
@@ -49,7 +49,7 @@ public class shark_control : MonoBehaviour {
             if (count == 0)
             {
                 s ++;
-                if(s == 7)
+                if(s == 6)
                 _animator.SetInteger("count", 8);
                 //Debug.Log(s);
             }
