@@ -36,5 +36,4 @@ sysinfo.txt
 *.DS_Store
 
 #Big File
-*.mp4
 *.mov
