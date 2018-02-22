@@ -1,17 +1,19 @@
-/* This sketch supports NILab Project FacePush. It has the following features:
+/* This sketch supports NILab Project FacePush, as described below:
  * - UNO receives message from Adafruit Feather M0 through I2C communication.
  * - uses Arduino UNO and Monster Motor Shield VNH2SP30 to control 2 DC motors.
  * - control DC motors by rotary encoders and PID
- * - In Leonardo interrupt pins and I2C are the same position (D2, D3),
- *   we switch back to UNO plus PinChangeInterrupt library avoid this.
+ * - use interrupt pins D2, D3, D10, and D11 (by PinChangeInterrupt library)
+ *   to track the value of rotary encoders.
  * 
- * 05.02.18 wjtseng93
+ *   22.02.18 wjtseng93
  */
+
 //====================================================================================
 // I2C
 #include <Wire.h>
 #define SLAVE_ADDRESS 0x12
 #define SERIAL_BAUD 57600 
+
 //====================================================================================
 // Monster Motor Driver VNH2SP30
 #define BRAKE 0
@@ -39,21 +41,20 @@
 #define MOTOR_1 0
 #define MOTOR_2 1
 
-//short usSpeed = 50;  //default motor speed
+//default motor speed and motor state
 short speedLeft = 255;
 short speedRight = 255;
 unsigned short usMotor_Status = BRAKE;
 
 //====================================================================================
 // Interrupt and Rotary encoder
-// Arduino UNO has 2 interrupt Pins, D2, D3
-// use PinChangeInt to add another two
+// Arduino UNO has 2 interrupt pins, D2, D3
+// use PinChangeInt to make D10, D11 into interrupt pins
 #include <PinChangeInt.h>
 int encoderLeftPin1 = 3; // interrupt 0
 int encoderLeftPin2 = 2; // interrupt 1
 int encoderRightPin1 = 10; // use PinChangeInt make it into interrupt pin
 int encoderRightPin2 = 11;
-
 
 // rotary encoders
 volatile long leftLastEncoded = 0;
@@ -71,7 +72,8 @@ double kp = 0.4, ki = 0.06, kd = 0.01;
 // setPoint: target position (position cmd from Feather)
 double inputLeft = 0, outputLeft = 0, setPointLeft = 0;
 double inputRight = 0, outputRight = 0, setPointRight = 0;
-PID leftPID(&inputLeft, &outputLeft, &setPointLeft, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
+// DIRECT was defined in PID_v1.h
+PID leftPID(&inputLeft, &outputLeft, &setPointLeft, kp, ki, kd, DIRECT); 
 PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
 String inputString = "";
@@ -112,8 +114,6 @@ void setup()
   digitalWrite(encoderRightPin2, HIGH); //turn pullup resistor on
 
   //call updateEncoder() when any high/low changed seen
-  //on interrupt 0 (pin 2), or interrupt 1 (pin 3)
-  //on interrupt 2 (pin 0), or interrupt 3 (pin 1) 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin1), updateLeftEncoder, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(encoderLeftPin2), updateLeftEncoder, CHANGE);
   attachPinChangeInterrupt(encoderRightPin1, updateRightEncoder, CHANGE); 
@@ -130,6 +130,7 @@ void loop()
 {
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
+//  Uncomment below to check values of PID  
 //  Serial.print(inputLeft); Serial.print(" ");
 //  Serial.print(setPointLeft); Serial.print(" ");
 //  Serial.print(outputLeft); Serial.print(" ");
@@ -138,14 +139,13 @@ void loop()
 //  Serial.print(setPointRight); Serial.print(" ");
 //  Serial.println(outputRight); Serial.print(" ");
 
-  // control encoderLeftValue
+  // Update PID control
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
 
-//  // receive data from serial port
+//  Uncomment below to send data in serial port
 //  while(Serial.available())
 //  {
-////    Serial.println("get data");
 //    digitalWrite(EN_PIN_1, HIGH);
 //    digitalWrite(EN_PIN_2, HIGH); 
 //    char c = Serial.read();
@@ -189,11 +189,9 @@ void loop()
 //  } 
 }
 
-
-// add I2C receive data code here 03.02
+// Receiving data from I2C communication
 void receiveEvent(int count) {
   while (Wire.available()) {
-//    Serial.println("in wire.available");
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
     char c = (char) Wire.read();
@@ -236,7 +234,9 @@ void receiveEvent(int count) {
   }
 } 
 
-void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm)         //Function that controls the variables: motor(0 ou 1), direction (cw ou ccw) e pwm (entra 0 e 255);
+// Function that controls the variables:
+// motor(0 or 1), direction (cw or ccw), and pwm (0 to 255)
+void motorGo(uint8_t motor, uint8_t direct, uint8_t pwm) 
 {
   if(motor == MOTOR_1)
   {
