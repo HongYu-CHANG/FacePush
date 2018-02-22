@@ -74,28 +74,11 @@ double inputRight = 0, outputRight = 0, setPointRight = 0;
 PID leftPID(&inputLeft, &outputLeft, &setPointLeft, kp, ki, kd, DIRECT); // DIRECT was defined in PID_v1.h
 PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
-//====================================================================================
-//Thread
-//#include <Thread.h>
-//Thread LMotorThread = Thread();
-//Thread RMotorThread = Thread();
-//void RMotorThreadMethod()
-//{
-//  motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
-//}
-//
-//void LMotorThreadMethod()
-//{
-//  motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
-//}
 String inputString = "";
 bool stringComplete = false;
 
 void setup()                         
 {
-  // Debug
-//  pinMode(LED_BUILTIN, OUTPUT);
-  
   // I2C setup
   Wire.begin(SLAVE_ADDRESS);    // join I2C bus as a slave with address 1
   Wire.onReceive(receiveEvent); // register event
@@ -117,7 +100,7 @@ void setup()
   pinMode(EN_PIN_1, OUTPUT);
   pinMode(EN_PIN_2, OUTPUT);
 
- // rotary encoder setup
+  // rotary encoder setup
   pinMode(encoderLeftPin1, INPUT); 
   pinMode(encoderLeftPin2, INPUT);
   pinMode(encoderRightPin1, INPUT); 
@@ -141,12 +124,6 @@ void setup()
   rightPID.SetMode(AUTOMATIC);
   leftPID.SetOutputLimits(-speedLeft, speedLeft);
   rightPID.SetOutputLimits(-speedRight, speedRight);
-
-//  //Thread
-//  RMotorThread.onRun(RMotorThreadMethod);
-//  RMotorThread.setInterval(500);
-//  LMotorThread.onRun(LMotorThreadMethod);
-//  LMotorThread.setInterval(500);
 }
 
 void loop() 
@@ -217,7 +194,6 @@ void loop()
 void receiveEvent(int count) {
   while (Wire.available()) {
 //    Serial.println("in wire.available");
-//    digitalWrite(LED_BUILTIN, HIGH);
     digitalWrite(EN_PIN_1, HIGH);
     digitalWrite(EN_PIN_2, HIGH); 
     char c = (char) Wire.read();
@@ -229,31 +205,20 @@ void receiveEvent(int count) {
   if (stringComplete) {
 //    Serial.println(inputString);
     if (inputString.startsWith("L")) {
-//      Serial.println("Left");
-//      Serial.println("========================================");
       inputString = inputString.substring(2);
       // split cmd into angle and speed
       for (int i = 0; i < inputString.length(); i++)
       {
         if (inputString.substring(i, i + 1) == " ")
         {  
-//          Serial.println("before assign value");
-//          Serial.print(setPointLeft); Serial.print(" ");
-//          Serial.println(speedLeft);
           setPointLeft = (double) inputString.substring(0, i).toInt();
           speedLeft = (short) inputString.substring(i + 1).toInt();
-//          Serial.println("after assign value");
-//          Serial.print(setPointLeft); Serial.print(" ");
-//          Serial.println(speedLeft);
           break;
         }
       }
       leftPID.SetOutputLimits(-speedLeft, speedLeft);
     }
     else if (inputString.startsWith("R")) {
-//      Serial.println("Right");
-//      Serial.println("+++++++++++++++++++++++++++++++++++++++");
-
       inputString = inputString.substring(2);
       for (int i = 0; i < inputString.length(); i++)
       {
@@ -268,7 +233,6 @@ void receiveEvent(int count) {
     }
     stringComplete = false;
     inputString = "";
-//    digitalWrite(LED_BUILTIN, LOW);
   }
 } 
 
