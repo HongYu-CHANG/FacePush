@@ -52,18 +52,15 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 		RlastPos = Rtracker.transform.position;
 		body_head_direction = headpos.transform.position - bodypos.transform.position;
 
-		//draw xyz axis
-		Debug.DrawLine(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), Color.yellow, 10000);
+        //draw xyz axis
+        /*
+        Debug.DrawLine(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), Color.yellow, 10000);
 		Debug.DrawLine(new Vector3(0, -1000, 0), new Vector3(0, 1000, 0), Color.cyan, 10000);
 		Debug.DrawLine(new Vector3(0, 0, -1000), new Vector3(0, 0, 1000), Color.white, 10000);
+        */
 
 	}
 
-	// Update is called once per frame
-	void Update()
-	{
-
-	}
 
 	void FixedUpdate()
 	{
@@ -96,11 +93,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				Debug.DrawRay(Rtracker.transform.position, Rvector, Color.red, drawRayTime);
 				Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
 
-				//Debug.Log("L: " + Lvector.ToString("f4") + Lvector.magnitude);
-				//Debug.Log("R: " + Rvector.ToString("f4") + Rvector.magnitude);
 				LRvector = Lvector + Rvector;
 				body_vector_angle = Vector3.Angle(new Vector3(body_head_direction.x, 0, body_head_direction.z), new Vector3(LRvector.x, 0, LRvector.z));
-                //Debug.Log("angle = " + body_vector_angle);
 
                 //rotation
                 if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
@@ -111,40 +105,22 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 						{
                             // L > R: turn right
                             transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
-                            //transform.DORotate(Vector3.up * body_vector_angle * 0.1f, 0.06f);//旋转动画
-
-                            //motor
-                            //use R motor to tighten, speed = ?, angle = ?
-                            //R motor loosen
-
-                            //format: StartCoroutine(No1Work(bool R, bool L, int angle, int speed));
-							
                             if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
                                 StartCoroutine(No1Work(true, false, 0, 0));
                                 Debug.Log("turn right, L motor");
                             }
-							
-                            
 
                         }
 						else
 						{
                             // R > L: turn left
                             transform.Rotate(Vector3.down * body_vector_angle * 0.08f);
-                            //transform.DORotate(Vector3.down * body_vector_angle * 0.1f, 0.06f);
-
-                            //motor
-                            //use L motor,to tighten, speed = ?, angle = ?
-                            //L motor loosen
-							
-							
                             if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
                                 StartCoroutine(No1Work(false, true, 0, 0));
                                 Debug.Log("turn left, R motor");
                             }
-							
 
                         }
 
@@ -152,14 +128,11 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 					}
 					else
 					{
-						Debug.Log("dont rotate");
+						Debug.Log("don't rotate");
 						rotated = false;
 					}
 
 				}
-
-				//Debug.Log("LR: " + LRvector.ToString("f4") + LRvector.magnitude);
-				//Debug.Log("offset = " + offset.ToString("F4"));
 
                 //offset control
 				if (LRvector.magnitude > 0.01f && LRvector.magnitude < 0.02f) offset += 0.1f;
@@ -174,27 +147,20 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                 else
                 {
                     transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
-
-					//motor
-					//use L & R motors to tighten, speed = ?, angle = ?
-					//L motor loosen gradually (offset == 0 -> free)
-
 					Debug.Log("---for go straight---");
-                    //Debug.Log("body_vector_angle: " + body_vector_angle);
-                    //Debug.Log("LRvector.magnitude + offset：" + (LRvector.magnitude + offset));
 
-                    
+                    //fish & shark & motor control
                     if (fish_control.fish == 1) Debug.Log("fish!!");
                     else if (shark_control.shark == 1) Debug.Log("shark!!");
                     else if((int)(LRvector.magnitude + offset) >= 15)
                     {
                         StartCoroutine(No1Work(false, false, 150, 100));
-                        Debug.Log("move forward, default");
+                        Debug.Log("move forward, max");
                     }
 					else if ((int)(LRvector.magnitude + offset) > 1)
 					{
 						StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset) * 10, 100));
-						Debug.Log("move forward, loosen");
+						Debug.Log("move forward, default");
 					}
                     else
                     {
@@ -203,7 +169,6 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                         Debug.Log("move forward, free");
                     }
                     
-
                 }
 
                 //reset
@@ -222,9 +187,6 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	}
 
     //motor control
-
-    //StartCoroutine(No1Work(bool R, bool L, int angle, int speed));
-
     IEnumerator No1Work(bool R, bool L, int angle, int speed)
     {
         float waitingTime = 1f;
@@ -250,79 +212,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
         {
             ROSCSender.SendOSCMessageTriggerMethod(angle, speed);
             LOSCSender.SendOSCMessageTriggerMethod(angle + 20, speed);
-            //yield return new WaitForSeconds(waitingTime);
         }
     }
-
-
-
-    /*
-    IEnumerator No1Work(bool R, bool L, bool click)
-    {
-        float time;
-        if (R)
-            time = Rmotor_Time.value;
-        else
-            time = Lmotor_Time.value;
-
-        if (click)//奇數次點擊
-        {
-            if (R) ROSCSender.SendOSCMessageTriggerMethod(100, RSpeed);//加壓
-            if (L) LOSCSender.SendOSCMessageTriggerMethod(100, LSpeed);
-            yield return new WaitForSeconds(time);
-        }
-        else if()
-        {
-            if (R) ROSCSender.SendOSCMessageTriggerMethod(20, RSpeed);//加壓
-            if (L) LOSCSender.SendOSCMessageTriggerMethod(20, LSpeed);
-            yield return new WaitForSeconds(time);
-        }
-        else if()
-    }
-    */
-
-    /*
-    IEnumerator No1Work(bool R, bool L, int state )
-	{
-		float time = 0.5f;
-		int RSpeed = 50;
-		int LSpeed = 50;
-		int angle = 150;
-		int langle = 150;
-
-		if (R)//奇數次點擊
-		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; Debug.Log("R 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; Debug.Log("R 輕 "); }
-			//Debug.Log("state " + state);		
-			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-		}
-		else if(L)
-		{
-			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); }
-			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
-			//Debug.Log("state "+state);
-			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
-			yield return new WaitForSeconds(time);
-			LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
-			
-		}
-		else
-		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 145; langle = 150; Debug.Log("C 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 95; langle = 100; Debug.Log("C 輕 "); }
-			//Debug.Log("state " + state);
-			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);
-			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-			LOSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-		}
-		
-	} 
-    */
-
 
 }

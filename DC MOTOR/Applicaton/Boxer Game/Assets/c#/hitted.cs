@@ -53,9 +53,7 @@ public class hitted : MonoBehaviour {
         hit_face = GameObject.FindGameObjectWithTag("hitted").transform;
     }
 	
-	// Update is called once per frame
 	void Update () {
-        //offset = face.position - hit.transform.position;
         //get animater in which state
         if (s != anim_change.s)
         {
@@ -114,41 +112,31 @@ public class hitted : MonoBehaviour {
             collider_dir.Rhit = 0;
 
 			//hit_pos_on_face
-			//Debug.Log(collider_dir.hit_pos.ToString("f4"));
             if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
             else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
             
-            //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x, face.position.y + collider_dir.hit_pos.y, face.position.z);
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x*0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
             if (collider_dir.hit_pos.x > 0.2)
             {
-                /*hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;*/
                 if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                 StartCoroutine(No1Work(true, false, state));
 			}
             else if (collider_dir.hit_pos.x < -0.2)
             {
-                /*hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;*/
                 if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                 StartCoroutine(No1Work(false, true, state));
 			}
             else
             {
-                /*hit.transform.position = face.position;
-                hit_move = hit.transform.position - hit_position;
-                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);*/
                 if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                 StartCoroutine(No1Work(false, false, state));
 			}
-            //hit.GetComponent<Renderer>().material.color = color;
             count ++ ;
             Line = hit.transform.position;
             DrawLine(hit_position + move * k * 2, hit_position, 1f);
@@ -215,43 +203,31 @@ public class hitted : MonoBehaviour {
             collider_dir.Lhit = 0;
 
 			//hit_pos_on_face
-			//Debug.Log(collider_dir.hit_pos.ToString("f4"));
             if (collider_dir.hit_pos.x > 0.42) collider_dir.hit_pos.x = 0.42f;
             else if (collider_dir.hit_pos.x < -0.42) collider_dir.hit_pos.x = -0.42f;
 
-            
-            //hit.transform.localScale = new Vector3(0.03f, 0.02f, 0.05f);
             hit.transform.position = new Vector3(face.position.x + collider_dir.hit_pos.x , face.position.y  + collider_dir.hit_pos.y , face.position.z);
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x * 0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
             if (collider_dir.hit_pos.x > 0.2) {
-                /*hit.transform.position = new Vector3(face.position.x + 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;*/
                 if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                 StartCoroutine(No1Work(true, false, state));
 			}
             else if (collider_dir.hit_pos.x < -0.2)
             {
-                /*hit.transform.position = new Vector3(face.position.x - 0.27f, face.position.y, face.position.z);
-                hit_move = hit.transform.position - hit_position;*/
                 if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                 StartCoroutine(No1Work(false, true, state));
 			}
             else
             {
-                /*hit.transform.position = face.position;
-                hit_move = hit.transform.position - hit_position;
-                hit.transform.localScale = new Vector3(0.04f, 0.02f, 0.05f);*/
                 if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                 StartCoroutine(No1Work(false, false, state));
 			} 
-            //hit.GetComponent<Renderer>().material.color = color;
             count++;
-            //Debug.DrawRay(hit.transform.position - collider_dir.hit_pos * l, collider_dir.hit_pos * l, Color.red);
             Line = hit.transform.position;
             DrawLine(hit_position  + move * k * 2, hit_position , 1f);
 
@@ -269,7 +245,6 @@ public class hitted : MonoBehaviour {
                 lr.SetPosition(0, hit_position + move * k * 2 + offset);
                 lr.SetPosition(1, hit_position + offset);
             }
-            //Debug.DrawRay(hit_position + offset - move*k*2, move*k*2, Color.red);
         }
         if (count == 80) {
             count = 0;
@@ -308,8 +283,7 @@ public class hitted : MonoBehaviour {
 		if (R)//奇數次點擊
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }
-			//Debug.Log("state " + state);		
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }	
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
@@ -318,7 +292,6 @@ public class hitted : MonoBehaviour {
 		{
 			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); }
 			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
-			//Debug.Log("state "+state);
 			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
 			yield return new WaitForSeconds(time);
 			LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
@@ -328,7 +301,6 @@ public class hitted : MonoBehaviour {
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); }
 			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; langle = 120; Debug.Log("C 輕 "); }
-			//Debug.Log("state " + state);
 			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
 			LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);
 			yield return new WaitForSeconds(time);

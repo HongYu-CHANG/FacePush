@@ -11,7 +11,7 @@ public class anim_change_hitted : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _animator = this.GetComponent<Animator>();
-        //Debug.Log("s: "+anim_change.s);
+        
         _animator.SetInteger("change", anim_change.s);
         count = 0;
     }
@@ -20,34 +20,13 @@ public class anim_change_hitted : MonoBehaviour {
 	void Update () {
 
         if (s != anim_change.s) {
-            //Debug.Log("s: " + anim_change.s);
+            
             _animator.SetInteger("change", anim_change.s);
             s = anim_change.s;
-        }
-
+        }  
         
-        /*if (!AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("State"))
-        {
-            if (count == 0)
-            {
-                //Debug.Log("s: " + anim_change.s);
-                _animator.SetInteger("change", anim_change.s);
-            }
-            count = 1;
-        }
-        else
-        {
-            if (count == 1)
-            {
-                //Debug.Log("s: " + anim_change.s);
-                _animator.SetInteger("change", anim_change.s);
-            }
-        }*/
     }
 
-    
-
-    
 
     bool AnimatorIsPlaying()
     {

@@ -19,15 +19,7 @@ public class fish_control : MonoBehaviour {
         LOSCSender = LMotor.GetComponent<OSCSender>();
         LOSCSender.setWhichMotor("L");
 
-
-		/*transform.DOLocalMove(new Vector3(20, 0, 20), 5);
-		Sequence mySequence = DOTween.Sequence();
-		transform.DOLocalMove(new Vector3(20, 0, -0.26f), 5);
-		 */
 		transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
-		//mySequence.Append(transform.DOLocalMoveX(-10, 3));
-		
-		//transform.DOLocalMoveX(-20, 10);
 	}
 	
 	// Update is called once per frame

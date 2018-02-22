@@ -37,7 +37,6 @@ public class anim_change : MonoBehaviour {
                 s = 0;
                 _animator.SetInteger("change", s);
                 count = 0;
-                //Debug.Log("stop");
             }
         } 
 
