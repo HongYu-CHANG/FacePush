@@ -1,0 +1,125 @@
+/*  remove motors and PID control code
+ *  Feather focuses on 2 tasks:
+ *  - receive Unity OSC messages
+ *  - send command to UNO by I2C communication
+ *  
+ *  Modified by redfishchang 22.02.18
+ */
+
+#include <SLIPEncodedSerial.h>
+#include <OSCData.h>
+#include <OSCBoards.h>
+#include <OSCTiming.h>
+#include <OSCMatch.h>
+#include <SLIPEncodedUSBSerial.h>
+#include <SPI.h>
+#include <WiFi101.h>
+#include <WiFiUdp.h>
+#include <OSCMessage.h>
+#include <OSCBundle.h>
+#include <Wire.h>
+#define SLAVE_ADDRESS 0x12
+#define SERIAL_BAUD 9600 
+
+int status = WL_IDLE_STATUS;
+char ssid[] = "NextInterfaces Lab"; // your network SSID (name)
+char pass[] = "nextinterfaces"; // your network password (use for WPA, or use as key for WEP)
+
+//IP setup
+IPAddress sendToUnityPC_Ip(192, 168, 0, 154); // UnityPC's IP
+unsigned int sendToUnityPC_Port = 8000; // UnityPC's listening port
+unsigned int listenPort = 9000; // local port to listen on
+char packetBuffer[255]; //buffer to hold incoming packet
+char ReplyBuffer[] = "acknowledged"; // a string to send back
+WiFiUDP Udp_send;
+WiFiUDP Udp_listen;
+
+bool Sending = true;
+
+void setup() 
+{
+  WiFi.setPins(8, 7, 4, 2);//Configure pins for Adafruit ATWINC1500 Feather
+  Serial.begin(SERIAL_BAUD);//Initialize serial and wait for port to open:
+  
+  if (WiFi.status() == WL_NO_SHIELD) // check for the presence of the shields
+  {
+    Serial.println("WiFi shield not present");
+    while (true); // don't continue:
+  }
+  while ( status != WL_CONNECTED) // attempt to connect to Wifi network:
+  {
+    Serial.print("Attempting to connect to SSID: ");
+    Serial.println(ssid);
+    status = WiFi.begin(ssid, pass); // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+    delay(10000);
+  }
+  printWifiStatus();
+  
+  //OSC Start
+  Udp_send.begin(sendToUnityPC_Port);
+  Udp_listen.begin(listenPort);
+
+  //I2C
+  Wire.begin();
+  Serial.println("I2C Master.02 started");
+}
+
+void printWifiStatus() 
+{
+  Serial.println("Connected to wifi");
+  // print the SSID of the network you're attached to:
+  Serial.print("SSID: ");
+  Serial.println(WiFi.SSID());
+  // print your WiFi shield's IP address:
+  IPAddress ip = WiFi.localIP();
+  Serial.print("IP Address: ");
+  Serial.println(ip);
+  // print the received signal strength:
+  long rssi = WiFi.RSSI();
+  Serial.print("signal strength (RSSI):");
+  Serial.print(rssi);
+  Serial.println(" dBm");
+  Serial.println("\nStarting connection to server...");
+}
+
+void loop() 
+{
+   // OSC Write Send 
+   if(Sending)
+   {
+     OSCMessage msg("/1/fader1");
+     msg.add("Connected");
+     Udp_send.beginPacket(sendToUnityPC_Ip, sendToUnityPC_Port);
+     msg.send(Udp_send);
+     Udp_send.endPacket();
+     msg.empty();
+     delay(1000);  
+   }
+
+    // OSC Read Receive
+  OSCMessage messageIn;
+  int size;
+  if ( (size = Udp_listen.parsePacket()) > 0)
+  {
+    //Serial.println(millis());
+    while (size--)
+      messageIn.fill(Udp_listen.read());
+    if (!messageIn.hasError()) {
+        Sending = false;
+        char RorLMotor[1];
+        messageIn.getString(0, RorLMotor, 1);
+        int Degree = (int)messageIn.getInt(1);
+        int speedNum = (int)messageIn.getInt(2);
+
+        // I2C message
+        String temp = String(RorLMotor[0]) + " " + String(Degree) + " " + String(speedNum) + "\n";
+        char buffer[32];
+        temp.toCharArray(buffer, 32);
+        //Serial.print(temp);
+        
+        Wire.beginTransmission(SLAVE_ADDRESS);
+        Wire.write(buffer);
+        Wire.endTransmission();
+    }
+  }
+}
