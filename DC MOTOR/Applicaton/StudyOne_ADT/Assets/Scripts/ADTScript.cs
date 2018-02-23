@@ -6,6 +6,8 @@ using System.IO.Ports;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
+//using UnityEngine;
 
 public class ADTScript : MonoBehaviour {
 
@@ -22,11 +24,11 @@ public class ADTScript : MonoBehaviour {
 	private StreamWriter fileWriter;
 
 	//motor parament
+	public int fraction = 20;
+	public int[] fractionArray = new int[24];
 	private int motorSpeed = 200;
-	private int RinitialDegree = 90;
-	private int LinitialDegree = 90;
-	private int fraction = 20;
-	private int[] fractionArray = new int[24];
+	private int initialDegree = 90;
+	//private int LinitialDegree = 90;
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
 	//timer
@@ -59,15 +61,13 @@ public class ADTScript : MonoBehaviour {
 			fractionArray[i] = fraction;
 		}
 	}
-	
+
 	// Update is called once per frame
 	void Update () 
 	{
 		if (timerStart) //倒數計時
 		{
             remainingTime  -= (Time.fixedDeltaTime*(float)0.6);
-            Debug.Log(Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds));
-            Debug.Log (remainingTime);
 			updateTimerText ((int)remainingTime);
 			if (remainingTime < 1) {
 				remainingTime = 0;
@@ -78,14 +78,12 @@ public class ADTScript : MonoBehaviour {
 		if (stimTimerStart) //感受刺激
 		{
             int stimremainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);           
-            //Debug.Log ("stimremainingTime : " + stimremainingTime + " timeSent : " + stimSent);
             if (!stimSent) {             
                 if (Mathf.Abs (stimremainingTime - stimDelay) < 1) {                   
 					new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(20)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(100)+" "+motorSpeed);                   
                     stimSent = true;
                 }
             }
-			//Debug.Log (stimremainingTime + ": " + debugCount++);
 			if (stimremainingTime < 1) {
                 stimTimerStart = false;
                 coverImage.enabled = false;
@@ -95,13 +93,12 @@ public class ADTScript : MonoBehaviour {
 
 	private void updateTimerText(int time)
 	{
-		//timerTextDisplay = GameObject.Find ("timeText").GetComponent<Text> ();
 		timerTextDisplay.text = "Time: " + time.ToString()+"s";
 	}
 
 	public void starttButtonClick()
 	{
-		//Debug.Log("startButton");
+		Debug.Log("startButton");
 		coverImage.enabled=true;
 		stimTimerStart = true;
 		prevTaskTime = DateTime.Now.TimeOfDay;
