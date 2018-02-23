@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Scenes/CrazyMotor.unity
+- path: Assets/Scenes/Roller Coaster.unity
   isLoaded: 1
   isActive: 1

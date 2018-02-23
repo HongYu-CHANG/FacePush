@@ -110,7 +110,6 @@ public class VideoContoller : MonoBehaviour {
         public bool connected = true;
         public bool mac = false;
         public string choice = "tty.usbmodem1421";
-
         private SerialPort arduinoController;
         
         public void connectToArdunio()
