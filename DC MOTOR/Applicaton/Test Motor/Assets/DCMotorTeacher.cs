@@ -81,18 +81,23 @@ public class DCMotorTeacher : MonoBehaviour {
 			time = Lmotor_Time.value;
 		if(click)//奇數次點擊
 		{
-			new Thread (Uno.SendData).Start(400+" "+RSpeed+" "+100+" "+LSpeed);
+			new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(100)+" "+RSpeed+" "+degreeConvertToRotaryCoder(100)+" "+LSpeed);
 	        yield return new WaitForSeconds(time);
 	        Debug.Log("Time's up!");
     	}
     	else
     	{
-    		new Thread (Uno.SendData).Start(20+" "+RSpeed+" "+100+" "+LSpeed);
+    		new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(20)+" "+RSpeed+" "+degreeConvertToRotaryCoder(100)+" "+LSpeed);
 	        yield return new WaitForSeconds(time);
 	        Debug.Log("Time's up!");
     	}
 
 	}
+
+	private int degreeConvertToRotaryCoder(int degree)
+    {
+        return (degree * 1024/360);
+    }
 
 	class CommunicateWithArduino
     {
