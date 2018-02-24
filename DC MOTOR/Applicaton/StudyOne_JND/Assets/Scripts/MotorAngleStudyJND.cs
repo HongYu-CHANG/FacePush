@@ -57,53 +57,39 @@ public class MotorAngleStudyJND : MonoBehaviour
 	float remainingTime = 0;
 	static int interval = 15;
 	bool stimTimer = false;
-	int stimTime = 4;
-	int stimDelay = 2;
-	bool stimSent = true;
+	int stimTime = 8;
+	int stimDelayFirst = 5;
+	int stimDelaySecond = 2;
+	bool stimFirstSent = true;
+	bool stimSecondSent = true;
 	int taskNum = 1;
 	int tasks = 9;
 	int response;
 	float responseTime;
+	TimeSpan endStimTime;
 
 	// Use this for initialization
 	void Start()
 	{
 
 		new Thread(Uno.connectToArdunio).Start();
-
-		//sw = new StreamWriter("JND_results\\" + userName + ".csv", true);
-
+		writeFile("trial_no,baseline_angle,offset_angle,response,response_time\n");
 		coverImage.enabled = false;
 		finishedText.enabled = false;
 		finishedImage.enabled = false;
-		sw.WriteLine("trial_no", "baseline_angle", "offset_angle", "response", "response_time");
-		Debug.Log("Start");
-
 		initializeTrials();
 		generateTrialNo();
-
+		Debug.Log("Start");
 	}
 
 	// Update is called once per frame
 	void Update()
 	{
-		Debug.Log("start print");
-		foreach (TrialPair p in allTrials)
-		{
-			Debug.Log(p.baselineTrial);
-			Debug.Log(p.offsetTrial);
-		}
-		Debug.Log("stop print");
-		for (int i = 0; i < randomizedTrialNo.Length; i++)
-		{
-			Debug.Log(randomizedTrialNo[i]);
-		}
-
 		if (timerStart)
 		{
-			remainingTime -= (Time.fixedDeltaTime * (float)0.6);
-			Debug.Log(Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds));
-			Debug.Log(remainingTime);
+			remainingTime -= (Time.fixedDeltaTime * (float) 0.6);
+			//Debug.Log(Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds));
+			//Debug.Log(remainingTime);
 			updateTimerText((int)remainingTime);
 			if (remainingTime < 1)
 			{
@@ -112,24 +98,36 @@ public class MotorAngleStudyJND : MonoBehaviour
 				startButton.interactable = true;
 			}
 		}
-		//Debug.Log("---------Start UPDATE---------");
 		if (stimTimer)
 		{
-			int stimremainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);
+			int stimRemainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);
 			//Debug.Log ("stimremainingTime : " + stimremainingTime + " timeSent : " + stimSent);
-			if (!stimSent)
+			if (!stimFirstSent)
 			{
-				if (Mathf.Abs(stimremainingTime - stimDelay) < 1)
+				if (Mathf.Abs(stimRemainingTime - stimDelayFirst) < 1) // 1
 				{
-					//sendData(task[randomizedOrder[taskNum]]);
-					stimSent = true;
+					Debug.Log("in sending first data");
+					Debug.Log("testing " + allTrials[randomizedTrialNo[taskNum]].baselineTrial.ToString());
+					sendFirstData(taskNum);
+					stimFirstSent = true;
+				}
+			}
+			if (!stimSecondSent)
+			{
+				if (Mathf.Abs(stimRemainingTime - stimDelaySecond) < 1)
+				{
+					Debug.Log("in sending second data");
+					Debug.Log("testing " + allTrials[randomizedTrialNo[taskNum]].offsetTrial.ToString());
+					sendSecondData(taskNum);
+					stimSecondSent = true;
 				}
 			}
 			//Debug.Log (stimremainingTime + ": " + debugCount++);
-			if (stimremainingTime < 1)
+			if (stimRemainingTime < 1)
 			{
 				stimTimer = false;
 				coverImage.enabled = false;
+				endStimTime = DateTime.Now.TimeOfDay;
 			}
 		}
 
@@ -144,11 +142,11 @@ public class MotorAngleStudyJND : MonoBehaviour
 		// stim timer may be different
 		stimTimer = true;
 		prevTaskTime = DateTime.Now.TimeOfDay;
-		stimSent = false;
-
+		stimFirstSent = false;
+		stimSecondSent = false;
 		confirmButton.interactable = true;
 		repeatButton.interactable = true;
-		startButton.interactable = true;
+		startButton.interactable = false;
 	}
 
 	public void confirmButtonClick()
@@ -156,6 +154,11 @@ public class MotorAngleStudyJND : MonoBehaviour
 		// When confirm button is clicked, record response, wait for a 15 sec interval.
 		// After the interval, continue next trial.
 		Debug.Log("confirmButton");
+		int RTInSecond = Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - endStimTime.Seconds);
+		int RTInMillisecond = Mathf.Abs((DateTime.Now.TimeOfDay.Milliseconds) - endStimTime.Milliseconds);
+		responseTime = RTInSecond * 1000 + RTInMillisecond;
+		Debug.Log(responseTime);
+
 		writeData();
 		timerStart = true;
 		prevTaskTime = DateTime.Now.TimeOfDay;
@@ -169,7 +172,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 		}
 		taskNum++;
 		updateTaskText(taskNum);
-		remainingTime = 15;
+		remainingTime = interval;
 	}
 
 	public void repeatButtonClick()
@@ -180,7 +183,8 @@ public class MotorAngleStudyJND : MonoBehaviour
 		// stim timer may be different
 		stimTimer = true;
 		prevTaskTime = DateTime.Now.TimeOfDay;
-		stimSent = false;
+		stimFirstSent = false;
+		stimSecondSent = false;
 	}
 
 	void updateTimerText(int time)
@@ -206,7 +210,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	IEnumerator sendFirstData(int trialNum)
 	{
 		float time = 1.0f;
-		Debug.Log ("sendFirstData");
+		Debug.Log ("sendFirstData call");
 		string data = allTrials[randomizedTrialNo[trialNum]].baselineTrial;
 		Debug.Log(data);
 		if (Uno != null)
@@ -224,7 +228,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	IEnumerator sendSecondData(int trialNum)
 	{
 		float time = 1.0f;
-		Debug.Log("sendSecondData");
+		Debug.Log("sendSecondData call");
 		string data = allTrials[randomizedTrialNo[trialNum]].offsetTrial;
 		Debug.Log(data);
 		if (Uno != null)
