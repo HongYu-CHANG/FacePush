@@ -20,6 +20,8 @@ public class ADTScript : MonoBehaviour {
 	public Text finishedText;
 
 	//user record
+	public Toggle yesToggle;
+	public Toggle noToggle;
 	public String  userName ="User1";
 	private StreamWriter fileWriter;
 
@@ -29,6 +31,9 @@ public class ADTScript : MonoBehaviour {
 	private int motorSpeed = 200;
 	private int initialDegree = 90;
 	//private int LinitialDegree = 90;
+	private int nowDegree = 0;
+	private int yesCounter = 0;
+	private int nowCounter = -1;
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
 	//timer
@@ -44,15 +49,12 @@ public class ADTScript : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
 	{
-		//Uno = new CommunicateWithArduino();
-        new Thread (Uno.connectToArdunio).Start ();
-		fileWriter = new StreamWriter( "Results/"+"AnsOf" + userName+".csv", true);
-		//coverImage.enabled=false;
+		Debug.Log(userName + " Study Start ...\n");
+		nowDegree = initialDegree;
+		new Thread (Uno.connectToArdunio).Start ();
 		finishedText.enabled = false;
 		finishedImage.enabled = false;
-		//demoText.enabled = false;
-		Debug.Log("start");
-		writeFile(userName + ": "+ DateTime.Now.TimeOfDay.ToString()+"\n");
+		writeFile("Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value\n");
 		fractionArray[0] = fraction;
 		for(int i = 1 ; i < 24 ; i++ )
 		{
@@ -67,12 +69,19 @@ public class ADTScript : MonoBehaviour {
 	{
 		if (timerStart) //倒數計時
 		{
+            new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(0)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(0)+" "+motorSpeed);
             remainingTime  -= (Time.fixedDeltaTime*(float)0.6);
 			updateTimerText ((int)remainingTime);
-			if (remainingTime < 1) {
+			if (remainingTime < 1) 
+			{
 				remainingTime = 0;
 				timerStart = false;
 				startButton.interactable = true;
+				if(nowCounter >= 23) // Strudy Finish!
+		        {
+		        	finishedText.enabled = true;
+					finishedImage.enabled = true;
+		        }
 			}
 		}
 		if (stimTimerStart) //感受刺激
@@ -80,7 +89,7 @@ public class ADTScript : MonoBehaviour {
             int stimremainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);           
             if (!stimSent) {             
                 if (Mathf.Abs (stimremainingTime - stimDelay) < 1) {                   
-					new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(20)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(100)+" "+motorSpeed);                   
+					new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed);                   
                     stimSent = true;
                 }
             }
@@ -89,6 +98,7 @@ public class ADTScript : MonoBehaviour {
                 coverImage.enabled = false;
 			}
         }
+        
 	}
 
 	private void updateTimerText(int time)
@@ -98,38 +108,57 @@ public class ADTScript : MonoBehaviour {
 
 	public void starttButtonClick()
 	{
-		Debug.Log("startButton");
+		nowCounter ++;
+		Debug.Log ("第" + (nowCounter + 1) + "次測試...開始\n");
+		Debug.Log ("目前角度為 : " + nowDegree + "\n");
 		coverImage.enabled=true;
 		stimTimerStart = true;
 		prevTaskTime = DateTime.Now.TimeOfDay;
 		stimSent = false;
-
 		confirmButton.interactable = true;
-		startButton.interactable = true;
+		startButton.interactable = false;
 	}
 
 	public void confirmButtonClick()
 	{
-		//Debug.Log("confirmButton");
 		writeData ();
+		if(yesToggle.isOn)
+		{
+			yesCounter++;
+		}
+		else if(noToggle.isOn)
+		{
+			yesCounter = 0;
+
+		}
+		changeTheDegree();
 		timerStart=true;
 		confirmButton.interactable = false;
 		startButton.interactable = false;
-        remainingTime = 15;
+        remainingTime = 1;
+
     }
-    
+    private void changeTheDegree()
+    {
+    	if(yesCounter == 2)
+    	{
+    		nowDegree -= fractionArray[nowCounter];
+    		yesCounter = 0;
+    	}
+    	else if (yesCounter == 0)
+    		nowDegree += fractionArray[nowCounter];
+    }
     private void writeData()
     {
-		//Debug.Log (wetSlider.value);
-		Debug.Log ("writeData");
-		//Debug.Log (comfortSlider.value.ToString());
-
-//		writeFile (","+task[randomizedOrder[taskNum]].ToString()+","+command+","+frequency+","+wetSlider.value.ToString()+","+comfortSlider.value.ToString()+"\n");
-		//writeFile ("\n");
+		writeFile (userName+","+System.DateTime.Now.ToString()+","+ (nowCounter + 1) +","+nowDegree+
+			","+yesToggle.isOn.ToString()+","+noToggle.isOn.ToString()+"\n");
+		Debug.Log ("Data Write... Finish\n");
+		Debug.Log ("第" + (nowCounter + 1) + "次測試...完成\n");
 	}
 
-	private void writeFile(String data){
-		
+	private void writeFile(String data)
+	{
+		fileWriter = new StreamWriter( "Results/"+"Ans Of "+ userName +".csv", true);
 		fileWriter.Write (data);
 		fileWriter.Flush();
 		fileWriter.Close();
@@ -184,7 +213,7 @@ public class ADTScript : MonoBehaviour {
         public void SendData(object obj)
         {
             string data = obj as string;
-            Debug.Log(data);
+            //Debug.Log(data);
             if (connected)
             {
                 if (arduinoController != null)
