@@ -23,6 +23,7 @@ public class ADTScript : MonoBehaviour {
 	public Toggle yesToggle;
 	public Toggle noToggle;
 	public String  userName ="User1";
+	public int time = 1;
 	private StreamWriter fileWriter;
 
 	//motor parament
@@ -135,7 +136,7 @@ public class ADTScript : MonoBehaviour {
 		timerStart=true;
 		confirmButton.interactable = false;
 		startButton.interactable = false;
-        remainingTime = 1;
+        remainingTime = 15;
 
     }
     private void changeTheDegree()
@@ -158,7 +159,7 @@ public class ADTScript : MonoBehaviour {
 
 	private void writeFile(String data)
 	{
-		fileWriter = new StreamWriter( "Results/"+"Ans Of "+ userName +".csv", true);
+		fileWriter = new StreamWriter( "ADT_Results/"+"ADT Answer Of "+ userName +"_"+ time +".csv", true);
 		fileWriter.Write (data);
 		fileWriter.Flush();
 		fileWriter.Close();
