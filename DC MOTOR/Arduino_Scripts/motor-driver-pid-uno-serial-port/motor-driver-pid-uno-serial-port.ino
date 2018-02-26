@@ -147,7 +147,7 @@ void loop()
     }
   }
   if (stringComplete) {
-    Serial.println(inputString);
+//    Serial.println(inputString);
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < inputString.length(); j++) {
         if (inputString.substring(j, j + 1) == " ")
@@ -169,9 +169,9 @@ void loop()
     speedRight = (short) motorParameters[3];
     leftPID.SetOutputLimits(-speedLeft, speedLeft);
     rightPID.SetOutputLimits(-speedRight, speedRight);
-    for (int i = 0; i < 4; i++) {
-      Serial.println(motorParameters[i]);
-    }
+//    for (int i = 0; i < 4; i++) {
+//      Serial.println(motorParameters[i]);
+//    }
     stringComplete = false;
     inputString = "";
   } 

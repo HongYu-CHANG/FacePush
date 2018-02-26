@@ -65,7 +65,6 @@ public class MotorAngleStudyJND : MonoBehaviour
 	};
 	List<TrialPair> allTrials = new List<TrialPair>();
 	static int[] allRandomizedTrialNo;
-	static int[] randomizedTrialNo = { 0, 1, 2, 3, 4, 5, 6, 7, 8 };
     int blocks = 2;
 	int taskNum = 0;
 	int totalTasks;

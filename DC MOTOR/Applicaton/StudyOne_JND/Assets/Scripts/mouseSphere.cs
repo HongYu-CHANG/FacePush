@@ -19,10 +19,10 @@ public class mouseSphere : MonoBehaviour
 
 		mouse = (Input.mousePosition);
 		//Debug.Log (mouse.x);
-		mouse.z = 91;
+		mouse.z = 90;
 		//Debug.Log (mouse.y);
 		transform.position = Camera.main.ScreenToWorldPoint(mouse);
-		mouse.z = 91;
+		mouse.z = 90;
 	}
 
 }

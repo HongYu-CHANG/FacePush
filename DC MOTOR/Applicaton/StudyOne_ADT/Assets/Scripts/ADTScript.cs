@@ -29,8 +29,8 @@ public class ADTScript : MonoBehaviour {
 	//motor parament
 	public int fraction = 20;
 	public int[] fractionArray = new int[24];
-	private int motorSpeed = 200;
-	private int initialDegree = 90;
+	private int motorSpeed = 255;
+	private int initialDegree = 150;
 	//private int LinitialDegree = 90;
 	private int nowDegree = 0;
 	private int yesCounter = 0;
@@ -44,7 +44,7 @@ public class ADTScript : MonoBehaviour {
 	private bool stimTimerStart = false;
 	private float remainingTime = 0;
 	private bool stimSent = true;
-	private int stimTime = 4;
+	private int stimTime = 6;
 	private int stimDelay = 2;
 
 	// Use this for initialization
@@ -55,7 +55,6 @@ public class ADTScript : MonoBehaviour {
 		new Thread (Uno.connectToArdunio).Start ();
 		finishedText.enabled = false;
 		finishedImage.enabled = false;
-		writeFile("Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value\n");
 		fractionArray[0] = fraction;
 		for(int i = 1 ; i < 24 ; i++ )
 		{
@@ -63,6 +62,7 @@ public class ADTScript : MonoBehaviour {
 
 			fractionArray[i] = fraction;
 		}
+		writeFile("Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value\n");
 	}
 
 	// Update is called once per frame
@@ -70,7 +70,6 @@ public class ADTScript : MonoBehaviour {
 	{
 		if (timerStart) //倒數計時
 		{
-            new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(0)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(0)+" "+motorSpeed);
             remainingTime  -= (Time.fixedDeltaTime*(float)0.6);
 			updateTimerText ((int)remainingTime);
 			if (remainingTime < 1) 
@@ -89,13 +88,14 @@ public class ADTScript : MonoBehaviour {
 		{
             int stimremainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);           
             if (!stimSent) {             
-                if (Mathf.Abs (stimremainingTime - stimDelay) < 1) {                   
-					new Thread (Uno.SendData).Start(degreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed+" "+degreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed);                   
+                if (Mathf.Abs (stimremainingTime - stimDelay) < 2) {                   
+					new Thread (Uno.SendData).Start(LdegreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed+" "+RdegreeConvertToRotaryCoder(nowDegree)+" "+motorSpeed);                   
                     stimSent = true;
                 }
             }
 			if (stimremainingTime < 1) {
-                stimTimerStart = false;
+				new Thread(Uno.SendData).Start(LdegreeConvertToRotaryCoder(0) + " " + motorSpeed + " " + RdegreeConvertToRotaryCoder(0) + " " + motorSpeed);
+				stimTimerStart = false;
                 coverImage.enabled = false;
 			}
         }
@@ -136,7 +136,7 @@ public class ADTScript : MonoBehaviour {
 		timerStart=true;
 		confirmButton.interactable = false;
 		startButton.interactable = false;
-        remainingTime = 15;
+        remainingTime = 5;
 
     }
     private void changeTheDegree()
@@ -159,23 +159,27 @@ public class ADTScript : MonoBehaviour {
 
 	private void writeFile(String data)
 	{
-		fileWriter = new StreamWriter( "ADT_Results/"+"ADT Answer Of "+ userName +"_"+ time +".csv", true);
+		fileWriter = new StreamWriter( "ADT_Results\\"+"ADT Answer Of "+ userName +"_"+ fraction+"_" + time +".csv", true);
 		fileWriter.Write (data);
 		fileWriter.Flush();
 		fileWriter.Close();
 		fileWriter.Dispose();
 	}
 
-	private int degreeConvertToRotaryCoder(int degree)
+	private int LdegreeConvertToRotaryCoder(int degree)
     {
-        return (degree * 1024/360);
+        return ((degree * 1024 / 360)+15);
     }
+	private int RdegreeConvertToRotaryCoder(int degree)
+	{
+		return ((degree * 1024 / 360)+15);
+	}
 
 	class CommunicateWithArduino
     {
 
         public bool connected = true;
-        public bool mac = true;
+        public bool mac = false;
         public string choice = "cu.usbmodem1421";
         private SerialPort arduinoController;
         
@@ -184,7 +188,7 @@ public class ADTScript : MonoBehaviour {
             
             if (connected)
             {
-				string portChoice = "COM2";
+				string portChoice = "COM8";
                 if (mac)
                 {
                     int p = (int)Environment.OSVersion.Platform;
