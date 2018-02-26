@@ -79,7 +79,7 @@ public class hitted_control : MonoBehaviour {
         if (collider_dir.Rhit == 1 && counts == 0)
             {
 
-                if (control_LH == 1)
+                if (state == 1 || state == 5)
                 {
                     //moving position
                     time = 0.2f;
@@ -92,7 +92,7 @@ public class hitted_control : MonoBehaviour {
                     k = 1f;
                     //Debug.Log("R 重 ");
                 }
-                else if (control_LH == 2)
+                else if (state == 3)
                 {
                     //moving position
                     time = 0.4f;
@@ -110,7 +110,7 @@ public class hitted_control : MonoBehaviour {
                 move = move.normalized;
 
                 Vector3 pos = this.transform.position + collider_dir.Rdir * l;
-                /*Sequence mySequence = DOTween.Sequence();
+                Sequence mySequence = DOTween.Sequence();
 
                 Tweener move1 = transform.DOMove(pos, time, true);
                 Tweener rot1 = transform.DORotate(this.transform.rotation.eulerAngles + new Vector3(r, 0, r), 0.2f);
@@ -120,7 +120,7 @@ public class hitted_control : MonoBehaviour {
                 mySequence.Append(move1);
                 mySequence.Join(rot1);
                 mySequence.Append(move2);
-                mySequence.Join(rot2);*/
+                mySequence.Join(rot2);
                 Debug.Log("Rhit ");
                 collider_dir.Rhit = 0;
 
@@ -134,19 +134,19 @@ public class hitted_control : MonoBehaviour {
                 hit_face.position = collider_dir.pos;
                 if (control == 1)
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
+                    if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                     hit_position = new Vector3(face.position.x + 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
             }
                 else if (control == 2)
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
+                    if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                     hit_position = new Vector3(face.position.x - 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
             }
                 else
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
+                    if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                     hit_position = new Vector3(face.position.x , face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
             }
@@ -158,7 +158,7 @@ public class hitted_control : MonoBehaviour {
         }
             else if (collider_dir.Lhit == 1 && counts == 0)
             {
-                if (control_LH == 1)
+                if (state == 2)
                 {
                     //moving position
                     time = 0.2f;
@@ -171,7 +171,7 @@ public class hitted_control : MonoBehaviour {
                     k = 1f;
                     //Debug.Log("L 重 ");
                 }
-                else if (control_LH == 2)
+                else if (state == 4)
                 {
                     //moving position
                     time = 0.5f;
@@ -190,7 +190,7 @@ public class hitted_control : MonoBehaviour {
                 move = move.normalized;
 
                 Vector3 pos = this.transform.position + collider_dir.Ldir * l;
-                /*Sequence mySequence = DOTween.Sequence();
+                Sequence mySequence = DOTween.Sequence();
 
                 Tweener move1 = transform.DOMove(pos, time, true);
                 Tweener rot1 = transform.DORotate(this.transform.rotation.eulerAngles + new Vector3(r, 0, -r), 0.2f);
@@ -200,7 +200,7 @@ public class hitted_control : MonoBehaviour {
                 mySequence.Append(move1);
                 mySequence.Join(rot1);
                 mySequence.Append(move2);
-                mySequence.Join(rot2);*/
+                mySequence.Join(rot2);
                 Debug.Log("Lhit ");
                 collider_dir.Lhit = 0;
 
@@ -213,20 +213,20 @@ public class hitted_control : MonoBehaviour {
                 hit_face.position = collider_dir.pos;
                 if (control == 1)
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
+                    if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
 
                     hit_position = new Vector3(face.position.x + 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
             }
                 else if (control == 2)
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
+                    if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                     hit_position = new Vector3(face.position.x - 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
             }
                 else
                 {
-                    if (control_LH == 2) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
+                    if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                     hit_position = new Vector3(face.position.x , face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 

@@ -9,6 +9,9 @@ public class anim_change : MonoBehaviour {
     int count = 0;
     public static int s = 1;
 
+	//control
+	private int control = 1;
+
     // Use this for initialization
     void Start () {
         _animator = this.GetComponent<Animator>();
@@ -25,6 +28,8 @@ public class anim_change : MonoBehaviour {
             if (count == 0)
             {
                 s = Random.Range(1, 6);
+				//control
+				s = control;
                 _animator.SetInteger("change", s);
                 Debug.Log(s);
             }
@@ -38,9 +43,17 @@ public class anim_change : MonoBehaviour {
                 _animator.SetInteger("change", s);
                 count = 0;
             }
-        } 
+        }
 
-    }
+
+		//control
+		if (Input.GetKeyDown(KeyCode.Alpha1)) control = 1;
+		else if (Input.GetKeyDown(KeyCode.Alpha2)) control = 2;
+		else if (Input.GetKeyDown(KeyCode.Alpha3)) control = 3;
+		else if (Input.GetKeyDown(KeyCode.Alpha4)) control = 4;
+		else if (Input.GetKeyDown(KeyCode.Alpha5)) control = 5;
+
+	}
 
     bool AnimatorIsPlaying()
     {
