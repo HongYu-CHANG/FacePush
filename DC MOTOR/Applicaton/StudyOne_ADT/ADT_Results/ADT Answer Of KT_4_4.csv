@@ -1,0 +1,26 @@
+Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value
+Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value
+KT,2/27/2018 3:09:47 PM,1,150,True,False
+KT,2/27/2018 3:10:01 PM,2,150,True,False
+KT,2/27/2018 3:10:14 PM,3,132,True,False
+KT,2/27/2018 3:10:28 PM,4,132,True,False
+KT,2/27/2018 3:10:43 PM,5,114,True,False
+KT,2/27/2018 3:10:56 PM,6,114,True,False
+KT,2/27/2018 3:11:10 PM,7,96,True,False
+KT,2/27/2018 3:11:24 PM,8,96,True,False
+KT,2/27/2018 3:11:41 PM,9,78,True,False
+KT,2/27/2018 3:11:58 PM,10,78,False,True
+KT,2/27/2018 3:12:15 PM,11,87,False,True
+KT,2/27/2018 3:12:29 PM,12,96,True,False
+KT,2/27/2018 3:12:45 PM,13,96,True,False
+KT,2/27/2018 3:13:00 PM,14,87,True,False
+KT,2/27/2018 3:13:14 PM,15,87,True,False
+KT,2/27/2018 3:13:28 PM,16,78,False,True
+KT,2/27/2018 3:13:43 PM,17,87,True,False
+KT,2/27/2018 3:13:57 PM,18,87,True,False
+KT,2/27/2018 3:14:11 PM,19,83,True,False
+KT,2/27/2018 3:14:28 PM,20,83,False,True
+KT,2/27/2018 3:14:43 PM,21,87,True,False
+KT,2/27/2018 3:14:58 PM,22,87,True,False
+KT,2/27/2018 3:15:13 PM,23,83,True,False
+KT,2/27/2018 3:15:27 PM,24,83,True,False

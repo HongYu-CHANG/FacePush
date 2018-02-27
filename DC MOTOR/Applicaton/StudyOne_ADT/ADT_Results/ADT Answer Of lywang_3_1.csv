@@ -1,0 +1,25 @@
+Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value
+lywang,2/27/2018 9:33:00 PM,1,150,True,False
+lywang,2/27/2018 9:33:15 PM,2,150,True,False
+lywang,2/27/2018 9:33:29 PM,3,138,True,False
+lywang,2/27/2018 9:33:43 PM,4,138,True,False
+lywang,2/27/2018 9:33:59 PM,5,126,True,False
+lywang,2/27/2018 9:34:13 PM,6,126,True,False
+lywang,2/27/2018 9:34:27 PM,7,114,True,False
+lywang,2/27/2018 9:34:41 PM,8,114,True,False
+lywang,2/27/2018 9:35:10 PM,9,102,True,False
+lywang,2/27/2018 9:35:25 PM,10,102,True,False
+lywang,2/27/2018 9:35:39 PM,11,96,True,False
+lywang,2/27/2018 9:35:55 PM,12,96,False,True
+lywang,2/27/2018 9:36:09 PM,13,102,True,False
+lywang,2/27/2018 9:36:23 PM,14,102,True,False
+lywang,2/27/2018 9:36:38 PM,15,96,False,True
+lywang,2/27/2018 9:36:52 PM,16,102,True,False
+lywang,2/27/2018 9:37:07 PM,17,102,True,False
+lywang,2/27/2018 9:37:25 PM,18,99,False,True
+lywang,2/27/2018 9:37:39 PM,19,102,False,True
+lywang,2/27/2018 9:37:53 PM,20,105,True,False
+lywang,2/27/2018 9:38:08 PM,21,105,False,True
+lywang,2/27/2018 9:38:24 PM,22,108,True,False
+lywang,2/27/2018 9:38:38 PM,23,108,False,True
+lywang,2/27/2018 9:38:52 PM,24,111,True,False
