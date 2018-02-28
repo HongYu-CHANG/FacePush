@@ -1,0 +1,25 @@
+Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value
+haoran,2/28/2018 3:14:34 PM,1,150,True,False
+haoran,2/28/2018 3:14:49 PM,2,150,True,False
+haoran,2/28/2018 3:15:03 PM,3,138,True,False
+haoran,2/28/2018 3:15:17 PM,4,138,True,False
+haoran,2/28/2018 3:15:33 PM,5,126,True,False
+haoran,2/28/2018 3:15:48 PM,6,126,True,False
+haoran,2/28/2018 3:16:01 PM,7,114,True,False
+haoran,2/28/2018 3:16:16 PM,8,114,True,False
+haoran,2/28/2018 3:16:33 PM,9,102,True,False
+haoran,2/28/2018 3:16:51 PM,10,102,False,True
+haoran,2/28/2018 3:17:04 PM,11,108,False,True
+haoran,2/28/2018 3:17:19 PM,12,114,True,False
+haoran,2/28/2018 3:17:33 PM,13,114,True,False
+haoran,2/28/2018 3:17:49 PM,14,108,True,False
+haoran,2/28/2018 3:18:02 PM,15,108,True,False
+haoran,2/28/2018 3:18:16 PM,16,102,True,False
+haoran,2/28/2018 3:18:32 PM,17,102,True,False
+haoran,2/28/2018 3:18:47 PM,18,99,True,False
+haoran,2/28/2018 3:19:02 PM,19,99,False,True
+haoran,2/28/2018 3:19:20 PM,20,102,False,True
+haoran,2/28/2018 3:19:40 PM,21,105,False,True
+haoran,2/28/2018 3:19:55 PM,22,108,True,False
+haoran,2/28/2018 3:20:09 PM,23,108,True,False
+haoran,2/28/2018 3:20:24 PM,24,105,True,False
