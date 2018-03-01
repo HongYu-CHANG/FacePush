@@ -29,8 +29,10 @@ for (i in 20:24) {
 }
 
 mean(temp_degree$Degree)
-sd(temp_degree$Degree)
+sd(temp_degree$Degree) # got problem
 
+mean(dta_by_trial$trial_m[20:24])
+sd(dta_by_trial$trial_m[20:24])
 
 last_five_degree_m <- mean(temp_degree$Degree)
 last_five_degree_sd <- sd(temp_degree$Degree)
@@ -39,6 +41,16 @@ n <- length(temp_degree$Degree)
 last_five_degree_m
 last_five_degree_m + 1.96 * last_five_degree_sd / sqrt(n)
 last_five_degree_m - 1.96 * last_five_degree_sd / sqrt(n)
+
+library(dplyr)
+correct_ci <- temp_degree %>% group_by(Tester.Name) %>%
+  summarise(mm = mean(Degree)) %>%
+  summarise(m = mean(mm), std = sd(mm))
+correct_ci <- as.data.frame(correct_ci)
+
+correct_ci$m
+correct_ci$m + 1.96 * correct_ci$std / sqrt(9)
+correct_ci$m - 1.96 * correct_ci$std / sqrt(9)
 
 library(ggplot2)
 library(gridExtra)
@@ -52,10 +64,16 @@ ggplot(dta_all, aes(x = Counter, y = Degree, group = Block)) +
 
 # change Tester.Name into user 1 to user 9
 
-library(dplyr)
-dta_by_trial <- dta_all %>% group_by(Counter) %>%
-  summarise(trial_m = mean(Degree), trial_sd = sd(Degree))
-dta_by_trial <- as.data.frame(grp_by_trial)
+#wrong <- dta_all %>% group_by(Counter) %>%
+#  summarise(trial_m = mean(Degree), trial_sd = sd(Degree))
+#as.data.frame(wrong)
+
+dta_by_trial <- dta_all %>% group_by(Tester.Name, Counter) %>%
+  summarise(trial_name_m = mean(Degree)) %>%
+  group_by(Counter) %>%
+  summarise(trial_m = mean(trial_name_m), trial_sd = sd(trial_name_m))
+dta_by_trial <- as.data.frame(dta_by_trial)
+dta_by_trial
 
 ggplot(dta_by_trial, aes(x = Counter, y = trial_m)) +
   geom_errorbar(aes(ymin = trial_m - trial_sd, ymax = trial_m + trial_sd),
@@ -66,5 +84,3 @@ ggplot(dta_by_trial, aes(x = Counter, y = trial_m)) +
   labs( x = "Trial No: 1 - 24", y = "Mean Degree") +
   theme_bw() +
   scale_y_continuous(breaks = seq(0, 175, 25), limits = c(0, 175)) 
-
-
