@@ -8,7 +8,7 @@ dta_all <- dta_lst[[1]][c("Tester.Name", "Counter", "Degree")]
 for (i in 2:length(all_files)) {
   dta_all <- rbind(dta_all, dta_lst[[i]][c("Tester.Name", "Counter", "Degree")])
 }
-dta_all
+levels(dta_all$Tester.Name) <- paste0("User ", seq(1:9))
 
 dta_all$Block <- as.factor(rep(all_files, each = 24))
 levels(dta_all$Block) <- c("haoran_3_1", "haoran_3_2", "haoran_3_3", 
@@ -79,6 +79,7 @@ ggplot(dta_by_trial, aes(x = Counter, y = trial_m)) +
   geom_errorbar(aes(ymin = trial_m - trial_sd, ymax = trial_m + trial_sd),
                 width = .2, size = .3) +
   geom_line() +
+  geom_hline(yintercept = last_five_degree_m, linetype = 2) +
   geom_point(size = 2) +
   #scale_shape(guide = guide_legend(title = NULL)) +
   labs( x = "Trial No: 1 - 24", y = "Mean Degree") +
