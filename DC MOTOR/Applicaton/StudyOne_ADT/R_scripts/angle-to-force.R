@@ -12,7 +12,17 @@ plot(angle, force, type = "b", xlim = c(0, 180), ylim = c(0, 4))
 #  s <- which(a2f$angle == small)
 #  a2f$force[b] - ((big - goal) / (big - small) * (a2f$force[b] - a2f$force[s]))
 #}
+#
+interpolation_new <- function(goal) {
+  small <- goal - (goal %% 10)
+  big <- small + 10
+  b <- which(a2f$angle == big)
+  s <- which(a2f$angle == small)
+  a2f$force[b] - ((big - goal) / (big - small) * (a2f$force[b] - a2f$force[s]))
+}
 
+#
+library(dplyr)
 force_ci <- temp_degree %>% group_by(Tester.Name) %>%
   summarise(mm = mean(Degree))
 
@@ -35,14 +45,6 @@ m
 m + 1.96 * std / sqrt(9)
 m - 1.96 * std / sqrt(9)
 
-#
-interpolation_new <- function(goal) {
-  small <- goal - (goal %% 10)
-  big <- small + 10
-  b <- which(a2f$angle == big)
-  s <- which(a2f$angle == small)
-  a2f$force[b] - ((big - goal) / (big - small) * (a2f$force[b] - a2f$force[s]))
-}
 
 #
 dta_all$force <- vapply(dta_all$Degree, function(x) interpolation_new(x), numeric(1))
