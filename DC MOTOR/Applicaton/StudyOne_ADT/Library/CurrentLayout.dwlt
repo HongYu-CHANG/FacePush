@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 0
-    y: 43
+    x: 4
+    y: 64
     width: 1920
     height: 997
   m_ShowMode: 4
@@ -108,7 +108,7 @@ MonoBehaviour:
   m_MinSize: {x: 713, y: 492}
   m_MaxSize: {x: 18008, y: 14042}
   vertical: 1
-  controlID: 33
+  controlID: 9
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -133,7 +133,7 @@ MonoBehaviour:
   m_MinSize: {x: 713, y: 492}
   m_MaxSize: {x: 18008, y: 14042}
   vertical: 0
-  controlID: 34
+  controlID: 10
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -283,8 +283,8 @@ MonoBehaviour:
   m_DepthBufferBits: 32
   m_Pos:
     serializedVersion: 2
-    x: 0
-    y: 92
+    x: 4
+    y: 113
     width: 1223
     height: 926
   m_MaximizeOnPlay: 0
@@ -459,8 +459,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1227
-    y: 92
+    x: 1231
+    y: 113
     width: 358
     height: 370
   m_TreeViewState:
@@ -512,8 +512,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1227
-    y: 483
+    x: 2
+    y: 408
     width: 358
     height: 535
   m_SearchFilter:
@@ -527,7 +527,7 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/SteamVR/Prefabs
+    - Assets/SteamVR/Scenes
   m_ViewMode: 0
   m_StartGridSize: 64
   m_LastFolders: []
@@ -643,8 +643,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1589
-    y: 92
+    x: 1612
+    y: 111
     width: 331
     height: 926
 --- !u!114 &18
@@ -670,7 +670,7 @@ MonoBehaviour:
   m_Pos:
     serializedVersion: 2
     x: 1589
-    y: 92
+    y: 17
     width: 331
     height: 926
   m_ScrollPosition: {x: 0, y: 0}

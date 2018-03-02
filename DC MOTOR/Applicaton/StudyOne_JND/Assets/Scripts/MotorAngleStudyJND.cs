@@ -33,8 +33,8 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 	// motor angle parameter
 	private int motorSpeed = 200;
-	private int[] baselineAngle = { 20, 70, 120 };
-	private int[] offsetAngle = { 0, 20, 45 };
+	private int[] baselineAngle = { 85, 90, 100, 120 };
+	private int[] offsetAngle = { 85, 90, 100, 120 };
 
 	// Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
@@ -65,7 +65,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	};
 	List<TrialPair> allTrials = new List<TrialPair>();
 	static int[] allRandomizedTrialNo;
-    int blocks = 2;
+    int blocks = 1;
 	int taskNum = 0;
 	int totalTasks;
 	string response;
@@ -74,7 +74,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	void Start()
 	{
 		new Thread(Uno.connectToArdunio).Start();
-		writeFile("trial_no,baseline_angle,offset_angle,response,response_time\n");
+		writeFile("trial_no,baseline_angle,offset_angle,same,response_time\n");
 		coverImage.enabled = false;
 		finishedText.enabled = false;
 		finishedImage.enabled = false;
