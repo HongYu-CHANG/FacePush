@@ -1,7 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
+using System.IO;
+using System.IO.Ports;
+using System.Threading;
 
 public class trackerPosRecord_v2 : MonoBehaviour {
 
@@ -22,14 +27,19 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	private bool posInitialized = false;
 	public float drawRayTime;
 
-	//motor
+    //motor (OSC)
+    /*
 	public GameObject RMotor;
 	public GameObject LMotor;
 	private OSCSender ROSCSender;
 	private OSCSender LOSCSender;
+    */
 
-	//v2: 用合力計算旋轉角度 & 移動
-	private Vector3 LRvector;
+    //motor (serial port) - Arduino connection
+    private CommunicateWithArduino Uno = new CommunicateWithArduino();
+
+    //v2: 用合力計算旋轉角度 & 移動
+    private Vector3 LRvector;
 	private float body_vector_angle;
 	private int i = 0;
     private float offset = 1;
@@ -42,22 +52,21 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
 		Ltracker.gameObject.SetActive(true);
 
-		//motor control
+        //motor control (OSC)
+        /*
 		ROSCSender = RMotor.GetComponent<OSCSender>();
 		ROSCSender.setWhichMotor("R");
 		LOSCSender = LMotor.GetComponent<OSCSender>();
 		LOSCSender.setWhichMotor("L");
+        */
 
-		LlastPos = Ltracker.transform.position;
+        //motor (serial port)
+        new Thread(Uno.connectToArdunio).Start();
+
+        LlastPos = Ltracker.transform.position;
 		RlastPos = Rtracker.transform.position;
 		body_head_direction = headpos.transform.position - bodypos.transform.position;
 
-        //draw xyz axis
-        /*
-        Debug.DrawLine(new Vector3(-1000, 0, 0), new Vector3(1000, 0, 0), Color.yellow, 10000);
-		Debug.DrawLine(new Vector3(0, -1000, 0), new Vector3(0, 1000, 0), Color.cyan, 10000);
-		Debug.DrawLine(new Vector3(0, 0, -1000), new Vector3(0, 0, 1000), Color.white, 10000);
-        */
 
 	}
 
@@ -107,7 +116,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                             transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
                             if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
-                                StartCoroutine(No1Work(true, false, 0, 0));
+                                //StartCoroutine(No1Work(true, false, 0, 0)); //R,L,angle,speed (OSC)
+                                //new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
                                 Debug.Log("turn right, L motor");
                             }
 
@@ -186,7 +196,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
 	}
 
-    //motor control
+    //motor control (OSC)
+    /*
     IEnumerator No1Work(bool R, bool L, int angle, int speed)
     {
         float waitingTime = 1f;
@@ -214,5 +225,112 @@ public class trackerPosRecord_v2 : MonoBehaviour {
             LOSCSender.SendOSCMessageTriggerMethod(angle + 20, speed);
         }
     }
+    */
+
+    IEnumerator No1Work(bool R, bool L, int angle, int speed)
+    {
+        float waitingTime = 1f;
+
+        if (R)//右轉，要動右馬達 (1,0)
+        {
+            new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+            yield return new WaitForSeconds(waitingTime);
+            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+        }
+        else if (L)//左轉，要動左馬達 (0,1)
+        {
+            new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
+            yield return new WaitForSeconds(waitingTime);
+            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+        }
+        else //前進，兩馬達都要動 (0,0)
+        {
+            new Thread(Uno.SendData).Start((angle+20)+" "+speed+" "+angle+" "+speed); // L Lspeed R Rspeed
+        }
+    }
+
+
+
+    // motor control for serial port
+
+    private int degreeConvertToLeftRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 1024 / 360);
+    }
+
+    private int degreeConvertToRightRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 682 / 360);
+    }
+
+    class CommunicateWithArduino
+    {
+        public bool connected = true;
+        public bool mac = false;
+        public string choice = "cu.usbmodem1421";
+        private SerialPort arduinoController;
+
+        public void connectToArdunio()
+        {
+
+            if (connected)
+            {
+                string portChoice = "COM8";
+                if (mac)
+                {
+                    int p = (int)Environment.OSVersion.Platform;
+                    // Are we on Unix?
+                    if (p == 4 || p == 128 || p == 6)
+                    {
+                        List<string> serial_ports = new List<string>();
+                        string[] ttys = Directory.GetFiles("/dev/", "cu.*");
+                        foreach (string dev in ttys)
+                        {
+                            if (dev.StartsWith("/dev/tty."))
+                            {
+                                serial_ports.Add(dev);
+                                Debug.Log(String.Format(dev));
+                            }
+                        }
+                    }
+                    portChoice = "/dev/" + choice;
+                }
+                arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+                arduinoController.Handshake = Handshake.None;
+                arduinoController.RtsEnable = true;
+                arduinoController.Open();
+                Debug.LogWarning(arduinoController);
+            }
+
+        }
+        public void SendData(object obj)
+        {
+            string data = obj as string;
+            Debug.Log(data);
+            if (connected)
+            {
+                if (arduinoController != null)
+                {
+                    arduinoController.Write(data);
+                    arduinoController.Write("\n");
+                }
+                else
+                {
+                    Debug.Log(arduinoController);
+                    Debug.Log("nullport");
+                }
+            }
+            else
+            {
+                Debug.Log("not connected");
+            }
+            Thread.Sleep(500);
+        }
+    }
+
 
 }

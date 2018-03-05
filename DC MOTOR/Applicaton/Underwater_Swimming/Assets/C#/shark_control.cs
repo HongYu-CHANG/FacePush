@@ -1,6 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
+using System.IO;
+using System.IO.Ports;
+using System.Threading;
 
 public class shark_control : MonoBehaviour {
 
@@ -10,33 +16,44 @@ public class shark_control : MonoBehaviour {
     private int t = 1;
     public static int shark = 0;
 
-    //motor
+    //motor (OSC)
+    /*
     public GameObject RMotor;
     public GameObject LMotor;
     private OSCSender ROSCSender;
     private OSCSender LOSCSender;
+    */
+
+    //motor (serial port) - Arduino connection
+    private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
     // Use this for initialization
     void Start () {
         transform.localPosition = new Vector3(-30f, 0.31f, -0.26f);
-        Random.InitState(1337);
+        UnityEngine.Random.InitState(1337);
         _animator = this.GetComponent<Animator>();
         _animator.SetInteger("count", 0);
         _animator.SetInteger("start", 0);
         _animator.SetInteger("turn", 0);
 
-        //motor control
+        //motor control (OSC)
+        /*
         ROSCSender = RMotor.GetComponent<OSCSender>();
         ROSCSender.setWhichMotor("R");
         LOSCSender = LMotor.GetComponent<OSCSender>();
         LOSCSender.setWhichMotor("L");
+        */
+
+        //motor (serial port)
+        new Thread(Uno.connectToArdunio).Start();
+
     }
 	
 	// Update is called once per frame
 	void Update () {
         if (Input.GetKeyDown(KeyCode.S))
         {
-            t = Random.Range(1, 3);
+            t = UnityEngine.Random.Range(1, 3);
             s = 1;
             _animator.SetInteger("count", s);
             _animator.SetInteger("start", 1);
@@ -97,22 +114,102 @@ public class shark_control : MonoBehaviour {
         float waitingTime = 1f;
         int rotateSpeed = 150;
 
-        if (R)//右轉，要動右馬達 (1,0) t == 2
+
+        if (R)//右轉，要動右馬達 (1,0)
         {
-            ROSCSender.SendOSCMessageTriggerMethod(120, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);
+            new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
-            ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);
+            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
         }
-        else if (L)//左轉，要動左馬達 (0,1) t == 1
+        else if (L)//左轉，要動左馬達 (0,1)
         {
-            ROSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(150, rotateSpeed);
+            new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
-            ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);
+            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
         }
-       
+
     }
+
+    // motor control for serial port
+
+    private int degreeConvertToLeftRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 1024 / 360);
+    }
+
+    private int degreeConvertToRightRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 682 / 360);
+    }
+
+    class CommunicateWithArduino
+    {
+        public bool connected = true;
+        public bool mac = false;
+        public string choice = "cu.usbmodem1421";
+        private SerialPort arduinoController;
+
+        public void connectToArdunio()
+        {
+
+            if (connected)
+            {
+                string portChoice = "COM8";
+                if (mac)
+                {
+                    int p = (int)Environment.OSVersion.Platform;
+                    // Are we on Unix?
+                    if (p == 4 || p == 128 || p == 6)
+                    {
+                        List<string> serial_ports = new List<string>();
+                        string[] ttys = Directory.GetFiles("/dev/", "cu.*");
+                        foreach (string dev in ttys)
+                        {
+                            if (dev.StartsWith("/dev/tty."))
+                            {
+                                serial_ports.Add(dev);
+                                Debug.Log(String.Format(dev));
+                            }
+                        }
+                    }
+                    portChoice = "/dev/" + choice;
+                }
+                arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+                arduinoController.Handshake = Handshake.None;
+                arduinoController.RtsEnable = true;
+                arduinoController.Open();
+                Debug.LogWarning(arduinoController);
+            }
+
+        }
+        public void SendData(object obj)
+        {
+            string data = obj as string;
+            Debug.Log(data);
+            if (connected)
+            {
+                if (arduinoController != null)
+                {
+                    arduinoController.Write(data);
+                    arduinoController.Write("\n");
+                }
+                else
+                {
+                    Debug.Log(arduinoController);
+                    Debug.Log("nullport");
+                }
+            }
+            else
+            {
+                Debug.Log("not connected");
+            }
+            Thread.Sleep(500);
+        }
+    }
+
+
 }

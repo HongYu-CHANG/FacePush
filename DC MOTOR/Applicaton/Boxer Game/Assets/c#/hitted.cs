@@ -1,19 +1,30 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.IO;
+using System.IO.Ports;
+using System.Threading;
 
 public class hitted : MonoBehaviour {
 
     int s = 0;
     int state = 0;
 
-	//hit_pos_on_face
+    //hit_pos_on_face
+
+    /*
 	public GameObject RMotor;
 	public GameObject LMotor;
 	private OSCSender ROSCSender;
 	private OSCSender LOSCSender;
-	private GameObject hit;
+    */
+
+    // Arduino connection
+    private CommunicateWithArduino Uno = new CommunicateWithArduino();
+
+    private GameObject hit;
     private Transform face;
     private Vector3 hit_position;
     int count = 0;
@@ -38,12 +49,18 @@ public class hitted : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+
+        /*
 		ROSCSender = RMotor.GetComponent<OSCSender>();
 		ROSCSender.setWhichMotor("R");
 		LOSCSender = LMotor.GetComponent<OSCSender>();
 		LOSCSender.setWhichMotor("L");
-		//hit_pos_on_face
-		hit = GameObject.FindGameObjectWithTag("Hit");
+        */
+
+        new Thread(Uno.connectToArdunio).Start();
+
+        //hit_pos_on_face
+        hit = GameObject.FindGameObjectWithTag("Hit");
         face = GameObject.FindGameObjectWithTag("Face").transform;
         hit_position = hit.transform.position;
         hit.transform.localScale = new Vector3(0, 0, 0);
@@ -284,29 +301,111 @@ public class hitted : MonoBehaviour {
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); }
 			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }	
-			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-		}
+            new Thread(Uno.SendData).Start("10 100 "+angle+" "+RSpeed); //L Lspeed R Rspeed
+            yield return new WaitForSeconds(time);
+            new Thread(Uno.SendData).Start("10 100 10 " + RSpeed); //L Lspeed R Rspeed
+        }
 		else if(L)
 		{
 			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); }
 			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
-			LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
-			yield return new WaitForSeconds(time);
-			LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
-			
-		}
+            new Thread(Uno.SendData).Start(angle + " " + LSpeed+" 10 100"); //L Lspeed R Rspeed
+            yield return new WaitForSeconds(time);
+            new Thread(Uno.SendData).Start("10 " + LSpeed + " 10 100"); //L Lspeed R Rspeed
+
+        }
 		else
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); }
 			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; langle = 120; Debug.Log("C 輕 "); }
-			ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-			LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);
-			yield return new WaitForSeconds(time);
-			ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-			LOSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-		}
+            new Thread(Uno.SendData).Start(langle + " " + RSpeed + " " + angle + " " + RSpeed); //L Lspeed R Rspeed
+            yield return new WaitForSeconds(time);
+            new Thread(Uno.SendData).Start("10 " + RSpeed + " 10 " + RSpeed); //L Lspeed R Rspeed
+        }
 		
 	}
+
+
+    // motor control (serial port)
+    private int degreeConvertToLeftRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 1024 / 360);
+    }
+
+    private int degreeConvertToRightRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 682 / 360);
+    }
+
+    class CommunicateWithArduino
+    {
+        public bool connected = true;
+        public bool mac = false;
+        public string choice = "cu.usbmodem1421";
+        private SerialPort arduinoController;
+
+        public void connectToArdunio()
+        {
+
+            if (connected)
+            {
+                string portChoice = "COM8";
+                if (mac)
+                {
+                    int p = (int)Environment.OSVersion.Platform;
+                    // Are we on Unix?
+                    if (p == 4 || p == 128 || p == 6)
+                    {
+                        List<string> serial_ports = new List<string>();
+                        string[] ttys = Directory.GetFiles("/dev/", "cu.*");
+                        foreach (string dev in ttys)
+                        {
+                            if (dev.StartsWith("/dev/tty."))
+                            {
+                                serial_ports.Add(dev);
+                                Debug.Log(String.Format(dev));
+                            }
+                        }
+                    }
+                    portChoice = "/dev/" + choice;
+                }
+                arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+                arduinoController.Handshake = Handshake.None;
+                arduinoController.RtsEnable = true;
+                arduinoController.Open();
+                Debug.LogWarning(arduinoController);
+            }
+
+        }
+        public void SendData(object obj)
+        {
+            string data = obj as string;
+            Debug.Log(data);
+            if (connected)
+            {
+                if (arduinoController != null)
+                {
+                    arduinoController.Write(data);
+                    arduinoController.Write("\n");
+                }
+                else
+                {
+                    Debug.Log(arduinoController);
+                    Debug.Log("nullport");
+                }
+            }
+            else
+            {
+                Debug.Log("not connected");
+            }
+            Thread.Sleep(500);
+        }
+    }
+
+
+
 }
