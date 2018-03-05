@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Scene/90_degree_cube.unity
+  isLoaded: 1
+  isActive: 1
