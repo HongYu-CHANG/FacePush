@@ -18,3 +18,12 @@ trial_no,baseline_angle,offset_angle,same,response_time
 13,241 200 241 200,241 200 241 200,0,650
 14,241 200 241 200,284 200 284 200,0,629
 15,256 200 256 200,284 200 284 200,0,1358
+trial_no,baseline_angle,offset_angle,same,response_time
+0,256 200 256 200,256 200 256 200,false_response,6065
+trial_no,baseline_angle,offset_angle,same,response_time
+0,256 200 170 200,241 200 161 200,false_response,4419
+1,284 200 189 200,256 200 170 200,false_response,4269
+trial_no,baseline_angle,offset_angle,same,response_time
+0,213 200 142 200,483 200 322 200,false_response,38191
+1,142 200 94 200,312 200 208 200,false_response,866
+2,142 200 94 200,56 200 37 200,false_response,1863

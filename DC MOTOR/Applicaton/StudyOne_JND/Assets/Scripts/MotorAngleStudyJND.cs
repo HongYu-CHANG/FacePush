@@ -33,8 +33,8 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 	// motor angle parameter
 	private int motorSpeed = 200;
-	private int[] baselineAngle = { 85, 90, 100, 120 };
-	private int[] offsetAngle = { 85, 90, 100, 120 };
+	private int[] baselineAngle = { 50, 75, 100, 150 };
+	private int[] offsetAngle = { 20, 50, 110, 170 };
 
 	// Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
@@ -238,11 +238,18 @@ public class MotorAngleStudyJND : MonoBehaviour
 		fileWriter.Dispose();
 	}
 
-	private int degreeConvertToRotaryCoder(int degree)
+	private int degreeConvertToLeftRotaryCoder(int degree)
 	{
 		// alternation
 		// increase another converter for right motor
 		return (degree * 1024 / 360);
+	}
+
+	private int degreeConvertToRightRotaryCoder(int degree)
+	{
+		// alternation
+		// increase another converter for right motor
+		return (degree *  682/ 360);
 	}
 
 	private string checkResponse()
@@ -277,10 +284,12 @@ public class MotorAngleStudyJND : MonoBehaviour
 			for (int j = 0; j < offsetAngle.Length; j++)
 			{
 				TrialPair temp;
-				int convertBaseline = degreeConvertToRotaryCoder(baselineAngle[i]);
-				int convertOffset = degreeConvertToRotaryCoder(offsetAngle[j]);
-				temp.baselineTrial = convertBaseline + " " + motorSpeed + " " + convertBaseline + " " + motorSpeed;
-				temp.offsetTrial = convertOffset + " " + motorSpeed + " " + convertOffset + " " + motorSpeed;
+				int convertLeftBaseline = degreeConvertToLeftRotaryCoder(baselineAngle[i]);
+				int convertLeftOffset = degreeConvertToLeftRotaryCoder(offsetAngle[j]);
+				int convertRightBaseline = degreeConvertToRightRotaryCoder(baselineAngle[i]);
+				int convertRightOffset = degreeConvertToRightRotaryCoder(offsetAngle[j]);
+				temp.baselineTrial = convertLeftBaseline + " " + motorSpeed + " " + convertRightBaseline + " " + motorSpeed;
+				temp.offsetTrial = convertLeftOffset + " " + motorSpeed + " " + convertRightOffset + " " + motorSpeed;
 				allTrials.Add(temp);
 			}
 		}
