@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: ba42448c9a2fa44409034eead650b5f4
+guid: 309b8299f0d4d14409b4f7f96eb4946e
 MonoImporter:
   serializedVersion: 2
   defaultReferences: []
@@ -7,3 +7,4 @@ MonoImporter:
   icon: {fileID: 2800000, guid: b93fe5c516cf6ed4b9153ec790f856e2, type: 3}
   userData: 
   assetBundleName: 
+  assetBundleVariant: 

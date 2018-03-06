@@ -73,7 +73,7 @@ PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
 String inputString = "";
 bool stringComplete = false;
-
+int timer = 0;
 void setup()                         
 {
   Serial.begin(SERIAL_BAUD);
@@ -120,21 +120,37 @@ void setup()
 
 void loop() 
 {
+//  Uncomment below to check values of PID  
+  Serial.print(inputLeft); Serial.print(" ");
+  Serial.print(setPointLeft); Serial.print(" ");
+  Serial.print(outputLeft); Serial.print(" ");
+  Serial.print(inputRight); Serial.print(" ");
+  Serial.print(setPointRight); Serial.print(" ");
+  Serial.println(outputRight); Serial.print(" ");
+
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
-//  Uncomment below to check values of PID  
-//  Serial.print(inputLeft); Serial.print(" ");
-//  Serial.print(setPointLeft); Serial.print(" ");
-//  Serial.print(outputLeft); Serial.print(" ");
-//
-//  Serial.print(inputRight); Serial.print(" ");
-//  Serial.print(setPointRight); Serial.print(" ");
-//  Serial.println(outputRight); Serial.print(" ");
-
   // Update PID control
+  int currentTime = millis();
+
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
 
+  if (inputRight == setPointRight && inputLeft == setPointLeft) {
+    timer = 0;
+  }
+  else {
+    timer += millis() - currentTime;
+  }
+  if (timer > 150) {
+    setPointLeft = inputLeft;
+    outputLeft = 0;
+    setPointRight = inputRight;
+    outputRight = 0;
+  }
+
+
+  
 //  Uncomment below to send data in serial port
   while(Serial.available())
   {

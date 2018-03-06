@@ -47,19 +47,20 @@ public class Rotate : MonoBehaviour {
         {
             currentRotation = this.transform.rotation.eulerAngles.y - initRotation;
 
-            //make the degree between 0 ~ 180
-            //if (degree > 180) -> set it to fixed degree -> give biggest pressure)
-            if (currentRotation > 270) currentRotation = 0; //270~360, 4th quadrant
-            else if (currentRotation > 180) currentRotation = 180; //180~270, 3rd quadrant
+			if (currentRotation < 0) currentRotation = currentRotation + 360;
+			//make the degree between 0 ~ 180
+			//if (degree > 180) -> set it to fixed degree -> give biggest pressure)
+			if (currentRotation > (360 - (cube_angle * 2)) / 2 + cube_angle * 2) currentRotation = 0; //270~360, 4th quadrant
+            else if (currentRotation > cube_angle*2 && currentRotation < (360 - (cube_angle * 2))/2 + cube_angle * 2) currentRotation = cube_angle * 2; //180~270, 3rd quadrant
 
             if(cube_angle - currentRotation > 2) //未轉到, 1st & 4th quadrant
             {
-                motor_angle = (int)((int)((cube_angle - currentRotation) / 5 )* 5 * 1.6);
+                motor_angle = (int)((int)((cube_angle - currentRotation) / 5 )* 5 * (150/cube_angle));
                 R = true;
             }
             else if(cube_angle - currentRotation < -2) //轉過頭, 2nd & 3rd quadrant
             {
-                motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * 1.6);
+                motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * (150 / cube_angle));
                 R = false;
             }
 

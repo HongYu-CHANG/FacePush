@@ -27,3 +27,6 @@ trial_no,baseline_angle,offset_angle,same,response_time
 0,213 200 142 200,483 200 322 200,false_response,38191
 1,142 200 94 200,312 200 208 200,false_response,866
 2,142 200 94 200,56 200 37 200,false_response,1863
+trial_no,baseline_angle,offset_angle,same,response_time
+trial_no,baseline_angle,offset_angle,same,response_time
+0,426 200 284 200,142 200 94 200,false_response,852
