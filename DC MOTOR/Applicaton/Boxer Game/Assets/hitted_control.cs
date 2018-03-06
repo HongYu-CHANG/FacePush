@@ -7,11 +7,13 @@ public class hitted_control : MonoBehaviour {
     int s = 0;
     int state = 0;
 
-    //hit_pos_on_face
-    public GameObject RMotor;
+    //OSC
+    /*public GameObject RMotor;
     public GameObject LMotor;
     private OSCSender ROSCSender;
-    private OSCSender LOSCSender;
+    private OSCSender LOSCSender;*/
+
+    //hit_pos_on_face
     private GameObject hit;
     private Transform face;
     private Vector3 hit_position;
@@ -44,11 +46,13 @@ public class hitted_control : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _animator = box.GetComponent<Animator>();
-
+        //OSC
+        /*
         ROSCSender = RMotor.GetComponent<OSCSender>();
         ROSCSender.setWhichMotor("R");
         LOSCSender = LMotor.GetComponent<OSCSender>();
         LOSCSender.setWhichMotor("L");
+        */
 
         hit = GameObject.FindGameObjectWithTag("Hit");
         face = GameObject.FindGameObjectWithTag("Face").transform;
