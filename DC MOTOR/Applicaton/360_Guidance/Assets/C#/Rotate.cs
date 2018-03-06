@@ -9,16 +9,16 @@ using System.Threading;
 
 public class Rotate : MonoBehaviour {
 
-    public GameObject cube;
-    private float init = 0f;
-    private int start = 0;
-    private float rot = 0;
-    private int motor_angle = 0;
-    private int counter = 3;
-    private bool R = true;
-    private float angle = 90;
+    public GameObject cube;             //cube (put at fixed position)
+    private bool start = false;         //flag: after initialization, set start to 1
+    private float initRotation = 0f;    //initial ratation angle
+    private float currentRotation = 0f; //curent rotation angle
+    private int motor_angle = 0;        //the rotation angle the motors need to rotate
+    private int counter = 3;            //every ? frame, send motor's rotation angle to motors
+    private bool R = true;              //right motor rotates
+    private float cube_angle = 90f;     //the angle user has to rotate (cube's position) (default: at 90 degree)
 
-    //motor (serial port) - Arduino connection
+    //motor (serial port): Arduino connection
     private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
     // Use this for initialization
@@ -31,50 +31,56 @@ public class Rotate : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        //Initialization
         if (Input.GetKeyDown(KeyCode.S))
         {
-            init = this.transform.rotation.eulerAngles.y;
-            start = 1;
-            if (init > 270) angle = 90 - init + 360;
-            else angle = 90 - init;
+            initRotation = this.transform.rotation.eulerAngles.y;
+            if (initRotation > 270) cube_angle = 90 - (initRotation - 360);
+            else cube_angle = 90 - initRotation;
+            start = true;
+            Debug.Log("Start");
         }
 
-
-        if(start == 1)
+        //Rotation angle control and calculation
+        if(start == true)
         {
-            rot = this.transform.rotation.eulerAngles.y - init;
+            currentRotation = this.transform.rotation.eulerAngles.y - initRotation;
 
-            //if (rot < 0) rot = rot + 360;
             //make the degree between 0 ~ 180
-            if (rot > 270) rot = 0;
-            else if (rot > 180) rot = 180;
+            //if (degree > 180) -> set it to fixed degree -> give biggest pressure)
+            if (currentRotation > 270) currentRotation = 0; //270~360, 4th quadrant
+            else if (currentRotation > 180) currentRotation = 180; //180~270, 3rd quadrant
 
-            if(angle - rot > 2)//未轉到
+            if(cube_angle - currentRotation > 2) //未轉到, 1st & 4th quadrant
             {
-                motor_angle = (int)((int)((angle - rot) / 5 )* 5 * 1.6);
+                motor_angle = (int)((int)((cube_angle - currentRotation) / 5 )* 5 * 1.6);
                 R = true;
             }
-            else if(angle - rot < -2)//轉過頭
+            else if(cube_angle - currentRotation < -2) //轉過頭, 2nd & 3rd quadrant
             {
-                motor_angle = (int)((int)((rot - angle) / 5) * 5 * 1.6);
+                motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * 1.6);
                 R = false;
             }
 
         }
 
+        //Print angles
         if (Input.GetKeyDown(KeyCode.A))
         {
-            Debug.Log(motor_angle);
-            Debug.Log("rot: " + rot);
+            Debug.Log("currentRotation: " + currentRotation);
+            Debug.Log("motor_angle: " + motor_angle);
+
+            if (R == true) Debug.Log("R");
+            else Debug.Log("L");
         }
 
-        //motor
+        //Motor control: every ? frame -> send data to arduino
         if(counter == 0)
         {
             StartCoroutine(No1Work(R, motor_angle));
             counter = 3;
         }
-
         counter--;
 
     }
@@ -99,17 +105,13 @@ public class Rotate : MonoBehaviour {
         
     }
 
-
-
-    // motor control for serial port
-
+    //angle mapping
     private int degreeConvertToLeftRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
         return (degree * 1024 / 360);
     }
-
     private int degreeConvertToRightRotaryCoder(int degree)
     {
         // alternation
@@ -117,6 +119,7 @@ public class Rotate : MonoBehaviour {
         return (degree * 682 / 360);
     }
 
+    // motor control for serial port
     class CommunicateWithArduino
     {
         public bool connected = true;
@@ -181,9 +184,6 @@ public class Rotate : MonoBehaviour {
             Thread.Sleep(500);
         }
     }
-
-
-
 
 
 }

@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/scene/Underwater_Swim.unity
+- path: Assets/Scene/Underwater_Swim.unity
   isLoaded: 1
   isActive: 1
