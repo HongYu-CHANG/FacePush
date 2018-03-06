@@ -11,6 +11,7 @@ public class anim_change : MonoBehaviour {
 
 	//control
 	private int control = 1;
+    private int auto = 1;
 
     // Use this for initialization
     void Start () {
@@ -29,7 +30,7 @@ public class anim_change : MonoBehaviour {
             {
                 s = Random.Range(1, 6);
 				//control
-				s = control;
+				if(auto == 0) s = control;
                 _animator.SetInteger("change", s);
                 Debug.Log(s);
             }
@@ -53,7 +54,9 @@ public class anim_change : MonoBehaviour {
 		else if (Input.GetKeyDown(KeyCode.Alpha4)) control = 4;
 		else if (Input.GetKeyDown(KeyCode.Alpha5)) control = 5;
 
-	}
+        if (Input.GetKeyDown(KeyCode.A)) auto = 0;
+
+    }
 
     bool AnimatorIsPlaying()
     {

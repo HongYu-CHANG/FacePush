@@ -60,14 +60,14 @@ public class hitted : MonoBehaviour {
         new Thread(Uno.connectToArdunio).Start();
 
         //hit_pos_on_face
-        hit = GameObject.FindGameObjectWithTag("Hit");
-        face = GameObject.FindGameObjectWithTag("Face").transform;
+        hit = GameObject.FindGameObjectWithTag("Hit");//show where hitted on image---> delete now
+        face = GameObject.FindGameObjectWithTag("Face").transform;//image center
         hit_position = hit.transform.position;
         hit.transform.localScale = new Vector3(0, 0, 0);
         color = hit.GetComponent<Renderer>().material.color;
         offset = face.position - hit.transform.position;
 
-        hit_face = GameObject.FindGameObjectWithTag("hitted").transform;
+        hit_face = GameObject.FindGameObjectWithTag("hitted").transform;//show where boxer hit on sphere
     }
 	
 	void Update () {
