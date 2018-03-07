@@ -4,10 +4,20 @@ ModelImporter:
   serializedVersion: 19
   fileIDToRecycleName:
     100000: //RootNode
+    100002: node_id4
+    100004: node_id5
     400000: //RootNode
+    400002: node_id4
+    400004: node_id5
     2300000: //RootNode
+    2300002: node_id4
+    2300004: node_id5
     3300000: //RootNode
+    3300002: node_id4
+    3300004: node_id5
     4300000: TropicalFish01
+    4300002: node_id4
+    4300004: node_id5
     11100000: //RootNode
   materials:
     importMaterials: 1

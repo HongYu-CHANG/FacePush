@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_PixelRect:
     serializedVersion: 2
-    x: 191
-    y: 204
+    x: 176
+    y: 157
     width: 1536
     height: 781
   m_ShowMode: 4
@@ -333,8 +333,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 191
-    y: 587
+    x: 176
+    y: 540
     width: 872
     height: 376
   m_MaximizeOnPlay: 0
@@ -354,8 +354,8 @@ MonoBehaviour:
     m_VAllowExceedBaseRangeMin: 1
     m_VAllowExceedBaseRangeMax: 1
     m_ScaleWithWindow: 0
-    m_HSlider: 1
-    m_VSlider: 1
+    m_HSlider: 0
+    m_VSlider: 0
     m_IgnoreScrollWheelUntilClicked: 0
     m_EnableMouseInput: 1
     m_EnableSliderZoom: 0
@@ -367,8 +367,8 @@ MonoBehaviour:
       y: 17
       width: 872
       height: 359
-    m_Scale: {x: 1.2287668, y: 1.2287668}
-    m_Translation: {x: 535.7423, y: 144.03595}
+    m_Scale: {x: 1, y: 1}
+    m_Translation: {x: 436, y: 179.5}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
@@ -376,9 +376,9 @@ MonoBehaviour:
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
       x: -436
-      y: -117.219925
-      width: 709.6546
-      height: 292.16284
+      y: -179.5
+      width: 872
+      height: 359
     m_MinimalGUI: 1
   m_defaultScale: 1
   m_TargetTexture: {fileID: 0}
@@ -409,19 +409,19 @@ MonoBehaviour:
   m_DepthBufferBits: 32
   m_Pos:
     serializedVersion: 2
-    x: 191
-    y: 253
+    x: 176
+    y: 206
     width: 872
     height: 313
   m_SceneLighting: 1
-  lastFramingTime: 694.651624644199
+  lastFramingTime: 7371.51317597061
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 2.535368, y: 2.0174894, z: 2.339079}
+    m_Target: {x: 37.40072, y: 0.4882264, z: 100.19323}
     speed: 2
-    m_Value: {x: 2.535368, y: 2.0174894, z: 2.339079}
+    m_Value: {x: 37.40072, y: 0.4882264, z: 100.19323}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -444,13 +444,13 @@ MonoBehaviour:
       speed: 2
       m_Value: 0
   m_Rotation:
-    m_Target: {x: -0.23380257, y: -0.63908404, z: 0.21313496, w: -0.7010575}
+    m_Target: {x: -0.045720242, y: -0.8648956, z: 0.08014617, w: -0.49339837}
     speed: 2
-    m_Value: {x: 0.23380257, y: 0.63908404, z: -0.21313496, w: 0.70105755}
+    m_Value: {x: -0.045720242, y: -0.8648956, z: 0.08014617, w: -0.49339837}
   m_Size:
-    m_Target: 29.005508
+    m_Target: 20.405622
     speed: 2
-    m_Value: 29.005508
+    m_Value: 20.405622
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -558,29 +558,29 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1067
-    y: 253
+    x: 1052
+    y: 206
     width: 327
     height: 275
   m_TreeViewState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
-    m_LastClickedID: 0
-    m_ExpandedIDs: defbffff00000000
+    scrollPos: {x: 0, y: 286}
+    m_SelectedIDs: f4d7faff
+    m_LastClickedID: -337932
+    m_ExpandedIDs: 7a70f0ffd624f1ffc439f6ffe29af6ff08abf7ff30aef7ffaceff7ff1ab9f8ff9221f9ffe67af9ff6c67faffd89cfbff009dfbff029dfbff44a2fbff5a4cfcff765efcff041dffff3a42ffffdefbffff0000000008500a00acec0a00f6ed0a00
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: TropicalFish01(Clone)
+      m_OriginalName: TropicalFish01(Clone)
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: -545250
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 11}
     m_SearchString: 
@@ -637,8 +637,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1067
-    y: 549
+    x: 1052
+    y: 502
     width: 327
     height: 414
   m_SearchFilter:
@@ -652,7 +652,7 @@ MonoBehaviour:
     m_ShowAllHits: 0
     m_SearchArea: 0
     m_Folders:
-    - Assets/FishFlock
+    - Assets/Sea_Assets/Sea_Creatures/Fish/TropicalFish13
   m_ViewMode: 0
   m_StartGridSize: 64
   m_LastFolders: []
@@ -688,24 +688,24 @@ MonoBehaviour:
       m_Icon: {fileID: 0}
       m_ResourceFile: 
   m_AssetTreeState:
-    scrollPos: {x: 0, y: 0}
+    scrollPos: {x: 0, y: 580}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000a8260000582700007227000002280000202800008028000064290000f4290000382a00008e2a0000da2a0000ba2b00002e2c0000ce2c00008e2d0000f42d0000042e00004c2e0000842e00007c2f00007e300000a23100000e480000104800001248000014480000
+    m_ExpandedIDs: 00000000a82600005827000072270000022800002e280000542800008028000064290000f4290000382a00008e2a0000da2a0000ba2b00002e2c0000ce2c00008e2d0000f42d0000042e00004c2e0000842e00003c2f00007c2f000084300000a23100000e480000104800001248000014480000c8260900e2260900f2260900
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: 
-      m_OriginalName: 
+      m_Name: TropicalFish03
+      m_OriginalName: TropicalFish03
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 0
+      m_UserData: 1777996
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 11
+      m_OriginalEventType: 0
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 12}
     m_SearchString: 
@@ -768,8 +768,8 @@ MonoBehaviour:
   m_DepthBufferBits: 0
   m_Pos:
     serializedVersion: 2
-    x: 1398
-    y: 253
+    x: 1383
+    y: 206
     width: 329
     height: 710
   m_ScrollPosition: {x: 0, y: 0}
