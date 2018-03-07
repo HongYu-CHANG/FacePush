@@ -136,13 +136,13 @@ public class hitted : MonoBehaviour {
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x*0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.2)
+            if (collider_dir.hit_pos.x > 0.1)
             {
                 if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                 StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.2)
+            else if (collider_dir.hit_pos.x < -0.1)
             {
                 if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
@@ -227,12 +227,12 @@ public class hitted : MonoBehaviour {
             hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x * 0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
             hit_face.position = collider_dir.pos;
-            if (collider_dir.hit_pos.x > 0.2) {
+            if (collider_dir.hit_pos.x > 0.1) {
                 if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                 StartCoroutine(No1Work(true, false, state));
 			}
-            else if (collider_dir.hit_pos.x < -0.2)
+            else if (collider_dir.hit_pos.x < -0.1)
             {
                 if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                 else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
