@@ -15,6 +15,7 @@ TagManager:
   - view_l
   - view_r
   - hitted
+  - Player_blood
   layers:
   - Default
   - TransparentFX
