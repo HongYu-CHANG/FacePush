@@ -61,7 +61,7 @@ volatile long encoderRightValue = 0;
 //====================================================================================
 // PID motor control
 #include <PID_v1.h>
-double kp = 0.4, ki = 0.06, kd = 0.01;
+double kp = 0.3, ki = 0.09, kd = 0.01;
 // input: current position (value of rotary encoder)
 // output: result (where to go)
 // setPoint: target position (position cmd from Feather)
@@ -142,7 +142,7 @@ void loop()
   else {
     timer += millis() - currentTime;
   }
-  if (timer > 150) {
+  if (timer > 90) {
     setPointLeft = inputLeft;
     outputLeft = 0;
     setPointRight = inputRight;
