@@ -7,7 +7,7 @@
  * 
  *   23.02.18 wjtseng93
  */
-#define SERIAL_BAUD 57600
+#define SERIAL_BAUD 9600
 //====================================================================================
 // Monster Motor Driver VNH2SP30
 #define BRAKE 0

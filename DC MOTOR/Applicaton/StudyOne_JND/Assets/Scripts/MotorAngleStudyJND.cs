@@ -32,9 +32,13 @@ public class MotorAngleStudyJND : MonoBehaviour
 	private StreamWriter fileWriter;
 
 	// motor angle parameter
-	private int motorSpeed = 200;
-	private int[] baselineAngle = { 50, 75, 100, 150 };
+	private int motorSpeed = 255;
+	private int[] baselineAngle = { 85, 90, 100, 150 };
 	private int[] offsetAngle = { 20, 50, 110, 170 };
+	private int[,] angles = { { 86, 93, 101, 115 }, 
+		                       { 93, 101, 108, 122 },
+							   { 108, 115, 122, 137 },
+							   { 137, 144, 151, 166 } };
 
 	// Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
@@ -51,7 +55,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	bool backToOrigin = false;
 	float remainingTime = 0;
 	float responseTime;
-	int stimTime = 10;
+	int stimTime = 11;
 	int stimDelayFirst = 9;
 	int backToOriginDelay = 7;
 	int stimDelaySecond = 5;
@@ -74,7 +78,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	void Start()
 	{
 		new Thread(Uno.connectToArdunio).Start();
-		writeFile("trial_no,baseline_angle,offset_angle,same,response_time\n");
+		//writeFile("trial_no,baseline_angle,offset_angle,same,response_time\n");
 		coverImage.enabled = false;
 		finishedText.enabled = false;
 		finishedImage.enabled = false;
@@ -112,7 +116,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 			{
 				if (Mathf.Abs(stimRemainingTime - backToOriginDelay) < 1)
 				{
-					new Thread(Uno.SendData).Start("0 200 0 200");
+					new Thread(Uno.SendData).Start("0 255 0 255");
 					backToOrigin = false;
 				}
 			}
@@ -242,14 +246,14 @@ public class MotorAngleStudyJND : MonoBehaviour
 	{
 		// alternation
 		// increase another converter for right motor
-		return (degree * 1024 / 360);
+		return ((degree * 1024 / 360) + 100);
 	}
 
 	private int degreeConvertToRightRotaryCoder(int degree)
 	{
 		// alternation
 		// increase another converter for right motor
-		return (degree *  682/ 360);
+		return ((degree *  682 / 360) + 100);
 	}
 
 	private string checkResponse()
@@ -279,17 +283,18 @@ public class MotorAngleStudyJND : MonoBehaviour
 	{
 		// generate all combinations of basline angle and offset angle, combine them into pairs and store in allTrials
 		// if we want to contain location, add them here
-		for (int i = 0; i < baselineAngle.Length; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			for (int j = 0; j < offsetAngle.Length; j++)
+			for (int j = 0; j < 4; j++)
 			{
 				TrialPair temp;
-				int convertLeftBaseline = degreeConvertToLeftRotaryCoder(baselineAngle[i]);
-				int convertLeftOffset = degreeConvertToLeftRotaryCoder(offsetAngle[j]);
-				int convertRightBaseline = degreeConvertToRightRotaryCoder(baselineAngle[i]);
-				int convertRightOffset = degreeConvertToRightRotaryCoder(offsetAngle[j]);
+				int convertLeftBaseline = degreeConvertToLeftRotaryCoder(angles[i, 0]);
+				int convertLeftOffset = degreeConvertToLeftRotaryCoder(angles[i, j]);
+				int convertRightBaseline = degreeConvertToRightRotaryCoder(angles[i, 0]);
+				int convertRightOffset = degreeConvertToRightRotaryCoder(angles[i, j]);
 				temp.baselineTrial = convertLeftBaseline + " " + motorSpeed + " " + convertRightBaseline + " " + motorSpeed;
 				temp.offsetTrial = convertLeftOffset + " " + motorSpeed + " " + convertRightOffset + " " + motorSpeed;
+				//Debug.Log(temp.baselineTrial + " " + temp.offsetTrial);
 				allTrials.Add(temp);
 			}
 		}
@@ -329,7 +334,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 			if (connected)
 			{
-				string portChoice = "COM8";
+				string portChoice = "COM5";
 				if (mac)
 				{
 					int p = (int)Environment.OSVersion.Platform;
@@ -349,7 +354,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 					}
 					portChoice = "/dev/" + choice;
 				}
-				arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+				arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
 				arduinoController.Handshake = Handshake.None;
 				arduinoController.RtsEnable = true;
 				arduinoController.Open();

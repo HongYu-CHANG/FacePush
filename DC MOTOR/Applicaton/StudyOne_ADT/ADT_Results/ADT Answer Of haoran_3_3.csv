@@ -23,3 +23,4 @@ haoran,2/28/2018 3:33:16 PM,21,108,True,False
 haoran,2/28/2018 3:33:31 PM,22,108,True,False
 haoran,2/28/2018 3:33:47 PM,23,105,True,False
 haoran,2/28/2018 3:34:03 PM,24,105,False,True
+Tester Name, Time, Counter, Degree, yesToggle Value, noToggle Value

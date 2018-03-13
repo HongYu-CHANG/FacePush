@@ -50,8 +50,21 @@ public class hitted : MonoBehaviour {
     private Transform player_blood;
     private float hp = 0;
 
-    // Use this for initialization
-    void Start () {
+	//write data
+	private int writecounter = 0;
+	private bool send2motor = false;
+	private string motordata = "";
+	public String userName = "User1";
+	private StreamWriter fileWriter;
+	public GameObject HMD;
+	public GameObject Lcontroller;
+	public GameObject Rcontroller;
+	public int times = 1;
+	private int motor_release = 0;
+	private string motor_data_release = "";
+
+	// Use this for initialization
+	void Start () {
 
         /*
 		ROSCSender = RMotor.GetComponent<OSCSender>();
@@ -73,7 +86,10 @@ public class hitted : MonoBehaviour {
         hit_face = GameObject.FindGameObjectWithTag("hitted").transform;//show where boxer hit on sphere
 
         player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
-    }
+
+		//write data
+		writeFile("Time, HMD_pos.x, HMD_pos.y, HMD_pos.z, HMD_rot.x, HMD_rot.y, HMD_rot.z, Lcontroller_pos.x, Lcontroller_pos.y, Lcontroller_pos.z, Lcontroller_rot.x, Lcontroller_rot.y, Lcontroller_rot.z, Rcontroller_pos.x, Rcontroller_pos.y, Rcontroller_pos.z, Rcontroller_rot.x, Rcontroller_rot.y, Rcontroller_rot.z, send2motor, motor_data, punch_type\n");
+	}
 	
 	void Update () {
         //get animater in which state
@@ -274,8 +290,29 @@ public class hitted : MonoBehaviour {
             hit.transform.localScale = new Vector3(0, 0, 0);
             head.GetComponent<Renderer>().material.mainTexture = myTextures[0];
         }
-		
 
+		//write data
+		writecounter++;
+		if(writecounter == 25)
+		{
+			if(send2motor == true)motor_release = 1;
+			if (motor_release == 1 && send2motor == false) {
+				motordata = motor_data_release;
+				send2motor = true;
+				motor_release = 0;
+				motor_data_release = "";
+			}
+			writeFile(System.DateTime.Now.ToString() + "," + HMD.transform.position.ToString("f4") + "," + HMD.transform.rotation.eulerAngles.ToString("f4") + "," 
+				+ Lcontroller.transform.position.ToString("f4") + "," + Lcontroller.transform.rotation.eulerAngles.ToString("f4") + "," 
+				+ Rcontroller.transform.position.ToString("f4") + "," + Rcontroller.transform.rotation.eulerAngles.ToString("f4") + "," 
+				+ send2motor.ToString() + "," + motordata + ","
+			    + state + "\n");
+			
+			send2motor = false;
+			motordata = "";
+
+			writecounter = 0;
+		}
 	}
 
     void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
@@ -295,8 +332,18 @@ public class hitted : MonoBehaviour {
         GameObject.Destroy(myLine, duration);
     }
 
-    //motor & blood
-    IEnumerator No1Work(bool R, bool L, int state )
+	//write data
+	private void writeFile(String data)
+	{
+		fileWriter = new StreamWriter("Results\\" + userName + "_"  + times + ".csv", true);
+		fileWriter.Write(data);
+		fileWriter.Flush();
+		fileWriter.Close();
+		fileWriter.Dispose();
+	}
+
+	//motor & blood
+	IEnumerator No1Work(bool R, bool L, int state )
 	{
 		float time = 0.5f;
 		int RSpeed = 50;
@@ -307,20 +354,27 @@ public class hitted : MonoBehaviour {
 		if (R)//奇數次點擊
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }	
+			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }	
             new Thread(Uno.SendData).Start("10 100 "+angle+" "+RSpeed); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
             new Thread(Uno.SendData).Start("10 100 10 " + RSpeed); //L Lspeed R Rspeed
-        }
+
+			//write data
+			motordata = "10 100 " + angle.ToString() + " " + RSpeed.ToString();
+			motor_data_release = "10 100 10 " + RSpeed.ToString();
+		}
 		else if(L)
 		{
 			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
+			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
             new Thread(Uno.SendData).Start(angle + " " + LSpeed+" 10 100"); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
             new Thread(Uno.SendData).Start("10 " + LSpeed + " 10 100"); //L Lspeed R Rspeed
 
-        }
+			//write data
+			motordata = angle.ToString() + " " + LSpeed.ToString() + " 10 100";
+			motor_data_release = "10 " + LSpeed.ToString() + " 10 100";
+		}
 		else
 		{
 			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
@@ -328,8 +382,14 @@ public class hitted : MonoBehaviour {
             new Thread(Uno.SendData).Start(langle + " " + RSpeed + " " + angle + " " + RSpeed); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
             new Thread(Uno.SendData).Start("10 " + RSpeed + " 10 " + RSpeed); //L Lspeed R Rspeed
-        }
-		
+
+			//write data
+			motordata = langle.ToString() + " " + RSpeed.ToString() + " " + angle.ToString() + " " + RSpeed.ToString();
+			motor_data_release = "10 " + RSpeed.ToString() + " 10 " + RSpeed.ToString();
+		}
+
+		//write data
+		send2motor = true;
 	}
 
 
@@ -380,7 +440,7 @@ public class hitted : MonoBehaviour {
                     }
                     portChoice = "/dev/" + choice;
                 }
-                arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+                arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
                 arduinoController.Handshake = Handshake.None;
                 arduinoController.RtsEnable = true;
                 arduinoController.Open();
