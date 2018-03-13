@@ -18,7 +18,7 @@ public class Rotate : MonoBehaviour {
     private bool R = true;              //right motor rotates
 
 	private float cube_angle = 90f;     //the angle user has to rotate (cube's position) (default: at 90 degree)
-
+	public float target_angle = 90f;
 	//testing
 	/*
 	public GameObject cube2;
@@ -43,10 +43,14 @@ public class Rotate : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.S))
         {
             initRotation = this.transform.rotation.eulerAngles.y;
-            if (initRotation > 270) cube_angle = 90 - (initRotation - 360);
-            else cube_angle = 90 - initRotation;
-            start = true;
+            //if (initRotation > 270) cube_angle = 90 - (initRotation - 360);
+            //else cube_angle = 90 - initRotation;
+
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+			start = true;
             Debug.Log("Start");
+			Debug.Log(initRotation);
         }
 
         //Rotation angle control and calculation
