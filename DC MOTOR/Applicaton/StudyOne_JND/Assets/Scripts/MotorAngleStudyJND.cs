@@ -60,6 +60,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	int backToOriginDelay = 7;
 	int stimDelaySecond = 5;
 	public int interval = 15;
+	float time_f = 0;
 
 	// trial setting
 	public struct TrialPair
@@ -69,7 +70,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	};
 	List<TrialPair> allTrials = new List<TrialPair>();
 	static int[] allRandomizedTrialNo;
-    int blocks = 1;
+    int blocks = 2;
 	int taskNum = 0;
 	int totalTasks;
 	string response;
@@ -109,12 +110,15 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 		if (stimTimer)
 		{
-			int stimRemainingTime = stimTime - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);
-			//Debug.Log("stimRemainingTime : " + stimRemainingTime);
+			time_f += Time.deltaTime;
+			int stimRemainingTime = stimTime - (int)time_f;// - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);
+			Debug.Log("stimRemainingTime : " + stimRemainingTime);
+			Debug.Log("backToOriginDelay : " + backToOriginDelay);
+			Debug.Log("(stimRemainingTime - backToOriginDelay) : " + (stimRemainingTime - backToOriginDelay));
 
 			if (backToOrigin)
 			{
-				if (Mathf.Abs(stimRemainingTime - backToOriginDelay) < 1)
+				if ((stimRemainingTime - backToOriginDelay) < 1)
 				{
 					new Thread(Uno.SendData).Start("0 255 0 255");
 					backToOrigin = false;
@@ -123,7 +127,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 			if (!stimFirstSent)
 			{
-				if (Mathf.Abs(stimRemainingTime - stimDelayFirst) < 1) // 1
+				if ((stimRemainingTime - stimDelayFirst) < 1) // 1
 				{
 					Debug.Log("in sending first data");
 					new Thread(Uno.SendData).Start(allTrials[allRandomizedTrialNo[taskNum]].baselineTrial.ToString());
@@ -135,7 +139,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 
 			if (!stimSecondSent)
 			{
-				if (Mathf.Abs(stimRemainingTime - stimDelaySecond) < 1)
+				if ((stimRemainingTime - stimDelaySecond) < 1)
 				{
 					Debug.Log("in sending second data");
 					new Thread(Uno.SendData).Start(allTrials[allRandomizedTrialNo[taskNum]].offsetTrial.ToString());
@@ -147,9 +151,11 @@ public class MotorAngleStudyJND : MonoBehaviour
 			
 			if (stimRemainingTime < 1)
 			{
+				new Thread(Uno.SendData).Start("0 255 0 255");
 				stimTimer = false;
 				coverImage.enabled = false;
 				endStimTime = DateTime.Now.TimeOfDay;
+				time_f = 0f;
 			}
 		}
 	}
@@ -253,7 +259,7 @@ public class MotorAngleStudyJND : MonoBehaviour
 	{
 		// alternation
 		// increase another converter for right motor
-		return ((degree *  682 / 360) + 100);
+		return ((degree *  682 / 360) + 60);
 	}
 
 	private string checkResponse()
