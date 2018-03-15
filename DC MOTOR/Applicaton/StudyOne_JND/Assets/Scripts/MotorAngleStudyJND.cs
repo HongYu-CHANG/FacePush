@@ -112,9 +112,9 @@ public class MotorAngleStudyJND : MonoBehaviour
 		{
 			time_f += Time.deltaTime;
 			int stimRemainingTime = stimTime - (int)time_f;// - Mathf.Abs((DateTime.Now.TimeOfDay.Seconds) - prevTaskTime.Seconds);
-			Debug.Log("stimRemainingTime : " + stimRemainingTime);
-			Debug.Log("backToOriginDelay : " + backToOriginDelay);
-			Debug.Log("(stimRemainingTime - backToOriginDelay) : " + (stimRemainingTime - backToOriginDelay));
+			//Debug.Log("stimRemainingTime : " + stimRemainingTime);
+			//Debug.Log("backToOriginDelay : " + backToOriginDelay);
+			//Debug.Log("(stimRemainingTime - backToOriginDelay) : " + (stimRemainingTime - backToOriginDelay));
 
 			if (backToOrigin)
 			{
