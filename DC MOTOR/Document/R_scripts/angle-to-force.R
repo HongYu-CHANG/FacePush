@@ -5,8 +5,9 @@ angle <- seq(from = 30, to = 180, by = 10)
 
 a2f <- data.frame(angle = angle, force = force)
 
-plot(angle, force, type = "b", xlim = c(0, 180), ylim = c(0, 4))
-
+plot(angle, force, type = "b", xlim = c(0, 180), ylim = c(0, 4),
+     ylab = "Force (N)", xlab = "Angle")
+grid()
 #interpolation <- function(big, small, goal) {
 #  b <- which(a2f$angle == big)
 #  s <- which(a2f$angle == small)
