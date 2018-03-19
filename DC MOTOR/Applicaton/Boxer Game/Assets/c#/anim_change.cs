@@ -11,7 +11,9 @@ public class anim_change : MonoBehaviour {
 
 	//control
 	private int control = 1;
-    private int auto = 1;
+    public int auto = 1;
+	private int anim_control = 0;
+	private int anim = 0;
 
     // Use this for initialization
     void Start () {
@@ -30,8 +32,31 @@ public class anim_change : MonoBehaviour {
             {
                 s = Random.Range(1, 6);
 				//control
-				if(auto == 0) s = control;
-                _animator.SetInteger("change", s);
+				//if(auto == 0) s = control;     //control all anim
+				if (auto == 0)  //control anim in 2 state
+				{
+					if(control == 1)
+					{
+						if (anim_control % 5 == 0) anim = 1;
+						if (anim_control % 5 == 1) anim = 2;
+						if (anim_control % 5 == 2) anim = 2;
+						if (anim_control % 5 == 3) anim = 1;
+						if (anim_control % 5 == 4) anim = 5;
+						anim_control++;
+						s = anim;
+					}
+					else if(control == 2)
+					{
+						if (anim_control % 5 == 0) anim = 3;
+						if (anim_control % 5 == 1) anim = 4;
+						if (anim_control % 5 == 2) anim = 3;
+						if (anim_control % 5 == 3) anim = 3;
+						if (anim_control % 5 == 4) anim = 4;
+						anim_control++;
+						s = anim;
+					}
+				}
+				_animator.SetInteger("change", s);
                 Debug.Log(s);
             }
             count = 1;
@@ -48,13 +73,18 @@ public class anim_change : MonoBehaviour {
 
 
 		//control
+		/* control all anim
 		if (Input.GetKeyDown(KeyCode.Alpha1)) control = 1;
 		else if (Input.GetKeyDown(KeyCode.Alpha2)) control = 2;
 		else if (Input.GetKeyDown(KeyCode.Alpha3)) control = 3;
 		else if (Input.GetKeyDown(KeyCode.Alpha4)) control = 4;
 		else if (Input.GetKeyDown(KeyCode.Alpha5)) control = 5;
+		*/
+		//control anim in 2 state
+		if (Input.GetKeyDown(KeyCode.Alpha1)) { control = 1; anim_control = 0; }
+		else if (Input.GetKeyDown(KeyCode.Alpha2)) { control = 2; anim_control = 0; }
 
-        if (Input.GetKeyDown(KeyCode.A)) auto = 0;
+		if (Input.GetKeyDown(KeyCode.A)) auto = 0;
 
     }
 

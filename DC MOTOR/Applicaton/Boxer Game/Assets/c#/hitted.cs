@@ -293,7 +293,7 @@ public class hitted : MonoBehaviour {
 
 		//write data
 		writecounter++;
-		if(writecounter == 25)
+		if(writecounter == 5)
 		{
 			if(send2motor == true)motor_release = 1;
 			if (motor_release == 1 && send2motor == false) {
