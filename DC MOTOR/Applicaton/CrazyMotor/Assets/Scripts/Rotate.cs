@@ -28,13 +28,17 @@ public class Rotate : MonoBehaviour {
 	//motor (serial port): Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
+	private GameObject hit;
+	private Color color;
+
     // Use this for initialization
     void Start () {
         
         //motor (serial port)
         new Thread(Uno.connectToArdunio).Start();
-
-    }
+		hit = GameObject.FindGameObjectWithTag("Hit");
+		color = hit.GetComponent<Renderer>().material.color;
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -68,12 +72,20 @@ public class Rotate : MonoBehaviour {
             {
                 motor_angle = (int)((int)((cube_angle - currentRotation) / 5 )* 5 * (150/cube_angle));
                 R = true;
-            }
+
+				color.a = (float)motor_angle / 150;
+				hit.GetComponent<Renderer>().material.color = color;
+				hit.transform.localPosition = new Vector3(-2.73f, -0.88f, 3.9f);
+			}
             else if(cube_angle - currentRotation < -2) //轉過頭, 2nd & 3rd quadrant
             {
                 motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * (150 / cube_angle));
                 R = false;
-            }
+
+				color.a = (float)motor_angle / 150;
+				hit.GetComponent<Renderer>().material.color = color;
+				hit.transform.localPosition = new Vector3(-3.11f, -0.88f, 3.9f);
+			}
 
         }
 
