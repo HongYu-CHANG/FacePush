@@ -3031,8 +3031,7 @@ MonoBehaviour:
   _useExplicitConnection: 0
   _explicitConnection: {fileID: 0}
   _drawDefaultInspector: 1
-  _myOSCConnections:
-  - {fileID: 1831031758}
+  _myOSCConnections: []
 --- !u!1 &1413465432
 GameObject:
   m_ObjectHideFlags: 0

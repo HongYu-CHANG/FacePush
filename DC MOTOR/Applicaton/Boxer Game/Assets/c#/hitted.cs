@@ -135,8 +135,13 @@ public class hitted : MonoBehaviour {
             move = collider_dir.Rdir;
             move = move.normalized ;
 
-            Vector3 pos = this.transform.position + collider_dir.Rdir * l;
-            Sequence mySequence = DOTween.Sequence(); 
+			// camera move by where the punch hit from and the power -> move position //camera位移方向和大小依拳頭來的方向和距離決定
+			//Vector3 pos = this.transform.position + collider_dir.Rdir * l;    
+			//pos 位移固定
+			Vector3 pos = this.transform.position + new Vector3(0.2f,-0.1f,-1.4f);
+			r = 8f;
+			
+			Sequence mySequence = DOTween.Sequence(); 
             
             Tweener move1 = transform.DOMove(pos, time, true);
             Tweener rot1 = transform.DORotate(this.transform.rotation.eulerAngles + new Vector3(r, 0, r), 0.2f);
@@ -226,8 +231,12 @@ public class hitted : MonoBehaviour {
             move = collider_dir.Ldir;
             move = move.normalized ;
 
-            Vector3 pos = this.transform.position + collider_dir.Ldir * l;
-            Sequence mySequence = DOTween.Sequence();
+			// camera move by where the punch hit from and the power -> move position //camera位移方向和大小依拳頭來的方向和距離決定
+			//Vector3 pos = this.transform.position + collider_dir.Ldir * l;
+			//pos 位移固定
+			Vector3 pos = this.transform.position + new Vector3(0.2f, -0.1f, -1.4f);
+			r = 8f;
+			Sequence mySequence = DOTween.Sequence();
             
             Tweener move1 = transform.DOMove(pos, time, true);
             Tweener rot1 = transform.DORotate(this.transform.rotation.eulerAngles + new Vector3(r, 0, -r), 0.2f);
