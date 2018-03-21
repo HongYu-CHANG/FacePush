@@ -27,8 +27,14 @@ public class shark_control : MonoBehaviour {
     //motor (serial port) - Arduino connection
     private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
-    // Use this for initialization
-    void Start () {
+	//face
+	private GameObject hit;
+	private Color color;
+	private GameObject hit_r;
+	private Color color_r;
+
+	// Use this for initialization
+	void Start () {
         transform.localPosition = new Vector3(-30f, 0.31f, -0.26f);
         UnityEngine.Random.InitState(1337);
         _animator = this.GetComponent<Animator>();
@@ -47,7 +53,12 @@ public class shark_control : MonoBehaviour {
         //motor (serial port)
         new Thread(Uno.connectToArdunio).Start();
 
-    }
+		//face
+		hit = GameObject.FindGameObjectWithTag("Hit");
+		color = hit.GetComponent<Renderer>().material.color;
+		hit_r = GameObject.FindGameObjectWithTag("Hit_R");
+		color_r = hit_r.GetComponent<Renderer>().material.color;
+	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -118,15 +129,39 @@ public class shark_control : MonoBehaviour {
         if (R)//右轉，要動右馬達 (1,0)
         {
             new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
-            yield return new WaitForSeconds(waitingTime);
+			//face
+			color_r.a = (float)120f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+
+			yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
-        }
+
+			//face
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+		}
         else if (L)//左轉，要動左馬達 (0,1)
         {
             new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
-            yield return new WaitForSeconds(waitingTime);
+			//face
+			color.a = (float)120f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+
+			yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
-        }
+
+			//face
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+		}
 
     }
 

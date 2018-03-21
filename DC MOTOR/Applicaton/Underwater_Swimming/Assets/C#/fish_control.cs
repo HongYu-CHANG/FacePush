@@ -23,8 +23,14 @@ public class fish_control : MonoBehaviour {
 
     public static int fish = 0;
 
-    // Use this for initialization
-    void Start () {
+	//face
+	private GameObject hit;
+	private Color color;
+	private GameObject hit_r;
+	private Color color_r;
+
+	// Use this for initialization
+	void Start () {
         //motor control (OSC)
         /*
         ROSCSender = RMotor.GetComponent<OSCSender>();
@@ -37,6 +43,12 @@ public class fish_control : MonoBehaviour {
         new Thread(Uno.connectToArdunio).Start();
 
         transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
+
+		//face
+		hit = GameObject.FindGameObjectWithTag("Hit");
+		color = hit.GetComponent<Renderer>().material.color;
+		hit_r = GameObject.FindGameObjectWithTag("Hit_R");
+		color_r = hit_r.GetComponent<Renderer>().material.color;
 	}
 	
 	// Update is called once per frame
@@ -66,7 +78,25 @@ public class fish_control : MonoBehaviour {
 
 	}
 
-    IEnumerator No1Work()
+	private void face_color_r()
+	{
+		//face
+		color_r.a = (float)120f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+		color.a = (float)20f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+	}
+
+	private void face_color()
+	{
+		//face
+		color.a = (float)120f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+		color_r.a = (float)20f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+	}
+
+	IEnumerator No1Work()
     {
         float waitingTime = 2f;
         int speed = 100;
@@ -75,32 +105,49 @@ public class fish_control : MonoBehaviour {
 
         new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
         new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 170 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f + tempTime);
-        new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
+		face_color_r();
+		new Thread(Uno.SendData).Start("170 100 10 100"); // L Lspeed R Rspeed
         yield return new WaitForSeconds(0.15f - tempTime);
-        new Thread(Uno.SendData).Start("10 100 10 100"); // L Lspeed R Rspeed
-    }
+		face_color();
+		new Thread(Uno.SendData).Start("10 100 10 100"); // L Lspeed R Rspeed
+		color_r.a = (float)20f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+		color.a = (float)20f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+	}
 
 
     // motor control for serial port

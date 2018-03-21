@@ -45,6 +45,11 @@ public class trackerPosRecord_v2 : MonoBehaviour {
     private float offset = 1;
     private bool rotated = false;
 
+	//face
+	private GameObject hit;
+	private Color color;
+	private GameObject hit_r;
+	private Color color_r;
 
 	// Use this for initialization
 	void Start()
@@ -67,7 +72,11 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 		RlastPos = Rtracker.transform.position;
 		body_head_direction = headpos.transform.position - bodypos.transform.position;
 
-
+		//face
+		hit = GameObject.FindGameObjectWithTag("Hit");
+		color = hit.GetComponent<Renderer>().material.color;
+		hit_r = GameObject.FindGameObjectWithTag("Hit_R");
+		color_r = hit_r.GetComponent<Renderer>().material.color;
 	}
 
 
@@ -236,17 +245,35 @@ public class trackerPosRecord_v2 : MonoBehaviour {
             new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
-        }
+
+			//face
+			color_r.a = (float)120f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+		}
         else if (L)//左轉，要動左馬達 (0,1)
         {
             new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
-        }
+
+			//face
+			color.a = (float)120f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+		}
         else //前進，兩馬達都要動 (0,0)
         {
             new Thread(Uno.SendData).Start((angle+20)+" "+speed+" "+angle+" "+speed); // L Lspeed R Rspeed
-        }
+
+			//face
+			color.a = (float)angle / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)angle / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+		}
     }
 
 
