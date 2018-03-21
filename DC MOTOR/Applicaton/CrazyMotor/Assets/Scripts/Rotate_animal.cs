@@ -10,7 +10,7 @@ using UnityEngine.Video;
 
 public class Rotate_animal : MonoBehaviour {
 	public GameObject cube;             //target cube (put at fixed position)
-	private bool start = false;         //flag: after initialization, set start to 1
+	private bool start = true;         //flag: after initialization, set start to 1
 	private float initRotation = 0f;    //initial ratation angle
 	private float currentRotation = 0f; //curent rotation angle
 	private int motor_angle = 0;        //the rotation angle the motors need to rotate
@@ -32,6 +32,9 @@ public class Rotate_animal : MonoBehaviour {
 
 	private GameObject hit;
 	private Color color;
+
+	private int done = 0;
+	private int type = 1;
 
 	// Use this for initialization
 	void Start()
@@ -63,13 +66,65 @@ public class Rotate_animal : MonoBehaviour {
 		}
 
 		int videoTime = Mathf.FloorToInt((float)videoPlayer.time);
-		if(videoTime == 1)
+		if (videoTime == 11)
 		{
-			target_angle = 285f;
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = 100f;
 			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
 			else cube_angle = target_angle - initRotation;
 		}
-		
+		else if (videoTime == 45)
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = 70f;
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}
+		else if (videoTime == 60)
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = 40f;
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}
+		else if (videoTime == 105)//100
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = 25f;
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}
+		else if (videoTime == 120)//120
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = -0f;//-21
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}
+		else if (videoTime == 140)//120
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = -21f;
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}
+		/*else if (videoTime == 140)
+		{
+			if (done == 0) initRotation = this.transform.rotation.eulerAngles.y;
+			done = 1; type = 2;
+			target_angle = -40f;
+			if (initRotation > target_angle + 180f) cube_angle = target_angle - (initRotation - 360);
+			else cube_angle = target_angle - initRotation;
+		}*/
+		else done = 0;
+
+
 		if (Input.GetKeyDown(KeyCode.Z)) Debug.Log(videoTime);
 
 		//Rotation angle control and calculation
@@ -77,32 +132,40 @@ public class Rotate_animal : MonoBehaviour {
 		{
 			currentRotation = this.transform.rotation.eulerAngles.y - initRotation;
 
-			//if (this.transform.rotation.eulerAngles.y > 180) currentRotation -= 360; // 20
+			if (type == 2) if (this.transform.rotation.eulerAngles.y > 180) currentRotation -= 360; // 20
 
-			       
+
 			//currentRotation = Mathf.Min(this.transform.rotation.eulerAngles.y - initRotation, (this.transform.rotation.eulerAngles.y - 360) - initRotation);
 
-			if (currentRotation < 0) currentRotation = currentRotation + 360;
+			if (type == 1) if (currentRotation < 0) currentRotation = currentRotation + 360;
 			//make the degree between 0 ~ 180
 			//if (degree > 180) -> set it to fixed degree -> give biggest pressure)
-
-			if (currentRotation > (360 - (cube_angle * 2)) / 2 + cube_angle * 2) currentRotation = 0; //270~360, 4th quadrant
-			else if (currentRotation > cube_angle * 2 && currentRotation < (360 - (cube_angle * 2)) / 2 + cube_angle * 2) currentRotation = cube_angle * 2; //180~270, 3rd quadrant
-
-			/*
+			if (type == 1)
+				if (currentRotation > (360 - (cube_angle * 2)) / 2 + cube_angle * 2) currentRotation = 0; //270~360, 4th quadrant
+				else if (currentRotation > cube_angle * 2 && currentRotation < (360 - (cube_angle * 2)) / 2 + cube_angle * 2) currentRotation = cube_angle * 2; //180~270, 3rd quadrant
+			
+			
 			float edge1 = (target_angle + cube_angle + 360) % 360;
 			float edge2 = (initRotation - (360 - Mathf.Abs(cube_angle * 2))/2 + 360) % 360;
+			if(type == 2)
+			{
+				if(cube_angle < 0 && currentRotation < cube_angle * 2 ) currentRotation = cube_angle * 2;
+				if(cube_angle < 0 && currentRotation > 0) currentRotation = 0;
 
-			if(cube_angle < 0 && currentRotation < cube_angle * 2 ) currentRotation = cube_angle * 2;
-			if(cube_angle < 0 && currentRotation > 0) currentRotation = 0;
-
-			if (cube_angle > 0 && currentRotation > cube_angle * 2) currentRotation = cube_angle * 2;
-			if (cube_angle > 0 && currentRotation < 0) currentRotation = 0;
-			*/
+				if (cube_angle > 0 && currentRotation > cube_angle * 2) currentRotation = cube_angle * 2;
+				if (cube_angle > 0 && currentRotation < 0) currentRotation = 0;
+			}
+			
+			
 
 			if (cube_angle - currentRotation > 2) //未轉到, 1st & 4th quadrant
 			{
-				motor_angle = (int)((int)((cube_angle - currentRotation) / 5) * 5 * (150 / Mathf.Abs(cube_angle)));
+				int l;
+				if (Mathf.Abs(cube_angle) < 50) l = 0;
+				else l = 0;
+				motor_angle = (int)((int)((cube_angle - currentRotation) / 5) * 5 * (150 / (Mathf.Abs(cube_angle) + l)) );
+				//motor_angle = (int)((int)((cube_angle - currentRotation) / 5) * 5 * 1.5f);
+				if (motor_angle > 100) motor_angle = 100;
 				R = true;
 
 				color.a = (float)motor_angle / 150;
@@ -111,7 +174,12 @@ public class Rotate_animal : MonoBehaviour {
 			}
 			else if (cube_angle - currentRotation < -2) //轉過頭, 2nd & 3rd quadrant
 			{
-				motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * (150 / Mathf.Abs(cube_angle)));
+				int l;
+				if (Mathf.Abs(cube_angle) < 50) l = 0;
+				else l = 0;
+				motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * (150 / (Mathf.Abs(cube_angle) + l)) );
+				//motor_angle = (int)((int)((currentRotation - cube_angle) / 5) * 5 * 1.5f);
+				if (motor_angle > 100) motor_angle = 100;
 				R = false; 
 
 				color.a = (float)motor_angle / 150;
