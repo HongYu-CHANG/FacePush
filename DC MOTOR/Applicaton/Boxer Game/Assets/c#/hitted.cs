@@ -362,39 +362,41 @@ public class hitted : MonoBehaviour {
 
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }	
-            new Thread(Uno.SendData).Start("10 100 "+angle+" "+RSpeed); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 130; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 80; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }	
+            new Thread(Uno.SendData).Start("128 255 "+ degreeConvertToRightRotaryCoder(angle) +" "+RSpeed); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
-            new Thread(Uno.SendData).Start("10 100 10 " + RSpeed); //L Lspeed R Rspeed
+            new Thread(Uno.SendData).Start("128 255 78 " + RSpeed); //L Lspeed R Rspeed
 
 			//write data
-			motordata = "10 100 " + angle.ToString() + " " + RSpeed.ToString();
-			motor_data_release = "10 100 10 " + RSpeed.ToString();
+			motordata = "128 255 " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
+			motor_data_release = "128 255 78 " + RSpeed.ToString();
 		}
 		else if(L)
 		{
-			if(state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-            new Thread(Uno.SendData).Start(angle + " " + LSpeed+" 10 100"); //L Lspeed R Rspeed
+			if(state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 150; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			else if (state == 3 || state == 4) { LSpeed = 255; angle = 100; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+            new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed+" 78 255"); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
-            new Thread(Uno.SendData).Start("10 " + LSpeed + " 10 100"); //L Lspeed R Rspeed
+            new Thread(Uno.SendData).Start("128 " + LSpeed + " 78 255"); //L Lspeed R Rspeed
 
 			//write data
-			motordata = angle.ToString() + " " + LSpeed.ToString() + " 10 100";
-			motor_data_release = "10 " + LSpeed.ToString() + " 10 100";
+			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + LSpeed.ToString() + " 78 255";
+			motor_data_release = "128 " + LSpeed.ToString() + " 78 255";
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; langle = 120; Debug.Log("C 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-            new Thread(Uno.SendData).Start(langle + " " + RSpeed + " " + angle + " " + RSpeed); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 130; langle = 170; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 80; langle = 120; Debug.Log("C 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+
+			//no langle
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + RSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
             yield return new WaitForSeconds(time);
-            new Thread(Uno.SendData).Start("10 " + RSpeed + " 10 " + RSpeed); //L Lspeed R Rspeed
+            new Thread(Uno.SendData).Start("128 " + RSpeed + " 78 " + RSpeed); //L Lspeed R Rspeed
 
 			//write data
-			motordata = langle.ToString() + " " + RSpeed.ToString() + " " + angle.ToString() + " " + RSpeed.ToString();
-			motor_data_release = "10 " + RSpeed.ToString() + " 10 " + RSpeed.ToString();
+			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + RSpeed.ToString() + " " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
+			motor_data_release = "128 " + RSpeed.ToString() + " 78 " + RSpeed.ToString();
 		}
 
 		//write data
@@ -407,14 +409,14 @@ public class hitted : MonoBehaviour {
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 1024 / 360);
+        return ((degree * 1024 / 360)+100);
     }
 
     private int degreeConvertToRightRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 682 / 360);
+        return ((degree * 682 / 360)+60);
     }
 
     class CommunicateWithArduino
@@ -429,7 +431,7 @@ public class hitted : MonoBehaviour {
 
             if (connected)
             {
-                string portChoice = "COM8";
+                string portChoice = "COM5";
                 if (mac)
                 {
                     int p = (int)Environment.OSVersion.Platform;

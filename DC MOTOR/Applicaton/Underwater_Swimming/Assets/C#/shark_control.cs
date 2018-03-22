@@ -25,13 +25,15 @@ public class shark_control : MonoBehaviour {
     */
 
     //motor (serial port) - Arduino connection
-    private CommunicateWithArduino Uno = new CommunicateWithArduino();
+    //private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
 	//face
 	private GameObject hit;
 	private Color color;
 	private GameObject hit_r;
 	private Color color_r;
+
+	public static int r = 0;
 
 	// Use this for initialization
 	void Start () {
@@ -51,7 +53,7 @@ public class shark_control : MonoBehaviour {
         */
 
         //motor (serial port)
-        new Thread(Uno.connectToArdunio).Start();
+       // new Thread(Uno.connectToArdunio).Start();
 
 		//face
 		hit = GameObject.FindGameObjectWithTag("Hit");
@@ -95,18 +97,20 @@ public class shark_control : MonoBehaviour {
         if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Turn Left"))
         {
             if (shark == 0) {
-                StartCoroutine(No1Work(true, false));
+                //StartCoroutine(No1Work(true, false));
                 Debug.Log("shark_right");
             }
+			r = 0;
             shark = 1;
             //Debug.Log("shark_r");
         }
         else if (_animator.GetCurrentAnimatorStateInfo(0).IsName("Turn Right"))
         {
             if (shark == 0) {
-                StartCoroutine(No1Work(false, true));
+                //StartCoroutine(No1Work(false, true));
                 Debug.Log("shark_left");
-            } 
+            }
+			r = 1;
             shark = 1;
             //Debug.Log("shark_l");
         }
@@ -119,16 +123,17 @@ public class shark_control : MonoBehaviour {
         return _animator.GetCurrentAnimatorStateInfo(0).length >
                _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
-
+	/*
     IEnumerator No1Work(bool R, bool L)
     {
         float waitingTime = 1f;
-        int rotateSpeed = 150;
+        int rotateSpeed = 255;
 
 
         if (R)//右轉，要動右馬達 (1,0)
         {
-            new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+			//new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(20) + " " + rotateSpeed + " " + degreeConvertToRightRotaryCoder(120) + " " + rotateSpeed);
 			//face
 			color_r.a = (float)120f / 150;
 			hit_r.GetComponent<Renderer>().material.color = color_r;
@@ -136,7 +141,8 @@ public class shark_control : MonoBehaviour {
 			hit.GetComponent<Renderer>().material.color = color;
 
 			yield return new WaitForSeconds(waitingTime);
-            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+            //new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
 
 			//face
 			color_r.a = (float)20f / 150;
@@ -146,7 +152,8 @@ public class shark_control : MonoBehaviour {
 		}
         else if (L)//左轉，要動左馬達 (0,1)
         {
-            new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
+			//new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + rotateSpeed + " " + degreeConvertToRightRotaryCoder(20) + " " + rotateSpeed);
 			//face
 			color.a = (float)120f / 150;
 			hit.GetComponent<Renderer>().material.color = color;
@@ -154,7 +161,8 @@ public class shark_control : MonoBehaviour {
 			hit_r.GetComponent<Renderer>().material.color = color_r;
 
 			yield return new WaitForSeconds(waitingTime);
-            new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+            //new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
 
 			//face
 			color.a = (float)20f / 150;
@@ -164,21 +172,21 @@ public class shark_control : MonoBehaviour {
 		}
 
     }
-
+	*/
     // motor control for serial port
 
     private int degreeConvertToLeftRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 1024 / 360);
+        return ((degree * 1024 / 360) + 150);
     }
 
     private int degreeConvertToRightRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 682 / 360);
+        return ((degree * 682 / 360) + 60);
     }
 
     class CommunicateWithArduino

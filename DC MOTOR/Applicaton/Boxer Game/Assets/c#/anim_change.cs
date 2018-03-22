@@ -15,6 +15,9 @@ public class anim_change : MonoBehaviour {
 	private int anim_control = 0;
 	private int anim = 0;
 
+	public int key = 0;
+	private int ketdown = 3;
+
     // Use this for initialization
     void Start () {
         _animator = this.GetComponent<Animator>();
@@ -75,6 +78,7 @@ public class anim_change : MonoBehaviour {
 					anim_control++;
 					s = anim;
 				}
+				if (key == 1) s = ketdown;
 				_animator.SetInteger("change", s);
                 Debug.Log(s);
             }
@@ -92,13 +96,13 @@ public class anim_change : MonoBehaviour {
 
 
 		//control
-		/* control all anim
-		if (Input.GetKeyDown(KeyCode.Alpha1)) control = 1;
-		else if (Input.GetKeyDown(KeyCode.Alpha2)) control = 2;
-		else if (Input.GetKeyDown(KeyCode.Alpha3)) control = 3;
-		else if (Input.GetKeyDown(KeyCode.Alpha4)) control = 4;
-		else if (Input.GetKeyDown(KeyCode.Alpha5)) control = 5;
-		*/
+		 //control all anim
+		if (Input.GetKeyDown(KeyCode.Q)) ketdown = 1;
+		else if (Input.GetKeyDown(KeyCode.W)) ketdown = 2;
+		else if (Input.GetKeyDown(KeyCode.E)) ketdown = 3;
+		else if (Input.GetKeyDown(KeyCode.R)) ketdown = 4;
+		else if (Input.GetKeyDown(KeyCode.T)) ketdown = 5;
+		
 		//control anim in 2 state
 		if (Input.GetKeyDown(KeyCode.Alpha1)) { control = 1; anim_control = 0; }
 		else if (Input.GetKeyDown(KeyCode.Alpha2)) { control = 2; anim_control = 0; }

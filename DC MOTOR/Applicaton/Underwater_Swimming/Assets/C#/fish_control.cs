@@ -19,7 +19,7 @@ public class fish_control : MonoBehaviour {
     */
 
     //motor (serial port) - Arduino connection
-    private CommunicateWithArduino Uno = new CommunicateWithArduino();
+    //private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
     public static int fish = 0;
 
@@ -40,9 +40,10 @@ public class fish_control : MonoBehaviour {
         */
 
         //motor (serial port)
-        new Thread(Uno.connectToArdunio).Start();
+        //new Thread(Uno.connectToArdunio).Start();
 
-        transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
+		//fishflock initial movement
+        //transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
 
 		//face
 		hit = GameObject.FindGameObjectWithTag("Hit");
@@ -53,7 +54,13 @@ public class fish_control : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetKeyDown(KeyCode.F))
+		if (Input.GetKeyDown(KeyCode.H))
+		{
+			//after initialization
+			transform.DOLocalMove(new Vector3(20, 0.8f, -0.07f), 5);
+		}
+
+		if (Input.GetKeyDown(KeyCode.F))
         {
 			//
 			transform.localPosition = new Vector3(20, 0.8f, -0.07f);
@@ -63,7 +70,7 @@ public class fish_control : MonoBehaviour {
             mySequence.Append(transform.DOLocalMoveX(20, 0.5f));
             mySequence.Append(transform.DOLocalMoveZ(-0.07f, 1f));
 
-            StartCoroutine(No1Work());
+            //StartCoroutine(No1Work());
             fish = 1;
             Debug.Log("fish");
         }
@@ -95,7 +102,61 @@ public class fish_control : MonoBehaviour {
 		color_r.a = (float)20f / 150;
 		hit_r.GetComponent<Renderer>().material.color = color_r;
 	}
+	/*
+	IEnumerator No1Work()
+	{
+		float waitingTime = 2f;
+		int speed = 255;
+		float tempTime = UnityEngine.Random.Range(0.01f, 0.03f);//tempTime = 0;
+		yield return new WaitForSeconds(waitingTime);
 
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		color_r.a = (float)20f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+		color.a = (float)20f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+	}
+	*/
+	/*
 	IEnumerator No1Work()
     {
         float waitingTime = 2f;
@@ -148,6 +209,7 @@ public class fish_control : MonoBehaviour {
 		color.a = (float)20f / 150;
 		hit.GetComponent<Renderer>().material.color = color;
 	}
+	*/
 
 
     // motor control for serial port
@@ -156,14 +218,14 @@ public class fish_control : MonoBehaviour {
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 1024 / 360);
+        return ((degree * 1024 / 360) + 150);
     }
 
     private int degreeConvertToRightRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 682 / 360);
+        return ((degree * 682 / 360) + 60);
     }
 
     class CommunicateWithArduino
