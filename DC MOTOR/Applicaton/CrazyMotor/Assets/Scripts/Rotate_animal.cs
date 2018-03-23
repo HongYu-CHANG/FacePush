@@ -217,15 +217,18 @@ public class Rotate_animal : MonoBehaviour {
 	IEnumerator No1Work(bool R, int angle)
 	{
 		float waitingTime = 0.01f;
+		int speed = 255;
 
 		if (R)//右轉，要動右馬達 (1,0)
 		{
-			new Thread(Uno.SendData).Start("10 150 " + angle + " 150"); // L Lspeed R Rspeed
+			//new Thread(Uno.SendData).Start("10 150 " + angle + " 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(10) + " " + speed + " " + degreeConvertToRightRotaryCoder(angle) + " " + speed);
 			yield return new WaitForSeconds(waitingTime);
 		}
 		else //左轉，要動左馬達 (0,1)
 		{
-			new Thread(Uno.SendData).Start(angle + " 150 10 150"); // L Lspeed R Rspeed
+			//new Thread(Uno.SendData).Start(angle + " 150 10 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + speed + " " + degreeConvertToRightRotaryCoder(10) + " " + speed);
 			yield return new WaitForSeconds(waitingTime);
 		}
 
@@ -236,13 +239,13 @@ public class Rotate_animal : MonoBehaviour {
 	{
 		// alternation
 		// increase another converter for right motor
-		return (degree * 1024 / 360);
+		return ((degree * 1024 / 360) + 100);
 	}
 	private int degreeConvertToRightRotaryCoder(int degree)
 	{
 		// alternation
 		// increase another converter for right motor
-		return (degree * 682 / 360);
+		return ((degree * 682 / 360) + 60);
 	}
 
 	// motor control for serial port
@@ -258,7 +261,7 @@ public class Rotate_animal : MonoBehaviour {
 
 			if (connected)
 			{
-				string portChoice = "COM8";
+				string portChoice = "COM5";
 				if (mac)
 				{
 					int p = (int)Environment.OSVersion.Platform;
@@ -278,7 +281,7 @@ public class Rotate_animal : MonoBehaviour {
 					}
 					portChoice = "/dev/" + choice;
 				}
-				arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+				arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
 				arduinoController.Handshake = Handshake.None;
 				arduinoController.RtsEnable = true;
 				arduinoController.Open();

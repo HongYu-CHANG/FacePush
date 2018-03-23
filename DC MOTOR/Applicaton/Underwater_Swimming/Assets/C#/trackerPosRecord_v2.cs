@@ -27,14 +27,6 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	private bool posInitialized = false;
 	public float drawRayTime;
 
-    //motor (OSC)
-    /*
-	public GameObject RMotor;
-	public GameObject LMotor;
-	private OSCSender ROSCSender;
-	private OSCSender LOSCSender;
-    */
-
     //motor (serial port) - Arduino connection
     private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
@@ -51,19 +43,15 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	private GameObject hit_r;
 	private Color color_r;
 
+	private int done = 0;
+	private int fish_done = 0;
+	private int shark_done = 0;
+
 	// Use this for initialization
 	void Start()
 	{
 
 		Ltracker.gameObject.SetActive(true);
-
-        //motor control (OSC)
-        /*
-		ROSCSender = RMotor.GetComponent<OSCSender>();
-		ROSCSender.setWhichMotor("R");
-		LOSCSender = LMotor.GetComponent<OSCSender>();
-		LOSCSender.setWhichMotor("L");
-        */
 
         //motor (serial port)
         new Thread(Uno.connectToArdunio).Start();
@@ -83,12 +71,13 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	void FixedUpdate()
 	{
 
-		if (Input.GetKeyDown(KeyCode.H))
+		if (Input.GetKeyDown(KeyCode.H) && done == 0)
 		{
 			Debug.Log("Press H");
-			transform.position = (Ltracker.transform.position + Rtracker.transform.position) / 2;
+			transform.position = new Vector3((Ltracker.transform.position.x + Rtracker.transform.position.x) / 2,0.47f, (Ltracker.transform.position.z + Rtracker.transform.position.z) / 2);
 			Debug.Log("swimmer's position: " + transform.position);
 			posInitialized = true;
+			done = 1;
 		}
 
 		if (posInitialized == true)
@@ -125,7 +114,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                             transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
                             if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
                             {
-                                //StartCoroutine(No1Work(true, false, 0, 0)); //R,L,angle,speed (OSC)
+                                StartCoroutine(No1Work(true, false, 0, 0)); //R,L,angle,speed (OSC)
                                 //new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
                                 Debug.Log("turn right, L motor");
                             }
@@ -173,18 +162,18 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                     else if (shark_control.shark == 1) Debug.Log("shark!!");
                     else if((int)(LRvector.magnitude + offset) >= 15)
                     {
-                        StartCoroutine(No1Work(false, false, 150, 100));
+                        StartCoroutine(No1Work(false, false, 150, 255));
                         Debug.Log("move forward, max");
                     }
 					else if ((int)(LRvector.magnitude + offset) > 1)
 					{
-						StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset) * 10, 100));
+						StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset) * 10, 255));
 						Debug.Log("move forward, default");
 					}
                     else
                     {
                         //放鬆
-                        StartCoroutine(No1Work(false, false, 10, 100));
+                        StartCoroutine(No1Work(false, false, 0, 255));
                         Debug.Log("move forward, free");
                     }
                     
@@ -201,72 +190,89 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				rotated = false;
 			}
 
+			if (fish_control.fish == 1 && fish_done == 0)
+			{
+				fish_done = 1;
+				StartCoroutine(No1Work());
+				
+			}
+
+			if (shark_control.shark == 1 && shark_done == 0)
+			{
+				shark_done = 1;
+				if(shark_control.r == 0) StartCoroutine(No1Work_Shark(true, false));
+				else if (shark_control.r == 1) StartCoroutine(No1Work_Shark(false, true));
+
+
+			}
 		}
 
 	}
 
-    //motor control (OSC)
-    /*
-    IEnumerator No1Work(bool R, bool L, int angle, int speed)
-    {
-        float waitingTime = 1f;
-        int rotateSpeed = 150;
-
-        if (R)//右轉，要動右馬達 (1,0)
-        {
-            ROSCSender.SendOSCMessageTriggerMethod(120, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);
-            yield return new WaitForSeconds(waitingTime);
-            ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);
-        }
-        else if (L)//左轉，要動左馬達 (0,1)
-        {
-            ROSCSender.SendOSCMessageTriggerMethod(20, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(150, rotateSpeed);
-            yield return new WaitForSeconds(waitingTime);
-            ROSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);//加壓   // (角度0~180, 速度0~255)
-            LOSCSender.SendOSCMessageTriggerMethod(10, rotateSpeed);
-        }
-        else //前進，兩馬達都要動 (0,0)
-        {
-            ROSCSender.SendOSCMessageTriggerMethod(angle, speed);
-            LOSCSender.SendOSCMessageTriggerMethod(angle + 20, speed);
-        }
-    }
-    */
 
     IEnumerator No1Work(bool R, bool L, int angle, int speed)
     {
         float waitingTime = 1f;
+		const int turningSpeed = 255; //constant
+		
 
         if (R)//右轉，要動右馬達 (1,0)
         {
-            new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+			/*
+			//original ver.
+			new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			*/
 
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(20) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(120) + " " + turningSpeed); // L Lspeed R Rspeed																																						   //face
 			//face
 			color_r.a = (float)120f / 150;
 			hit_r.GetComponent<Renderer>().material.color = color_r;
 			color.a = (float)20f / 150;
 			hit.GetComponent<Renderer>().material.color = color;
+
+			yield return new WaitForSeconds(waitingTime);
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+
+			//face
+			color_r.a = (float)0f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)0f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
 		}
         else if (L)//左轉，要動左馬達 (0,1)
         {
-            new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
+			/*
+			//original ver.
+			new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
             yield return new WaitForSeconds(waitingTime);
             new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			*/
 
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(20) + " " + turningSpeed); // L Lspeed R Rspeed
 			//face
 			color.a = (float)120f / 150;
 			hit.GetComponent<Renderer>().material.color = color;
 			color_r.a = (float)20f / 150;
 			hit_r.GetComponent<Renderer>().material.color = color_r;
+			yield return new WaitForSeconds(waitingTime);
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+
+			//face
+			color.a = (float)0f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)0f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
 		}
         else //前進，兩馬達都要動 (0,0)
         {
-            new Thread(Uno.SendData).Start((angle+20)+" "+speed+" "+angle+" "+speed); // L Lspeed R Rspeed
+			/*
+			//original ver.
+			new Thread(Uno.SendData).Start((angle+20)+" "+speed+" "+angle+" "+speed); // L Lspeed R Rspeed
+			*/
+			
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + turningSpeed); // L Lspeed R Rspeed
 
 			//face
 			color.a = (float)angle / 150;
@@ -276,22 +282,144 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 		}
     }
 
+	//fish
+	private void face_color_r()
+	{
+		//face
+		color_r.a = (float)120f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+		color.a = (float)20f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+	}
+
+	private void face_color()
+	{
+		//face
+		color.a = (float)120f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+		color_r.a = (float)20f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+	}
+
+	IEnumerator No1Work()
+	{
+		float waitingTime = 2f;
+		int speed = 255;
+		float tempTime = UnityEngine.Random.Range(0.01f, 0.03f);//tempTime = 0;
+		yield return new WaitForSeconds(waitingTime);
+
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		yield return new WaitForSeconds(0.15f + tempTime);
+		face_color_r();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		yield return new WaitForSeconds(0.15f - tempTime);
+		face_color();
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		color_r.a = (float)20f / 150;
+		hit_r.GetComponent<Renderer>().material.color = color_r;
+		color.a = (float)20f / 150;
+		hit.GetComponent<Renderer>().material.color = color;
+		fish_done = 0;
+		fish_control.fish = 0;
+	}
+
+	IEnumerator No1Work_Shark(bool R, bool L)
+	{
+		float waitingTime = 1f;
+		int rotateSpeed = 255;
 
 
-    // motor control for serial port
+		if (R)//右轉，要動右馬達 (1,0)
+		{
+			//new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(20) + " " + rotateSpeed + " " + degreeConvertToRightRotaryCoder(120) + " " + rotateSpeed);
+			//face
+			color_r.a = (float)120f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
 
-    private int degreeConvertToLeftRotaryCoder(int degree)
+			yield return new WaitForSeconds(waitingTime);
+			//new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+
+			//face
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+		}
+		else if (L)//左轉，要動左馬達 (0,1)
+		{
+			//new Thread(Uno.SendData).Start("150 150 20 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + rotateSpeed + " " + degreeConvertToRightRotaryCoder(20) + " " + rotateSpeed);
+			//face
+			color.a = (float)120f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+
+			yield return new WaitForSeconds(waitingTime);
+			//new Thread(Uno.SendData).Start("10 150 10 150"); // L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+
+			//face
+			color.a = (float)20f / 150;
+			hit.GetComponent<Renderer>().material.color = color;
+			color_r.a = (float)20f / 150;
+			hit_r.GetComponent<Renderer>().material.color = color_r;
+		}
+		shark_done = 0;
+		shark_control.shark = 0;
+	}
+
+	// motor control for serial port
+
+	private int degreeConvertToLeftRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 1024 / 360);
+        return ((degree * 1024 / 360) + 150);
     }
 
     private int degreeConvertToRightRotaryCoder(int degree)
     {
         // alternation
         // increase another converter for right motor
-        return (degree * 682 / 360);
+        return ((degree * 682 / 360) + 60);
     }
 
     class CommunicateWithArduino
@@ -306,7 +434,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
             if (connected)
             {
-                string portChoice = "COM8";
+                string portChoice = "COM5";
                 if (mac)
                 {
                     int p = (int)Environment.OSVersion.Platform;
@@ -326,7 +454,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                     }
                     portChoice = "/dev/" + choice;
                 }
-                arduinoController = new SerialPort(portChoice, 57600, Parity.None, 8, StopBits.One);
+                arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
                 arduinoController.Handshake = Handshake.None;
                 arduinoController.RtsEnable = true;
                 arduinoController.Open();

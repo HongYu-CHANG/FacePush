@@ -1,20 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using System.IO;
+using System.IO.Ports;
+using System.Threading;
+using UnityEngine.UI;
 
 public class hitted_control : MonoBehaviour {
     int s = 0;
     int state = 0;
 
-    //OSC
-    /*public GameObject RMotor;
+	// Arduino connection
+	private CommunicateWithArduino Uno = new CommunicateWithArduino();
+	//OSC
+	/*public GameObject RMotor;
     public GameObject LMotor;
     private OSCSender ROSCSender;
     private OSCSender LOSCSender;*/
 
-    //hit_pos_on_face
-    private GameObject hit;
+	//hit_pos_on_face
+	private GameObject hit;
     private Transform face;
     private Vector3 hit_position;
     int count = 0;
@@ -46,15 +53,16 @@ public class hitted_control : MonoBehaviour {
     // Use this for initialization
     void Start () {
         _animator = box.GetComponent<Animator>();
-        //OSC
-        /*
+		//OSC
+		/*
         ROSCSender = RMotor.GetComponent<OSCSender>();
         ROSCSender.setWhichMotor("R");
         LOSCSender = LMotor.GetComponent<OSCSender>();
         LOSCSender.setWhichMotor("L");
         */
+		new Thread(Uno.connectToArdunio).Start();
 
-        hit = GameObject.FindGameObjectWithTag("Hit");
+		hit = GameObject.FindGameObjectWithTag("Hit");
         face = GameObject.FindGameObjectWithTag("Face").transform;
         hit_position = hit.transform.position;
         hit.transform.localScale = new Vector3(0, 0, 0);
@@ -141,19 +149,22 @@ public class hitted_control : MonoBehaviour {
                     if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
                     hit_position = new Vector3(face.position.x + 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
-            }
+					StartCoroutine(No1Work(true, false, state));
+			}
                 else if (control == 2)
                 {
                     if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                     hit_position = new Vector3(face.position.x - 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
-            }
+					StartCoroutine(No1Work(false, true, state));
+			}
                 else
                 {
                     if (state == 3) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                     hit_position = new Vector3(face.position.x , face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
-            }
+					StartCoroutine(No1Work(false, false, state));
+			}
                 count++;
                 Line = hit.transform.position;
                 DrawLine(hit_position + move * k * 2, hit_position, 1f);
@@ -219,22 +230,24 @@ public class hitted_control : MonoBehaviour {
                 {
                     if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
-
                     hit_position = new Vector3(face.position.x + 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
-            }
+					StartCoroutine(No1Work(true, false, state));
+			}
                 else if (control == 2)
                 {
                     if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
                     hit_position = new Vector3(face.position.x - 0.3f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
-            }
+					StartCoroutine(No1Work(false, true, state));
+			}
                 else
                 {
                     if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[2];
                     else head.GetComponent<Renderer>().material.mainTexture = myTextures[5];
                     hit_position = new Vector3(face.position.x , face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
+					StartCoroutine(No1Work(false, false, state));
 
-            }
+			}
                 count++;
                 Line = hit.transform.position;
                 DrawLine(hit_position + move * k * 2, hit_position, 1f);
@@ -282,44 +295,131 @@ public class hitted_control : MonoBehaviour {
         lr.SetPosition(1, end);
         GameObject.Destroy(myLine, duration);
     }
-//dis between boxer and player need to be far or it may be hit twice and arrow would be wrong
+	//dis between boxer and player need to be far or it may be hit twice and arrow would be wrong
 
-    /*
-    IEnumerator No1Work(bool R, bool L, int state)
-    {
-        float time = 0.5f;
-        int RSpeed = 50;
-        int LSpeed = 50;
-        int angle = 150;
-        int langle = 150;
+	//motor & blood
+	IEnumerator No1Work(bool R, bool L, int state)
+	{
+		float time = 0.5f;
+		int RSpeed = 50;
+		int LSpeed = 50;
+		int angle = 150;
+		int langle = 150;
 
-        if (R)//奇數次點擊
-        {
-            if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; Debug.Log("R 重 "); }
-            else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; Debug.Log("R 輕 "); }
-            ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-            yield return new WaitForSeconds(time);
-            ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-        }
-        else if (L)
-        {
-            if (state == 1 || state == 2 || state == 5) { LSpeed = 200; angle = 150; Debug.Log("L 重 "); }
-            else if (state == 3 || state == 4) { LSpeed = 150; angle = 100; Debug.Log("L 輕 "); }
-            LOSCSender.SendOSCMessageTriggerMethod(angle, LSpeed);//加壓
-            yield return new WaitForSeconds(time);
-            LOSCSender.SendOSCMessageTriggerMethod(10, LSpeed);
+		if (R)//奇數次點擊
+		{
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 150; Debug.Log("R 重 ");  }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 100; Debug.Log("R 輕 "); }
+			new Thread(Uno.SendData).Start("128 255 " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
+			yield return new WaitForSeconds(time);
+			new Thread(Uno.SendData).Start("128 255 78 " + RSpeed); //L Lspeed R Rspeed
 
-        }
-        else
-        {
-            if (state == 1 || state == 2 || state == 5) { RSpeed = 200; angle = 130; langle = 170; Debug.Log("C 重 "); }
-            else if (state == 3 || state == 4) { RSpeed = 150; angle = 80; langle = 120; Debug.Log("C 輕 "); }
-            ROSCSender.SendOSCMessageTriggerMethod(angle, RSpeed);//加壓
-            LOSCSender.SendOSCMessageTriggerMethod(langle, RSpeed);
-            yield return new WaitForSeconds(time);
-            ROSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-            LOSCSender.SendOSCMessageTriggerMethod(10, RSpeed);
-        }
+			
+		}
+		else if (L)
+		{
+			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 150; Debug.Log("L 重 ");  }
+			else if (state == 3 || state == 4) { LSpeed = 255; angle = 100; Debug.Log("L 輕 "); }
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed + " 78 255"); //L Lspeed R Rspeed
+			yield return new WaitForSeconds(time);
+			new Thread(Uno.SendData).Start("128 " + LSpeed + " 78 255"); //L Lspeed R Rspeed
 
-    }*/
+			
+		}
+		else
+		{
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 150; /*langle = 170*/; Debug.Log("C 重 ");  }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 100; /*langle = 120*/; Debug.Log("C 輕 ");  }
+
+			//no langle
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + RSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
+			yield return new WaitForSeconds(time);
+			new Thread(Uno.SendData).Start("128 " + RSpeed + " 78 " + RSpeed); //L Lspeed R Rspeed
+
+			
+		}
+
+		
+	}
+
+
+	// motor control (serial port)
+	private int degreeConvertToLeftRotaryCoder(int degree)
+	{
+		// alternation
+		// increase another converter for right motor
+		return ((degree * 1024 / 360) + 100);
+	}
+
+	private int degreeConvertToRightRotaryCoder(int degree)
+	{
+		// alternation
+		// increase another converter for right motor
+		return ((degree * 682 / 360) + 60);
+	}
+
+	class CommunicateWithArduino
+	{
+		public bool connected = true;
+		public bool mac = false;
+		public string choice = "cu.usbmodem1421";
+		private SerialPort arduinoController;
+
+		public void connectToArdunio()
+		{
+
+			if (connected)
+			{
+				string portChoice = "COM5";
+				if (mac)
+				{
+					int p = (int)Environment.OSVersion.Platform;
+					// Are we on Unix?
+					if (p == 4 || p == 128 || p == 6)
+					{
+						List<string> serial_ports = new List<string>();
+						string[] ttys = Directory.GetFiles("/dev/", "cu.*");
+						foreach (string dev in ttys)
+						{
+							if (dev.StartsWith("/dev/tty."))
+							{
+								serial_ports.Add(dev);
+								Debug.Log(String.Format(dev));
+							}
+						}
+					}
+					portChoice = "/dev/" + choice;
+				}
+				arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
+				arduinoController.Handshake = Handshake.None;
+				arduinoController.RtsEnable = true;
+				arduinoController.Open();
+				Debug.LogWarning(arduinoController);
+			}
+
+		}
+		public void SendData(object obj)
+		{
+			string data = obj as string;
+			Debug.Log(data);
+			if (connected)
+			{
+				if (arduinoController != null)
+				{
+					arduinoController.Write(data);
+					arduinoController.Write("\n");
+				}
+				else
+				{
+					Debug.Log(arduinoController);
+					Debug.Log("nullport");
+				}
+			}
+			else
+			{
+				Debug.Log("not connected");
+			}
+			Thread.Sleep(500);
+		}
+	}
 }
