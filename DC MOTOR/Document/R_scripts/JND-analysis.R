@@ -19,27 +19,81 @@ result <- as.data.frame(result)
 result_mat <- round(matrix(result$Counts, c(4, 4), byrow = FALSE) / 18, 2)
 dimnames(result_mat) <- list(c(0, 0.125, 0.25, 0.5), c(2.575, 2.7, 2.95, 3.45))
 
+result_mat <- abs(result_mat - 1)
+library(corrplot)
+library(RColorBrewer)
+
+jpeg("out.jpeg", width = 5, height = 5, units = 'in', res = 300)
+
+
+corrplot(result_mat, method = "color", cl.lim = c(0, 1),
+        # col = rev(c(cm.colors(100), cm.colors(100))),
+         addgrid.col = "black",# addCoef.col = "black",
+         tl.col = "black", tl.srt = 90)
+dev.off()
+
+# fitting data
+result_mat
+
+off <- c(0, 0.125, 0.25, 0.5)
+base <- c(2.575, 2.7, 2.95, 3.45)
+
+all_off <- outer(off, base, FUN = "+")
+ob_b <- sweep(all_off, 2, base, FUN = "/")
+
+out <- data.frame(rate_diff = as.vector(result_mat),
+                  delta_load_base = as.vector(ob_b))
+m0 <- lm(rate_diff ~ log(delta_load_base), data = out)
+
+plot(rate_diff ~ log(delta_load_base) , data = out)
+lines(log(out$delta_load_base), predict(m0))
+
+out2 <- out[1:12,]
+m1 <- lm(rate_diff ~ log(delta_load_base) , data = out2)
+summary(m0)
+summary(m1)
+
+
+x <- seq(from = 1, to = 1.5, by = 0.001)
+
+pred_percent0 <- round(coef(m0)[1] + coef(m0)[2] * log(x), 2)
+# delat L/ L = 1.25
+x[which(pred_percent == 0.95)]
+
+pred_percent1 <- round(coef(m1)[1] + coef(m1)[2] * log(x), 2)
+# delat L/ L = 1.21
+x[which(pred_percent1 == 0.95)]
+x[which(pred_percent1 == 0.75)]
+
+library(ggplot2)
+#
+test <- data.frame(Base = base, LoadJND = base + off)
+
+
+ggplot(test, aes(x = Base, y = LoadJND)) +
+  geom_point() +
+  geom_abline(slope = 1.25, intercept = -2.575) +
+  scale_x_continuous(limits = c(0, 4)) +
+  scale_y_continuous(limits = c(0, 4))
+
+
+# remove largest base
+ggplot(out2, aes(x = log(delta_load_base), y = rate_diff)) +
+  geom_point() +
+  stat_smooth(method = "lm", se = FALSE) 
+
 
 #
-dta_1 <- subset(dta, TrialNo < 16)
-dta_2 <- subset(dta, TrialNo >= 16)
+# y = 1.096 + .017x
+#( 2.575 - 1.096 ) / 0.017
+#( 2.7 - 1.096 ) / 0.017
+# * 1.25
+#( 2.575 * 1.25 - 1.096 ) / 0.017
+#( 2.7 * 1.25 - 1.096 ) / 0.017
 
-result_1 <- dta_1 %>% group_by(Base, Offset) %>%
-  summarise(Counts = sum(Response))
-result_1 <- as.data.frame(result_1)
+# * 1.25 * 1.25
+#( 2.575 * 1.25 * 1.25 - 1.096 ) / 0.017
+#( 2.7 * 1.25 * 1.25 - 1.096 ) / 0.017
 
-result_1_mat <- round(matrix(result_1$Counts, c(4, 4), byrow = FALSE) / 9, 2)
-dimnames(result_1_mat) <- list(c(0, 0.125, 0.25, 0.5), c(2.575, 2.7, 2.95, 3.45))
+#(c(350, 435, 518, 370, 455, 538) - 100) * 360 / 1024
 
-result_2 <- dta_2 %>% group_by(Base, Offset) %>%
-  summarise(Counts = sum(Response))
-result_2 <- as.data.frame(result_2)
-
-result_2_mat <- round(matrix(result_2$Counts, c(4, 4), byrow = FALSE) / 9, 2)
-dimnames(result_2_mat) <- list(c(0, 0.125, 0.25, 0.5), c(2.575, 2.7, 2.95, 3.45))
-
-result_mat
-abs(1 - result_1_mat)
-result_2_mat
-
-heatmap(result_2_mat)
