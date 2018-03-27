@@ -2,7 +2,7 @@ setwd("~/Documents/_NILab_CrazyMotor/FacePush/DC MOTOR/Applicaton/StudyOne_JND/J
 file_names <- dir()[grep("csv", dir())]
 
 lst <- lapply(file_names, function(x) read.table(x, header = FALSE, sep = ','))
-lst[[1]]
+#lst[[1]]
 
 library(data.table)
 
@@ -20,38 +20,36 @@ result_mat <- round(matrix(result$Counts, c(4, 4), byrow = FALSE) / 18, 2)
 dimnames(result_mat) <- list(c(0, 0.125, 0.25, 0.5), c(2.575, 2.7, 2.95, 3.45))
 
 result_mat <- abs(result_mat - 1)
+
 library(corrplot)
 library(RColorBrewer)
-
+# plot the data 
 jpeg("out.jpeg", width = 5, height = 5, units = 'in', res = 300)
-
-
 corrplot(result_mat, method = "color", cl.lim = c(0, 1),
         # col = rev(c(cm.colors(100), cm.colors(100))),
          addgrid.col = "black",# addCoef.col = "black",
          tl.col = "black", tl.srt = 90)
 dev.off()
 
-# fitting data
+# fitting data with 16 - 4  = 12 points
 result_mat
-
 off <- c(0, 0.125, 0.25, 0.5)
 base <- c(2.575, 2.7, 2.95, 3.45)
 
 all_off <- outer(off, base, FUN = "+")
+# ob_b: offset + base load / base load
 ob_b <- sweep(all_off, 2, base, FUN = "/")
 
 out <- data.frame(rate_diff = as.vector(result_mat),
                   delta_load_base = as.vector(ob_b))
+
+# remove 3.45 column for our system limitation
+out <- out[1:12, ]
 m0 <- lm(rate_diff ~ log(delta_load_base), data = out)
-
-plot(rate_diff ~ log(delta_load_base) , data = out)
-lines(log(out$delta_load_base), predict(m0))
-
-out2 <- out[1:12,]
-m1 <- lm(rate_diff ~ log(delta_load_base) , data = out2)
 summary(m0)
-summary(m1)
+
+# after fitting the curve, let's try to find 75% and 95% of JND
+
 
 
 x <- seq(from = 1, to = 1.5, by = 0.001)

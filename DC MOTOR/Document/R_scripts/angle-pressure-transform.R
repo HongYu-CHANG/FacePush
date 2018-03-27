@@ -36,6 +36,7 @@ names(dta_push_long) <- c("Angle", "Location", "Pressure", "id")
 
 # pressure of each fsr
 library(ggplot2)
+jpeg("out.jpeg", width = 7.5, height = 3.5, units = 'in', res = 300)
 ggplot(dta_push_long, aes(x = reorder(Location, Pressure, mean),
                           y = Pressure, fill = Location)) +
   geom_boxplot() +
@@ -43,9 +44,9 @@ ggplot(dta_push_long, aes(x = reorder(Location, Pressure, mean),
   coord_flip() + theme_bw() +
   scale_fill_manual(values = c( "gray25", "gray40", "gray55", "gray70", "gray85")) +
   theme(legend.position = c(0.85, 0.3))
-
+dev.off()
 # remove upper middle data
-lm(Pressure ~ Angle, data = subset(dta_push_long, dta_push_long$Location != "UpperMiddle"))
+# lm(Pressure ~ Angle, data = subset(dta_push_long, dta_push_long$Location != "UpperMiddle"))
 
 library(dplyr)
 
@@ -57,7 +58,8 @@ agg_data <- agg_data %>%  group_by(Angle) %>%
 final_m <- lm(m ~ Angle, agg_data) # the closest to our previous result
 summary(final_m)
 
-# angle to force plot
+# angle to pressure plot
+jpeg("a2p.jpeg", width = 7.5, height = 3.5, units = 'in', res = 300)
 ggplot(agg_data, aes(x = Angle, y = m)) +
   geom_point(shape = 17, color = "forestgreen", size = 2) +
   #geom_abline(slope = coef(final_m)[2], intercept = coef(final_m)[1]) +
@@ -66,4 +68,4 @@ ggplot(agg_data, aes(x = Angle, y = m)) +
   scale_x_continuous(limits = c(0, 180), breaks = seq(0, 170, 10), expand = c(0, 0)) +
   scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 0.5), expand = c(0, 0)) +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
-  
+dev.off()
