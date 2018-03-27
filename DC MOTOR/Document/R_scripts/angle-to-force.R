@@ -1,3 +1,5 @@
+source('~/Documents/_NILab_CrazyMotor/FacePush/DC MOTOR/Document/R_scripts/ADT-analysis.R')
+
 force <- c( 0.0375, 0.30875,  0.5800, 0.69375, 0.8075,
             1.1225,  1.4375, 1.70125,  1.9650, 2.2575, 2.5500,
            2.77375,  2.9975,  3.1475, 3.24875, 3.3500)
@@ -5,9 +7,9 @@ angle <- seq(from = 30, to = 180, by = 10)
 
 a2f <- data.frame(angle = angle, force = force)
 
-plot(angle, force, type = "b", xlim = c(0, 180), ylim = c(0, 4),
-     ylab = "Force (N)", xlab = "Angle")
-grid()
+#plot(angle, force, type = "b", xlim = c(0, 180), ylim = c(0, 4),
+#     ylab = "Force (N)", xlab = "Angle")
+#grid()
 #interpolation <- function(big, small, goal) {
 #  b <- which(a2f$angle == big)
 #  s <- which(a2f$angle == small)
@@ -56,6 +58,8 @@ dta_by_trial_force <- dta_all %>% group_by(Tester.Name, Counter) %>%
   summarise(trial_m = mean(trial_name_m), trial_sd = sd(trial_name_m))
 dta_by_trial_force <- as.data.frame(dta_by_trial_force)
 dta_by_trial_force
+
+library(ggplot2)
 
 #
 ggplot(dta_by_trial_force, aes(x = Counter, y = trial_m)) +
