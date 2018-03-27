@@ -10,7 +10,7 @@ public class anim_change : MonoBehaviour {
     public static int s = 1;
 
 	//control
-	private int control = 1;
+	public int control = 1;
     public int auto = 1;
 	private int anim_control = 0;
 	private int anim = 0;

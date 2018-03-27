@@ -68,7 +68,7 @@ public class hitted_v2 : MonoBehaviour
 	//timer
 	public Text timerTextDisplay;
 	private float remainingTime = 60;
-	private int t = 0;
+	private int t = 1;
 
 	// Use this for initialization
 	void Start()
@@ -386,43 +386,45 @@ public class hitted_v2 : MonoBehaviour
 		int angle = 150;
 		int langle = 150;
 
+		//study2 94 , 134
+
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 150; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 100; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			new Thread(Uno.SendData).Start("128 255 " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			new Thread(Uno.SendData).Start("0 255 " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("128 255 78 " + RSpeed); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 255 0 " + RSpeed); //L Lspeed R Rspeed
 
 			//write data
-			motordata = "128 255 " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
-			motor_data_release = "128 255 78 " + RSpeed.ToString();
+			motordata = "0 255 " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
+			motor_data_release = "0 255 0 " + RSpeed.ToString();
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 150; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			else if (state == 3 || state == 4) { LSpeed = 255; angle = 100; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed + " 78 255"); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 134; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			else if (state == 3 || state == 4) { LSpeed = 255; angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed + " 0 255"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("128 " + LSpeed + " 78 255"); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 " + LSpeed + " 0 255"); //L Lspeed R Rspeed
 
 			//write data
-			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + LSpeed.ToString() + " 78 255";
-			motor_data_release = "128 " + LSpeed.ToString() + " 78 255";
+			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + LSpeed.ToString() + " 0 255";
+			motor_data_release = "0 " + LSpeed.ToString() + " 0 255";
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 150; /*langle = 170*/; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 100; /*langle = 120*/; Debug.Log("C 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
 
 			//no langle
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + RSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("128 " + RSpeed + " 78 " + RSpeed); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 " + RSpeed + " 0 " + RSpeed); //L Lspeed R Rspeed
 
 			//write data
 			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + RSpeed.ToString() + " " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
-			motor_data_release = "128 " + RSpeed.ToString() + " 78 " + RSpeed.ToString();
+			motor_data_release = "0 " + RSpeed.ToString() + " 0 " + RSpeed.ToString();
 		}
 
 		//write data
