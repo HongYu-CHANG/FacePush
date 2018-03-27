@@ -57,11 +57,13 @@ agg_data <- agg_data %>%  group_by(Angle) %>%
 final_m <- lm(m ~ Angle, agg_data) # the closest to our previous result
 summary(final_m)
 
+# angle to force plot
 ggplot(agg_data, aes(x = Angle, y = m)) +
   geom_point(shape = 17, color = "forestgreen", size = 2) +
   #geom_abline(slope = coef(final_m)[2], intercept = coef(final_m)[1]) +
   stat_smooth(method = "lm", se = F, col = "black", lwd = 0.5) +
   labs(x = "Angle 10 - 180 degrees", y = "Pressure in kPa") +
-  scale_x_continuous(limits = c(0, 180), breaks = NULL, expand = c(0, 0))+
-  scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 0.5), expand = c(0, 0))
+  scale_x_continuous(limits = c(0, 180), breaks = seq(0, 170, 10), expand = c(0, 0)) +
+  scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 0.5), expand = c(0, 0)) +
+  theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank())
   
