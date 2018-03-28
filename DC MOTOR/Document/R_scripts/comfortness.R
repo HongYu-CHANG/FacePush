@@ -16,18 +16,25 @@ dta_barplot <- dta %>% group_by(pressure) %>%
 
 # note, change x labels (6 forces), y label?
 library(ggplot2)
-ggplot(dta_barplot, aes(x = pressure, y = m_comfort)) +
+comfort <- ggplot(dta_barplot, aes(x = pressure, y = m_comfort)) +
   geom_bar(stat = "identity", fill = "gray80") +
   geom_errorbar(aes(ymin = m_comfort - std_comfort,
                     ymax = m_comfort + std_comfort),
                 width = .2, color = "gray20") +
   theme_bw() +
   labs(x = "Pressure in kPa", y = "Comfortness 1 - 7") +
-  scale_y_continuous(limits = c(0, 7), breaks = seq(1, 7, 1))
+  scale_y_continuous(limits = c(0, 7), breaks = seq(1, 7, 1)) +
+  theme(axis.text=element_text(size=12), 
+        axis.title=element_text(size=14,face="bold"))
 
-ggplot(dta_barplot, aes(x = pressure, y = m_face)) +
+face <- ggplot(dta_barplot, aes(x = pressure, y = m_face)) +
   geom_bar(stat = "identity", fill = "gray80") +
   theme_bw() +
   labs(x = "Pressure in kPa", y = "Ratio of the force was came from face") +
-  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25))
-  geom_bar(stat = "identity")
+  scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
+  theme(axis.text=element_text(size=12), 
+        axis.title=element_text(size=14,face="bold"))
+
+library(gridExtra)
+grid.arrange(comfort, face, nrow = 1)
+ 
