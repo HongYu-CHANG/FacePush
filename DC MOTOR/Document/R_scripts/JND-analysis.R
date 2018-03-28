@@ -44,54 +44,24 @@ out <- data.frame(rate_diff = as.vector(result_mat),
                   delta_load_base = as.vector(ob_b))
 
 # remove 3.45 column for our system limitation
-out <- out[1:12, ]
-m0 <- lm(rate_diff ~ log(delta_load_base), data = out)
-summary(m0)
+out_remove <- out[1:12, ]
+m0_remove <- lm(rate_diff ~ log(delta_load_base), data = out_remove)
+summary(m0_remove)
 
 # after fitting the curve, let's try to find 75% and 95% of JND
+x <- seq(from = 1, to = 1.3, by = 0.001)
+pred_percent_remove <- round(coef(m0_remove)[1] + coef(m0_remove)[2] * log(x), 2)
+# delat L / L = 1.21 
+x[which(pred_percent_remove == 0.95)]
+# delta L / L = 1.135
+x[which(pred_percent_remove == 0.75)]
 
-
-
-x <- seq(from = 1, to = 1.5, by = 0.001)
-
-pred_percent0 <- round(coef(m0)[1] + coef(m0)[2] * log(x), 2)
-# delat L/ L = 1.25
+# without remove
+m1 <- lm(rate_diff ~ log(delta_load_base), data = out)
+summary(m1)
+# after fitting the curve, let's try to find 75% and 95% of JND
+pred_percent <- round(coef(m1)[1] + coef(m1)[2] * log(x), 2)
+# delta L / L = 1.25 
 x[which(pred_percent == 0.95)]
-
-pred_percent1 <- round(coef(m1)[1] + coef(m1)[2] * log(x), 2)
-# delat L/ L = 1.21
-x[which(pred_percent1 == 0.95)]
-x[which(pred_percent1 == 0.75)]
-
-library(ggplot2)
-#
-test <- data.frame(Base = base, LoadJND = base + off)
-
-
-ggplot(test, aes(x = Base, y = LoadJND)) +
-  geom_point() +
-  geom_abline(slope = 1.25, intercept = -2.575) +
-  scale_x_continuous(limits = c(0, 4)) +
-  scale_y_continuous(limits = c(0, 4))
-
-
-# remove largest base
-ggplot(out2, aes(x = log(delta_load_base), y = rate_diff)) +
-  geom_point() +
-  stat_smooth(method = "lm", se = FALSE) 
-
-
-#
-# y = 1.096 + .017x
-#( 2.575 - 1.096 ) / 0.017
-#( 2.7 - 1.096 ) / 0.017
-# * 1.25
-#( 2.575 * 1.25 - 1.096 ) / 0.017
-#( 2.7 * 1.25 - 1.096 ) / 0.017
-
-# * 1.25 * 1.25
-#( 2.575 * 1.25 * 1.25 - 1.096 ) / 0.017
-#( 2.7 * 1.25 * 1.25 - 1.096 ) / 0.017
-
-#(c(350, 435, 518, 370, 455, 538) - 100) * 360 / 1024
-
+#delta L / L = 1.167
+x[which(pred_percent == 0.75)]
