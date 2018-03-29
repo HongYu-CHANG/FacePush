@@ -4357,11 +4357,11 @@ MonoBehaviour:
   - {fileID: 2800000, guid: c97c7764e38008642ac8dfdec5b0595f, type: 3}
   - {fileID: 2800000, guid: 6fecb0266491f204fa79dbdc85008d15, type: 3}
   head: {fileID: 322918332}
-  userName: Peter
+  userName: test0329
   HMD: {fileID: 2133421588}
   Lcontroller: {fileID: 1413465432}
   Rcontroller: {fileID: 1581099253}
-  times: 4
+  times: 1
   timerTextDisplay: {fileID: 0}
 --- !u!1 &1696452480
 GameObject:
