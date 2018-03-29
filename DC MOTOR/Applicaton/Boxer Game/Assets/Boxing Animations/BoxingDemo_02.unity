@@ -3583,8 +3583,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: eb9ea12c8f142dd45b76d35ada6017f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  control: 2
-  auto: 0
+  control: 1
+  auto: 1
   key: 0
 --- !u!114 &1563738202
 MonoBehaviour:
@@ -4357,11 +4357,11 @@ MonoBehaviour:
   - {fileID: 2800000, guid: c97c7764e38008642ac8dfdec5b0595f, type: 3}
   - {fileID: 2800000, guid: 6fecb0266491f204fa79dbdc85008d15, type: 3}
   head: {fileID: 322918332}
-  userName: 
+  userName: WakeUp
   HMD: {fileID: 2133421588}
   Lcontroller: {fileID: 1413465432}
   Rcontroller: {fileID: 1581099253}
-  times: 1
+  times: 4
   timerTextDisplay: {fileID: 0}
 --- !u!1 &1696452480
 GameObject:
