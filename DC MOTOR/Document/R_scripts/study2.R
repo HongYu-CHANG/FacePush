@@ -25,6 +25,17 @@ levels(dta$motor_data) <- c("no_cmd", "back_neutral", "R_light", "R_heavy", "L_l
                             "M_light", "R_heavy", "M_heavy")
 str(dta)
 
+idx <- which(dta$send2motor == TRUE)
+
+idx_shift_0 <- c(0, idx)
+idx_shift_1 <- c(idx, 1)
+
+idx_shift_0 - idx_shift_1
+
+interval <- (idx[seq(3, length(idx) - 1, by = 2)] -  idx[seq(1, length(idx) - 1, by = 2)])
+mean(interval[-740]) * 0.5
+
+
 # check with hist
 #par(mfrow = c(3, 3))
 #lapply(dta, function(x) {
@@ -105,7 +116,7 @@ names(dta_realism_l) <- c("Subject", "Condition", "Realism", "id")
 
 # output of long format 
 dta_enjoyment_l
-dta_realism_l
+dta_realism_l 
 
 # not remove brian 
 n <- dim(dta_enjoyment_l)[1]
@@ -143,3 +154,45 @@ ggplot(dta_realism_plot, aes(x = Condition, y = m, fill = Condition)) +
         panel.grid = element_blank(), legend.position = c(0.12, 0.88))
 
 dev.off()
+
+# onw-way repeat measured anova
+
+# 1. Univariate approach using aov()
+m0_enjoy <- aov(Enjoyment ~ Condition + Error(Subject/Condition), data = dta_enjoyment_l)
+summary(m0_enjoy)
+
+#
+m0_realism <- aov(Realism ~ Condition + Error(Subject/Condition), data = dta_realism_l)
+summary(m0_realism)
+# aov nooooo! use Anova {car} 
+library(car)
+dta_enjoyment
+
+# remove bryan
+dta_realism
+dta_realism <- subset(dta_realism, X__.1 != "BRYAN")
+# 1. use lm on all the repeated-measures variables together
+m0_realism <- lm(as.matrix(dta_realism[, 2:5]) ~ 1, data = dta_realism)
+
+# 2. Construct the repeated measures variable
+trials = factor(c("A", "B", "C", "D"), ordered = FALSE)
+trials
+
+# Then the ‘idata’ parameter is for the repeated-measures part of the data,
+# the ‘idesign’ is where you specify the repeated part of the design
+m0_out <- Anova(m0_realism, idata = data.frame(trials),
+                idesign = ~ trials, type = "III")
+summary(m0_out, multivariate = FALSE)
+# 3. contrasts with partitioned error
+c1 <- t.test(dta_realism$A.realism, dta_realism$B.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c2 <- t.test(dta_realism$A.realism, dta_realism$C.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c3 <- t.test(dta_realism$A.realism, dta_realism$D.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c4 <- t.test(dta_realism$B.realism, dta_realism$C.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c5 <- t.test(dta_realism$B.realism, dta_realism$D.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c6 <- t.test(dta_realism$C.realism, dta_realism$D.realism, alternative = "two.sided", mu = 0,
+             paired = TRUE)

@@ -30,8 +30,17 @@ dta_push_long <- reshape(dta_push,
                                      "LowerLeft", "UpperLeft"),
                          v.names = "Pressure", direction = "long")
 dta_push_long$time <- as.factor(dta_push_long$time) 
+
+
+
 levels(dta_push_long$time) <- c("UpperRight", "LowerRight", "UpperMiddle",
                                 "LowerLeft", "UpperLeft")
+
+# x = factor(x,levels(x)[c(4,5,1:3)])
+dta_push_long$time <- factor(dta_push_long$time,
+                             levels(dta_push_long$time)[c(2, 4, 1, 3, 5)])
+
+
 names(dta_push_long) <- c("Angle", "Location", "Pressure", "id")
 
 library(dplyr)
@@ -40,9 +49,8 @@ dta_barplot <- dta_push_long %>% group_by(Location) %>%
             std_pressure = sd(Pressure)) 
 
 library(ggplot2)
-png("5-location-pressure.png", width = 24.05, height = 11, units = 'cm', res = 300)
-ggplot(dta_barplot, aes(x = reorder(Location, m_pressure, max),
-                          y = m_pressure, fill = Location)) +
+png("5-location-pressure-new.png", width = 24.05, height = 11, units = 'cm', res = 300)
+ggplot(dta_barplot, aes(x = Location, y = m_pressure, fill = Location)) +
   geom_bar(stat = "identity") +
   geom_errorbar(data = dta_barplot, aes(ymin = m_pressure - std_pressure,
                     ymax = m_pressure + std_pressure),
@@ -50,7 +58,7 @@ ggplot(dta_barplot, aes(x = reorder(Location, m_pressure, max),
   labs(x = "Location on Face", y = "Pressure in kPa") +
   coord_flip() + theme_bw() +
   scale_fill_manual(values = c( "gray25", "gray40", "gray55", "gray70", "gray85")) +
-  theme(legend.position = c(0.85, 0.3)) +
+  theme(legend.position = c(0.90, 0.75)) +
   theme(axis.text=element_text(size=12), 
         axis.title=element_text(size=14,face="bold"),
         panel.grid = element_blank())

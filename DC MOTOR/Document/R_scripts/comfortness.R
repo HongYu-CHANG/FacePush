@@ -33,12 +33,13 @@ face <- ggplot(dta_barplot, aes(x = pressure, y = m_face)) +
   geom_bar(stat = "identity", fill = "gray80") +
   theme_bw() +
   labs(x = "Pressure in kPa", y = "% of force coming from face") +
+  scale_x_discrete(labels = c(2.575, 2.7, 3.075, 3.2, 3.575, 3.7)) +
   scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, 0.25)) +
   theme(axis.text=element_text(size=12), 
         axis.title=element_text(size=14,face="bold"),
         panel.grid = element_blank())
 
 library(gridExtra)
-png("comfort.png", width = 24.05, height = 11, units = 'cm', res = 300)
+png("comfort-new.png", width = 24.05, height = 11, units = 'cm', res = 300)
 grid.arrange(comfort, face, nrow = 1)
 dev.off()
