@@ -113,6 +113,7 @@ library(dplyr)
 dta_enjoyment_plot <- dta_enjoyment_l %>% group_by(Condition) %>%
   summarise(m = mean(Enjoyment), ci = 1.96 * sd(Enjoyment) / sqrt(n))
 
+png("enjoyment.png", width = 19, height = 16, units = 'cm', res = 300)
 ggplot(dta_enjoyment_plot, aes(x = Condition, y = m, fill = Condition)) +
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin = m - ci, ymax = m + ci), width = 0.2) +
@@ -120,12 +121,16 @@ ggplot(dta_enjoyment_plot, aes(x = Condition, y = m, fill = Condition)) +
   theme_bw() + labs(x = "", y = "Enjoyment Rating 1 - 7") +
   scale_fill_manual(values = c("gray90", "gray70", "gray50", "gray30")) +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
-
+        axis.title = element_text(size = 14, face = "bold"),
+        panel.grid = element_blank(), legend.position = c(0.12, 0.88))
+dev.off()
 
 #
+
 dta_realism_plot <- dta_realism_l %>% group_by(Condition) %>%
   summarise(m = mean(Realism), ci = 1.96 * sd(Realism) / sqrt(n))
+
+png("realism.png", width = 19, height = 16, units = 'cm', res = 300)
 
 ggplot(dta_realism_plot, aes(x = Condition, y = m, fill = Condition)) +
   geom_bar(stat = "identity") +
@@ -134,6 +139,7 @@ ggplot(dta_realism_plot, aes(x = Condition, y = m, fill = Condition)) +
   theme_bw() + labs(x = "", y = "Realism Rating 1 - 7") +
   scale_fill_manual(values = c("gray90", "gray70", "gray50", "gray30")) +
   theme(axis.text = element_text(size = 12),
-        axis.title = element_text(size = 14, face = "bold"))
+        axis.title = element_text(size = 14, face = "bold"),
+        panel.grid = element_blank(), legend.position = c(0.12, 0.88))
 
-
+dev.off()

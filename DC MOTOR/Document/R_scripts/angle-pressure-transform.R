@@ -40,7 +40,7 @@ dta_barplot <- dta_push_long %>% group_by(Location) %>%
             std_pressure = sd(Pressure)) 
 
 library(ggplot2)
-jpeg("5-location-pressure.jpeg", width = 24.05, height = 11, units = 'cm', res = 300)
+png("5-location-pressure.png", width = 24.05, height = 11, units = 'cm', res = 300)
 ggplot(dta_barplot, aes(x = reorder(Location, m_pressure, max),
                           y = m_pressure, fill = Location)) +
   geom_bar(stat = "identity") +
@@ -52,19 +52,21 @@ ggplot(dta_barplot, aes(x = reorder(Location, m_pressure, max),
   scale_fill_manual(values = c( "gray25", "gray40", "gray55", "gray70", "gray85")) +
   theme(legend.position = c(0.85, 0.3)) +
   theme(axis.text=element_text(size=12), 
-        axis.title=element_text(size=14,face="bold"))
+        axis.title=element_text(size=14,face="bold"),
+        panel.grid = element_blank())
 dev.off()
 
 # pressure of each fsr
-jpeg("out.jpeg", width = 24.05, height = 11, units = 'cm', res = 300)
-ggplot(dta_push_long, aes(x = reorder(Location, Pressure, mean),
-                          y = Pressure, fill = Location)) +
-  geom_boxplot() +
-  labs(x = "Location on Face", y = "Pressure in kPa") +
-  coord_flip() + theme_bw() +
-  scale_fill_manual(values = c( "gray25", "gray40", "gray55", "gray70", "gray85")) +
-  theme(legend.position = c(0.85, 0.3))
-dev.off()
+#jpeg("box.jpeg", width = 24.05, height = 11, units = 'cm', res = 300)
+#ggplot(dta_push_long, aes(x = reorder(Location, Pressure, mean),
+#                          y = Pressure, fill = Location)) +
+#  geom_boxplot() +
+#  labs(x = "Location on Face", y = "Pressure in kPa") +
+#  coord_flip() + theme_bw() +
+#  scale_fill_manual(values = c( "gray25", "gray40", "gray55", "gray70", "gray85")) +
+#  theme_bw() +
+#  theme(legend.position = c(0.85, 0.3), panel.grid = element_blank())
+#dev.off()
 # remove upper middle data
 # lm(Pressure ~ Angle, data = subset(dta_push_long, dta_push_long$Location != "UpperMiddle"))
 
@@ -79,7 +81,7 @@ final_m <- lm(m ~ Angle, agg_data) # the closest to our previous result
 summary(final_m)
 
 # angle to pressure plot
-jpeg("a2p.jpeg", width = 24.05, height = 11, units = 'cm', res = 300)
+png("angle2pressure.png", width = 24.05, height = 11, units = 'cm', res = 300)
 ggplot(agg_data, aes(x = Angle, y = m)) +
   geom_point(shape = 17, color = "forestgreen", size = 2) +
   #geom_abline(slope = coef(final_m)[2], intercept = coef(final_m)[1]) +
@@ -87,7 +89,9 @@ ggplot(agg_data, aes(x = Angle, y = m)) +
   labs(x = "Angle 10 - 170 degrees", y = "Pressure in kPa") +
   scale_x_continuous(limits = c(0, 180), breaks = seq(0, 170, 10), expand = c(0, 0)) +
   scale_y_continuous(limits = c(0, 4.5), breaks = seq(0, 4.5, 0.5), expand = c(0, 0)) +
+  theme_bw() +
   theme(panel.grid.major.x = element_blank(), panel.grid.minor.x = element_blank()) +
   theme(axis.text=element_text(size=12), 
-        axis.title=element_text(size=14,face="bold"))
+        axis.title=element_text(size=14,face="bold"),
+        panel.grid = element_blank())
 dev.off()
