@@ -114,17 +114,18 @@ dta_realism_l$time <- as.factor(dta_realism_l$time)
 levels(dta_realism_l$time) <- c("Without FacePush", "Light Force", "Heavy Force", "Two Forces")
 names(dta_realism_l) <- c("Subject", "Condition", "Realism", "id")
 
-# output of long format 
-dta_enjoyment_l
-dta_realism_l 
+# output of long format
+# remove byran
+dta_enjoyment_l <- subset(dta_enjoyment_l, Subject != "BRYAN")
+dta_realism_l <- subset(dta_realism_l, Subject != "BRYAN")
 
 # not remove brian 
 n <- dim(dta_enjoyment_l)[1]
 library(dplyr)
 dta_enjoyment_plot <- dta_enjoyment_l %>% group_by(Condition) %>%
-  summarise(m = mean(Enjoyment), ci = 1.96 * sd(Enjoyment) / sqrt(n))
+  summarise(m = mean(Enjoyment), ci = 1.96 * sd(Enjoyment) / sqrt(n), std = sd(Enjoyment))
 
-png("enjoyment.png", width = 19, height = 16, units = 'cm', res = 300)
+png("enjoyment-with-one-subject-rm.png", width = 19, height = 16, units = 'cm', res = 300)
 ggplot(dta_enjoyment_plot, aes(x = Condition, y = m, fill = Condition)) +
   geom_bar(stat = "identity") +
   geom_errorbar(aes(ymin = m - ci, ymax = m + ci), width = 0.2) +
@@ -139,9 +140,9 @@ dev.off()
 #
 
 dta_realism_plot <- dta_realism_l %>% group_by(Condition) %>%
-  summarise(m = mean(Realism), ci = 1.96 * sd(Realism) / sqrt(n))
+  summarise(m = mean(Realism), ci = 1.96 * sd(Realism) / sqrt(n), std = sd(Realism))
 
-png("realism.png", width = 19, height = 16, units = 'cm', res = 300)
+png("realism-with-one-subject-rm.png", width = 19, height = 16, units = 'cm', res = 300)
 
 ggplot(dta_realism_plot, aes(x = Condition, y = m, fill = Condition)) +
   geom_bar(stat = "identity") +
@@ -155,8 +156,8 @@ ggplot(dta_realism_plot, aes(x = Condition, y = m, fill = Condition)) +
 
 dev.off()
 
+###########################################################
 # onw-way repeat measured anova
-
 # 1. Univariate approach using aov()
 m0_enjoy <- aov(Enjoyment ~ Condition + Error(Subject/Condition), data = dta_enjoyment_l)
 summary(m0_enjoy)
@@ -166,8 +167,36 @@ m0_realism <- aov(Realism ~ Condition + Error(Subject/Condition), data = dta_rea
 summary(m0_realism)
 # aov nooooo! use Anova {car} 
 library(car)
+#--------------------enjoyment--------------------
 dta_enjoyment
+dta_enjoyment <- subset(dta_enjoyment, X__.1 != "BRYAN")
+# 1. use lm on all the repeated-measures variables together
+m0_enjoyment <- lm(as.matrix(dta_enjoyment[, 2:5]) ~ 1, data = dta_enjoyment)
 
+# 2. Construct the repeated measures variable
+trials = factor(c("A", "B", "C", "D"), ordered = FALSE)
+trials
+
+# Then the ‘idata’ parameter is for the repeated-measures part of the data,
+# the ‘idesign’ is where you specify the repeated part of the design
+m0_out <- Anova(m0_enjoyment, idata = data.frame(trials),
+                idesign = ~ trials, type = "III")
+summary(m0_out, multivariate = FALSE)
+# 3. contrasts with partitioned error
+c1 <- t.test(dta_enjoyment$A.enjoyment, dta_enjoyment$B.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c2 <- t.test(dta_enjoyment$A.enjoyment, dta_enjoyment$C.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c3 <- t.test(dta_enjoyment$A.enjoyment, dta_enjoyment$D.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c4 <- t.test(dta_enjoyment$B.enjoyment, dta_enjoyment$C.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c5 <- t.test(dta_enjoyment$B.enjoyment, dta_enjoyment$D.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+c6 <- t.test(dta_enjoyment$C.enjoyment, dta_enjoyment$D.enjoyment, alternative = "two.sided", mu = 0,
+             paired = TRUE)
+
+#--------------------realism--------------------
 # remove bryan
 dta_realism
 dta_realism <- subset(dta_realism, X__.1 != "BRYAN")
