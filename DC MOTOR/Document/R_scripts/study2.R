@@ -2,7 +2,7 @@ setwd("~/Documents/_NILab_CrazyMotor/FacePush/DC MOTOR/Applicaton/Boxer Game/Res
 
 # read data
 library(data.table)
-data_files <- dir()[-c(53, 54)]
+data_files <- dir()[-c(53:58)]
 dta_lst <- lapply(data_files, function(x) fread(x, sep = ',', stringsAsFactors = FALSE))
 
 # 
@@ -10,6 +10,7 @@ dta_rows <- unlist(lapply(dta_lst, function(x) dim(x)[1]))
 which(dta_rows == 979)
 which(dta_rows == 1396)
 data_files[c(33, 40)]
+dta_rows <- dta_rows[-c(1, 14, 27, 40)]
 
 # 
 dta <- rbindlist(dta_lst)
@@ -24,17 +25,6 @@ dta$motor_data <- as.factor(dta$motor_data)
 levels(dta$motor_data) <- c("no_cmd", "back_neutral", "R_light", "R_heavy", "L_light",
                             "M_light", "R_heavy", "M_heavy")
 str(dta)
-
-idx <- which(dta$send2motor == TRUE)
-
-idx_shift_0 <- c(0, idx)
-idx_shift_1 <- c(idx, 1)
-
-idx_shift_0 - idx_shift_1
-
-interval <- (idx[seq(3, length(idx) - 1, by = 2)] -  idx[seq(1, length(idx) - 1, by = 2)])
-mean(interval[-740]) * 0.5
-
 
 # check with hist
 #par(mfrow = c(3, 3))
@@ -54,43 +44,38 @@ cs_lst <- as.data.frame(t(matrix(cs_lst, c(2, 52))))
 dta$Condition <- rep(cs_lst$V1, dta_rows)
 dta$Subject <- rep(cs_lst$V2, dta_rows)
 
-# generate a sequence of no for plot
-seq_no <- NULL
-for (i in 1:52) {
-  seq_no <- c(seq_no, 1:dta_rows[i])
-}
-dta$seq_no <- seq_no
+dta <- subset(dta, dta$Subject != "BRYAN")
 
 # adjust rotation x, y, and z of HMD
 dta$new_HMD_rot_x <-vapply(dta$HMD_rot.x, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 dta$new_HMD_rot_y <-vapply(dta$HMD_rot.y, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 dta$new_HMD_rot_z <-vapply(dta$HMD_rot.z, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 
-
 library(ggplot2)
-ggplot(dta, aes(x = seq_no, y = new_HMD_rot_x)) +
-  geom_line(alpha = 0.5) +
-  facet_grid(Condition ~ Subject)
+dta$new_pos_x <- scale(dta$HMD_pos.x)
+dta$new_pos_z <- scale(dta$HMD_pos.z)
+ggplot(dta, aes(x = new_pos_x, y = new_pos_z, color = Condition)) +
+  geom_point(size = 0.5) +
+  #geom_line() +
+  facet_wrap(~ Subject) +
+  scale_x_continuous(limits = c(-5, 5)) +
+  scale_y_continuous(limits = c(-5, 5))
 
-ggplot(dta, aes(x = seq_no, y = new_HMD_rot_y)) +
-  geom_line(alpha = 0.5) +
-  facet_grid(Condition ~ Subject)
+dta$new_rot_y <- dta$new_HMD_rot_y - c(dta$new_HMD_rot_y[-1], dta$new_HMD_rot_y[length(dta$new_HMD_rot_y)])
 
-ggplot(dta, aes(x = seq_no, y = new_HMD_rot_z)) +
-  geom_line(alpha = 0.5) +
-  facet_grid(Condition ~ Subject)
+iter <- NULL
+for (i in 1:length(dta_rows)) {
+  iter <- c(iter, seq(1:dta_rows[i]))
+}
+dta$iter <- iter
 
-
-
-#
-table(dta_sti$Subject)
-dta_sti <- subset(dta, dta$send2motor == 1)
-ggplot(dta_sti, aes(x = seq_no, y = new_HMD_rot_x)) +
-  geom_line(alpha = 0.5) +
-  facet_grid(Condition ~ Subject)
-
-
-
+ggplot(dta, aes(x = iter, y = new_rot_y, color = Condition)) +
+  geom_line() +
+  #geom_line() +
+  facet_wrap(~ Subject) +
+  scale_y_continuous(limits = c(-25, 25))
+  
+###################################################################
 # analyse subjective data
 dta_rating <- read.table("study2_rating.csv", header = TRUE, sep = ',')
 dta_rating <- dta_rating[, -1]
