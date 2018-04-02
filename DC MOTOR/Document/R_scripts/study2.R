@@ -3,16 +3,19 @@ setwd("~/Documents/_NILab_CrazyMotor/FacePush/DC MOTOR/Applicaton/Boxer Game/Res
 # read data
 library(data.table)
 data_files <- dir()[-c(53:58)]
+data_files <- data_files[-c(1, 14, 27, 40)]
 dta_lst <- lapply(data_files, function(x) fread(x, sep = ',', stringsAsFactors = FALSE))
 
 # 
 dta_rows <- unlist(lapply(dta_lst, function(x) dim(x)[1]))
-which(dta_rows == 979)
-which(dta_rows == 1396)
-data_files[c(33, 40)]
-dta_rows <- dta_rows[-c(1, 14, 27, 40)]
+#dta_rows <- rep(min(dta_rows), length(dta_rows))
 
-# 
+# adjust dim into 1020
+for (i in 1:length(dta_lst)) {
+  dta_lst[[i]] <- dta_lst[[i]][1:min(dta_rows), ]
+}
+
+#
 dta <- rbindlist(dta_lst)
 str(dta)
 
@@ -34,46 +37,54 @@ str(dta)
 #  else { plot(x) }
 #})
 
-summary(dta)
-
 # add condition and subject
 condition_subject <- unlist(lapply(data_files, function(x) unlist(strsplit(x, '[.]'))[1]))
 cs_lst <- unlist(lapply(condition_subject, function(x) strsplit(x, '_')))
-cs_lst <- as.data.frame(t(matrix(cs_lst, c(2, 52))))
+cs_lst <- as.data.frame(t(matrix(cs_lst, c(2, 48))))
+dta$Condition <- rep(cs_lst$V1, each = 1020)
+dta$Subject <- rep(cs_lst$V2, each = 1020)
 
-dta$Condition <- rep(cs_lst$V1, dta_rows)
-dta$Subject <- rep(cs_lst$V2, dta_rows)
-
-dta <- subset(dta, dta$Subject != "BRYAN")
-
+# --- pos ---
+# minus condition A
+to_minus <- subset(dta, Condition == "A")$HMD_pos.x
+out <- NULL
+for (i in 1:12) {
+  index <- (1 +(i-1) * 1020):(1020 * i)
+  out <- c(out, rep(to_minus[index], 4))
+}
+dta$to_minus_A <- out
+# --- rot ---
 # adjust rotation x, y, and z of HMD
 dta$new_HMD_rot_x <-vapply(dta$HMD_rot.x, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 dta$new_HMD_rot_y <-vapply(dta$HMD_rot.y, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 dta$new_HMD_rot_z <-vapply(dta$HMD_rot.z, function(x) ifelse(x > 180, x - 360, x), numeric(1))
 
 library(ggplot2)
-dta$new_pos_x <- scale(dta$HMD_pos.x)
-dta$new_pos_z <- scale(dta$HMD_pos.z)
+
+dta$new_pos_x <- dta$HMD_pos.x - dta$HMD_pos.x[1]
+dta$new_pos_y <- dta$HMD_pos.y - dta$HMD_pos.y[1]
+dta$new_pos_z <- dta$HMD_pos.z - dta$HMD_pos.z[1]
 ggplot(dta, aes(x = new_pos_x, y = new_pos_z, color = Condition)) +
   geom_point(size = 0.5) +
   #geom_line() +
   facet_wrap(~ Subject) +
-  scale_x_continuous(limits = c(-5, 5)) +
-  scale_y_continuous(limits = c(-5, 5))
+  scale_x_continuous(limits = c(-1.5, 1.5)) +
+  scale_y_continuous(limits = c(-1.5, 1.5))
 
-dta$new_rot_y <- dta$new_HMD_rot_y - c(dta$new_HMD_rot_y[-1], dta$new_HMD_rot_y[length(dta$new_HMD_rot_y)])
-
+#dta$new_rot_y <- dta$new_HMD_rot_y - c(dta$new_HMD_rot_y[-1], dta$new_HMD_rot_y[length(dta$new_HMD_rot_y)])
+dta$new_rot_y <- dta$new_HMD_rot_y - dta$new_HMD_rot_y[1]
 iter <- NULL
 for (i in 1:length(dta_rows)) {
-  iter <- c(iter, seq(1:dta_rows[i]))
+  iter <- c(iter, seq(1:1020))
 }
 dta$iter <- iter
 
 ggplot(dta, aes(x = iter, y = new_rot_y, color = Condition)) +
   geom_line() +
+  facet_grid(Subject ~ Condition)
   #geom_line() +
-  facet_wrap(~ Subject) +
-  scale_y_continuous(limits = c(-25, 25))
+  #facet_wrap(~ Subject) 
+  #scale_y_continuous(limits = c(-25, 25))
   
 ###################################################################
 # analyse subjective data
