@@ -69,6 +69,7 @@ public class hitted_v2 : MonoBehaviour
 	public Text timerTextDisplay;
 	private float remainingTime = 60;
 	private int t = 1;
+	private int T = 0;
 
 	// Use this for initialization
 	void Start()
@@ -347,7 +348,7 @@ public class hitted_v2 : MonoBehaviour
 		} 
 
 		if(t == 1) remainingTime -= (Time.deltaTime);
-		if(remainingTime > 0) Debug.Log(remainingTime);
+		if(remainingTime > 0 && T != (int)remainingTime) {Debug.Log((int)remainingTime); T = (int)remainingTime;}
 	}
 
 	void DrawLine(Vector3 start, Vector3 end, float duration = 1f)

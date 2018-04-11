@@ -355,12 +355,12 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 91021075}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b797db5512b3e824e92c69ee015ebda3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 598652341}
+  cam: {fileID: 909184022}
 --- !u!4 &102577965 stripped
 Transform:
   m_PrefabParentObject: {fileID: 4972994339247810, guid: d469c67a9caad3d498d99d1c99d17627,
@@ -1111,7 +1111,7 @@ Prefab:
       objectReference: {fileID: 9000000, guid: d780da01ab294094f99be5756b9724a7, type: 3}
     - target: {fileID: 156616, guid: 969bc47acd4c3d948a04b576a9ec7449, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 969bc47acd4c3d948a04b576a9ec7449, type: 2}
@@ -1679,7 +1679,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 134356, guid: 56a121aae622f5244b233750c9383806, type: 2}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 477340, guid: 56a121aae622f5244b233750c9383806, type: 2}
       propertyPath: m_LocalPosition.y

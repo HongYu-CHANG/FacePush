@@ -106,7 +106,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                 //rotation
                 if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
 				{
-					if(Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.025f && LRvector.x > 0)
+					if(Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.05f && LRvector.x > 0)
 					{
 						if (Rvector.magnitude < Lvector.magnitude)
 						{
@@ -137,7 +137,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 					else
 					{
 						Debug.Log("don't rotate");
-						rotated = false;
+						//rotated = false;
 					}
 
 				}
@@ -150,8 +150,10 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				else if (LRvector.magnitude > 0.05f) offset += 0.5f;
 				
                 //swim forward
-				if(rotated)
+				if(rotated){
 					transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.0005f ;
+					offset = offset * 0.0005f;//
+				}
                 else
                 {
                     transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
@@ -187,7 +189,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				counter = 0;
 				if (offset > 0.2f)  offset -= 0.2f;
 				else  offset = 0;
-				rotated = false;
+				//rotated = false;
 			}
 
 			if (fish_control.fish == 1 && fish_done == 0)
@@ -212,7 +214,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
     IEnumerator No1Work(bool R, bool L, int angle, int speed)
     {
-        float waitingTime = 1f;
+        float waitingTime = 0.5f;
 		const int turningSpeed = 255; //constant
 		
 
@@ -234,12 +236,14 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
 			yield return new WaitForSeconds(waitingTime);
 			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+			rotated = false;
 
 			//face
 			color_r.a = (float)0f / 150;
 			hit_r.GetComponent<Renderer>().material.color = color_r;
 			color.a = (float)0f / 150;
 			hit.GetComponent<Renderer>().material.color = color;
+			
 		}
         else if (L)//左轉，要動左馬達 (0,1)
         {
@@ -258,6 +262,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			hit_r.GetComponent<Renderer>().material.color = color_r;
 			yield return new WaitForSeconds(waitingTime);
 			new Thread(Uno.SendData).Start("0 255 0 255"); // L Lspeed R Rspeed
+			rotated = false;
 
 			//face
 			color.a = (float)0f / 150;
