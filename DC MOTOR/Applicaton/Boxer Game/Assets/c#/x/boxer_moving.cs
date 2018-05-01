@@ -10,7 +10,7 @@ public class boxer_moving : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rot = this.transform.eulerAngles;
-        this.transform.position = new Vector3(cam.transform.position.x, 1.4f, cam.transform.position.z -0.5f);
+        this.transform.position = new Vector3(cam.transform.position.x, 1.4f, cam.transform.position.z -1f);
 		//Debug.Log((cam.transform.position - this.transform.position).ToString("f4"));
 	}
 	
@@ -37,7 +37,7 @@ public class boxer_moving : MonoBehaviour {
 		//this.transform.rotation = cam.transform.rotation;
 		//this.transform.position = new Vector3(cam.transform.position.x  , cam.transform.position.y - 2.2f , cam.transform.position.z + 2f);
 
-		if (Input.GetKey("q"))this.transform.position = new Vector3(cam.transform.position.x, 1.4f, cam.transform.position.z -0.5f);
+		if (Input.GetKey("q"))this.transform.position = new Vector3(cam.transform.position.x, 1.4f, cam.transform.position.z -1f);
 
 		//this.transform.eulerAngles = new Vector3(rot.x, this.transform.rotation.eulerAngles.y, rot.z);
 	}

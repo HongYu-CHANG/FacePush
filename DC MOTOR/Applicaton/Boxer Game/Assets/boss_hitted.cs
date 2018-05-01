@@ -8,15 +8,19 @@ public class boss_hitted : MonoBehaviour {
 	private int count = 0;
 	private int hit = 0;
 	private Transform boss_blood;	
+	private Animator _animator;
+	
 	// Use this for initialization
 	void Start () {
 		boss_blood = GameObject.FindGameObjectWithTag("Boss_blood").transform;
+		_animator = this.GetComponent<Animator>();
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(hit == 1) count++ ;
+		if(hit == 1) count++ ; 
+		if(count == 2)_animator.SetInteger("boss_hitted", 0);
 		if(count == 30) hit = 0 ;
 		boss_blood.localPosition = new Vector3(-332 * (hp / 250f), 0, 0);
 	}
@@ -27,6 +31,7 @@ public class boss_hitted : MonoBehaviour {
 			hit = 1 ;
 			count = 0 ;
 			if (hp + 10 < 250) hp += 10;
+			_animator.SetInteger("boss_hitted", 1);
 
 		}
 		

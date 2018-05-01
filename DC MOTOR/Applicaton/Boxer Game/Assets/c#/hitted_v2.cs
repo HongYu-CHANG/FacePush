@@ -350,7 +350,7 @@ public class hitted_v2 : MonoBehaviour
 		} 
 
 		if(t == 1) remainingTime -= (Time.deltaTime);
-		if(remainingTime > 0 && T != (int)remainingTime) {Debug.Log((int)remainingTime); T = (int)remainingTime;}
+		if(remainingTime > 0 && T != (int)remainingTime) {Debug.Log((int)remainingTime); T = (int)remainingTime; timerTextDisplay.text = T.ToString();}
 	}
 
 	void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
