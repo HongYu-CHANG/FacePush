@@ -17,6 +17,9 @@ TagManager:
   - hitted
   - Player_blood
   - HEAD
+  - Boss_blood
+  - Boss
+  - glove
   layers:
   - Default
   - TransparentFX

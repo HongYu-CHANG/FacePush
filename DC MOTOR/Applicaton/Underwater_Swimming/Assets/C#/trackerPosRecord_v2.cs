@@ -106,7 +106,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                 //rotation
                 if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
 				{
-					if(Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.05f && LRvector.x > 0)
+					if(Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.08f && LRvector.x > 0)
 					{
 						if (Rvector.magnitude < Lvector.magnitude)
 						{

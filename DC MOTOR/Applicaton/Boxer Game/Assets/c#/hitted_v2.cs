@@ -50,6 +50,7 @@ public class hitted_v2 : MonoBehaviour
 	private Vector3 Line;
 
 	private Transform player_blood;
+	
 	private float hp = 0;
 
 	//write data
@@ -98,8 +99,8 @@ public class hitted_v2 : MonoBehaviour
 
 		hit_face = GameObject.FindGameObjectWithTag("hitted").transform;//show where boxer hit on sphere
 
-		//player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
-
+		player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
+		
 		//write data
 		writeFile("Time, HMD_pos.x, HMD_pos.y, HMD_pos.z, HMD_rot.x, HMD_rot.y, HMD_rot.z, Lcontroller_pos.x, Lcontroller_pos.y, Lcontroller_pos.z, Lcontroller_rot.x, Lcontroller_rot.y, Lcontroller_rot.z, Rcontroller_pos.x, Rcontroller_pos.y, Rcontroller_pos.z, Rcontroller_rot.x, Rcontroller_rot.y, Rcontroller_rot.z, send2motor, motor_data, punch_type\n");
 	}
@@ -114,7 +115,8 @@ public class hitted_v2 : MonoBehaviour
 		}
 
 		//blood
-		//player_blood.localPosition = new Vector3(-332 * (hp / 300f), 0, 0);
+		player_blood.localPosition = new Vector3(-332 * (hp / 250f), 0, 0);
+		
 
 		if (collider_dir.Rhit == 1)
 		{
@@ -391,8 +393,8 @@ public class hitted_v2 : MonoBehaviour
 
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("R 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start("0 255 " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 255 0 " + RSpeed); //L Lspeed R Rspeed
@@ -403,8 +405,8 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 134; Debug.Log("L 重 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
-			else if (state == 3 || state == 4) { LSpeed = 255; angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 134; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) { LSpeed = 255; angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed + " 0 255"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 " + LSpeed + " 0 255"); //L Lspeed R Rspeed
@@ -415,8 +417,8 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("C 重 "); if (hp + 30 < 300) hp += 30; else hp = 300; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 300) hp += 15; else hp = 300; }
+			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + RSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
