@@ -151,13 +151,16 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				
                 //swim forward
 				if(rotated){
-					transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.0005f ;
-					offset = offset * 0.0005f;//
+					transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.05f;// 0.0005f ;
+					//transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.005f * Time.deltaTime ;
+					//offset = offset * 0.2f;//* 0.005f;//0.0005f;//
+					Debug.Log("---rotate---");
 				}
                 else
                 {
-                    transform.position = transform.position + new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
-					Debug.Log("---for go straight---");
+                    transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
+					//transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 2f * Time.deltaTime;
+					Debug.Log("---go straight---");
 
                     //fish & shark & motor control
                     if (fish_control.fish == 1) Debug.Log("fish!!");
@@ -176,7 +179,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                     {
                         //放鬆
                         StartCoroutine(No1Work(false, false, 0, 255));
-                        Debug.Log("move forward, free");
+                        Debug.Log("move forward, relax");
                     }
                     
                 }

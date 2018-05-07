@@ -121,12 +121,12 @@ void setup()
 void loop() 
 {
 //  Uncomment below to check values of PID  
-  Serial.print(inputLeft); Serial.print(" ");
-  Serial.print(setPointLeft); Serial.print(" ");
-  Serial.print(outputLeft); Serial.print(" ");
-  Serial.print(inputRight); Serial.print(" ");
-  Serial.print(setPointRight); Serial.print(" ");
-  Serial.println(outputRight); Serial.print(" ");
+//  Serial.print(inputLeft); Serial.print(" ");
+//  Serial.print(setPointLeft); Serial.print(" ");
+//  Serial.print(outputLeft); Serial.print(" ");
+//  Serial.print(inputRight); Serial.print(" ");
+//  Serial.print(setPointRight); Serial.print(" ");
+//  Serial.println(outputRight); Serial.print(" ");
 
   inputLeft = encoderLeftValue;
   inputRight = encoderRightValue;
