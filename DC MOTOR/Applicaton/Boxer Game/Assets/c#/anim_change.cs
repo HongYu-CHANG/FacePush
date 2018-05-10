@@ -29,7 +29,7 @@ public class anim_change : MonoBehaviour {
     
 	// Update is called once per frame
 	void Update () {
-        if (!AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("State"))
+        if (AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("State"))
         {
             if (count == 0)
             {

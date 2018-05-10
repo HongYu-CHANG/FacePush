@@ -13,6 +13,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 	public int frameSegment;//num of frames between 2 position recording
 	private int counter = 0;
 
+	private int motorSegmentCounter = 0;
+
 	public GameObject Ltracker;
 	public GameObject Rtracker;
 	private Vector3 LlastPos;
@@ -78,6 +80,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			Debug.Log("swimmer's position: " + transform.position);
 			posInitialized = true;
 			done = 1;
+			StartCoroutine(No1Work(false, false, 0, 255));
 		}
 
 		if (posInitialized == true)
@@ -91,6 +94,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			else
 			{
 				//counter == frameSegment - 1 -> get tracker position in this frame
+				
 
 				Lvector = LlastPos - Ltracker.transform.position;
 				Rvector = RlastPos - Rtracker.transform.position;
@@ -148,6 +152,9 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.3f;
 				else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.4f;
 				else if (LRvector.magnitude > 0.05f) offset += 0.5f;
+
+				if(offset > 12) offset = 12;
+				if(Input.GetKeyDown(KeyCode.Q)){Debug.Log("offset: "+offset); StartCoroutine(No1Work(false, false, 0, 255));}
 				
                 //swim forward
 				if(rotated){
@@ -165,20 +172,20 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                     //fish & shark & motor control
                     if (fish_control.fish == 1) Debug.Log("fish!!");
                     else if (shark_control.shark == 1) Debug.Log("shark!!");
-                    else if((int)(LRvector.magnitude + offset) >= 15)
+                    else if((int)(LRvector.magnitude + offset) >= 12)
                     {
-                        StartCoroutine(No1Work(false, false, 150, 255));
+						if(motorSegmentCounter == 0)StartCoroutine(No1Work(false, false, 120, 255));
                         Debug.Log("move forward, max");
                     }
 					else if ((int)(LRvector.magnitude + offset) > 1)
 					{
-						StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset) * 10, 255));
+						if(motorSegmentCounter == 0)StartCoroutine(No1Work(false, false, (int)(LRvector.magnitude + offset*0.75) * 10, 255));
 						Debug.Log("move forward, default");
 					}
                     else
                     {
                         //放鬆
-                        StartCoroutine(No1Work(false, false, 0, 255));
+                        if(motorSegmentCounter == 0)StartCoroutine(No1Work(false, false, 0, 255));
                         Debug.Log("move forward, relax");
                     }
                     
@@ -193,6 +200,9 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				if (offset > 0.2f)  offset -= 0.2f;
 				else  offset = 0;
 				//rotated = false;
+
+				if(motorSegmentCounter == 2) motorSegmentCounter = 0;
+				else motorSegmentCounter++;
 			}
 
 			if (fish_control.fish == 1 && fish_done == 0)
@@ -311,48 +321,48 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 
 	IEnumerator No1Work()
 	{
-		float waitingTime = 2f;
+		float waitingTime = 2.2f;
 		int speed = 255;
 		float tempTime = UnityEngine.Random.Range(0.01f, 0.03f);//tempTime = 0;
 		yield return new WaitForSeconds(waitingTime);
 
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(170) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(120) + " " + speed);
 		yield return new WaitForSeconds(0.15f + tempTime);
 		face_color_r();
-		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(170) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
+		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);
 		yield return new WaitForSeconds(0.15f - tempTime);
 		face_color();
 		new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(0) + " " + speed + " " + degreeConvertToRightRotaryCoder(0) + " " + speed);

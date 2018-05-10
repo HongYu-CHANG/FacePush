@@ -68,9 +68,13 @@ public class hitted_v2 : MonoBehaviour
 
 	//timer
 	public Text timerTextDisplay;
-	private float remainingTime = 60;
+	private float remainingTime = 30;
 	private int t = 1;
 	private int T = 0;
+
+	//gameover
+	private int gameover = 0;
+	public GameObject black;
 
 	// Use this for initialization
 	void Start()
@@ -346,11 +350,16 @@ public class hitted_v2 : MonoBehaviour
 		//Timer
 		if (Input.GetKeyDown(KeyCode.S)) {
 			t = 1;
-			remainingTime = 60;
+			remainingTime = 30;
 		} 
 
 		if(t == 1) remainingTime -= (Time.deltaTime);
 		if(remainingTime > 0 && T != (int)remainingTime) {Debug.Log((int)remainingTime); T = (int)remainingTime; timerTextDisplay.text = T.ToString();}
+		
+		//gameover
+		if(T == 0) gameover = 1;
+		if(hp == 250) gameover = 1;
+		if(gameover == 1) black.SetActive(true);
 	}
 
 	void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
