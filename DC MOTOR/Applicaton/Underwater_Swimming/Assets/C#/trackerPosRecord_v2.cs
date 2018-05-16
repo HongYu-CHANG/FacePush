@@ -67,6 +67,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 		color = hit.GetComponent<Renderer>().material.color;
 		hit_r = GameObject.FindGameObjectWithTag("Hit_R");
 		color_r = hit_r.GetComponent<Renderer>().material.color;
+		hit.gameObject.SetActive(false);
+		hit_r.gameObject.SetActive(false);
 	}
 
 
