@@ -4,12 +4,12 @@ using UnityEngine;
 
 public class Testconnect : MonoBehaviour {
 
-    private CommunicateWithArduino Uno;
+    //private CommunicateWithArduino Uno;
 
     // Use this for initialization
     void Start()
     {
-        Uno = new CommunicateWithArduino("COM5");
+        GameDataManager.Uno.SendData("123");
     }
 	
 	// Update is called once per frame

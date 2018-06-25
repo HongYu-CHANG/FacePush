@@ -8,24 +8,24 @@ using System.Threading;
 
 public class CommunicateWithArduino
 {
-   
     private string portName;
     private int baudRate;
+    private Parity parity;
     private int dataBits;
     private StopBits stopBits;
     private Handshake handshake;
     private bool RtsEnable;
     private int ReadTimeout;
-    private Parity parity;
     private bool isMac;
     private bool isConnected;
     private SerialPort arduinoController;
 
-    public CommunicateWithArduino(string portName, int baudRate = 9600, int dataBits = 8, StopBits stopBits = StopBits.One, Handshake handshake = Handshake.None,
+    public CommunicateWithArduino(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, Handshake handshake = Handshake.None,
         bool RtsEnable = true, int ReadTimeout = 1, bool isMac = false, bool isConnected = true)
     {
         this.portName = portName;
         this.baudRate = baudRate;
+        this.parity = parity;
         this.dataBits = dataBits;
         this.stopBits = stopBits;
         this.handshake = handshake;
@@ -33,9 +33,10 @@ public class CommunicateWithArduino
         this.ReadTimeout = ReadTimeout;
         this.isMac = isMac;
         this.isConnected = isConnected;
+        startConnect();
     }
 
-    public void connectToArdunio()
+    private void startConnect()
     {
         if (isConnected)
         {
@@ -58,19 +59,18 @@ public class CommunicateWithArduino
                 }
                 portName = "/dev/" + portName;
             }
-            arduinoController = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One);
-            arduinoController.Handshake = Handshake.None;
-            arduinoController.RtsEnable = true;
-            arduinoController.ReadTimeout = 1;
+            arduinoController = new SerialPort(portName, baudRate, parity, dataBits, stopBits);
+            arduinoController.Handshake = handshake;
+            arduinoController.RtsEnable = RtsEnable;
+            arduinoController.ReadTimeout = ReadTimeout;
             arduinoController.Open();
-            Debug.LogWarning(arduinoController);
         }
     }
     public void SendData(object obj)
     {
         string data = obj as string;
-        //Debug.Log(data);
-        if (connected)
+        Debug.Log(data);
+        if (isConnected)
         {
             if (arduinoController != null)
             {
@@ -90,9 +90,9 @@ public class CommunicateWithArduino
         Thread.Sleep(500);
     }
 
-    public int ReceiveData()
+    public string ReceiveData()
     {
-        return int.Parse(arduinoController.ReadLine());
+        return arduinoController.ReadLine();
     }
 
     public void closeSerial()
