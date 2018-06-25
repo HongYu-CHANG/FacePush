@@ -101,8 +101,10 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				Lvector = LlastPos - Ltracker.transform.position;
 				Rvector = RlastPos - Rtracker.transform.position;
 				body_head_direction = headpos.transform.position - bodypos.transform.position;
+                Debug.Log(Lvector);
+                Debug.Log(Rvector);
 
-				Debug.DrawRay(Ltracker.transform.position, Lvector, Color.red, drawRayTime);
+                Debug.DrawRay(Ltracker.transform.position, Lvector, Color.red, drawRayTime);
 				Debug.DrawRay(Rtracker.transform.position, Rvector, Color.red, drawRayTime);
 				Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
 
@@ -169,7 +171,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                 {
                     transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
 					//transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 2f * Time.deltaTime;
-					Debug.Log("---go straight---");
+					//Debug.Log("---go straight---");
 
                     //fish & shark & motor control
                     if (fish_control.fish == 1) Debug.Log("fish!!");
@@ -188,7 +190,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
                     {
                         //放鬆
                         if(motorSegmentCounter == 0)StartCoroutine(No1Work(false, false, 0, 255));
-                        Debug.Log("move forward, relax");
+                        //Debug.Log("move forward, relax");
                     }
                     
                 }
@@ -485,7 +487,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
         public void SendData(object obj)
         {
             string data = obj as string;
-            Debug.Log(data);
+            //Debug.Log(data);
             if (connected)
             {
                 if (arduinoController != null)
