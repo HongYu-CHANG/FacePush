@@ -4,21 +4,22 @@ using UnityEngine;
 
 public class DiverControll : MonoBehaviour {
 
-    public int frameSegment;//num of frames between 2 position recording
+    public int frameSegment = 3;//num of frames between 2 position recording
     private int counter = 0;
 
     private int motorSegmentCounter = 0;
-
     //Diver Body
-    public Transform LeftHand;
-    public Transform RightHand;
+    public Transform driverCamera;
+    public Transform driverLeftHand;
+    public Transform driverRightHand;
+    public Transform driver;
+    public Transform directionContorl;
     private Vector3 LlastPos;//左手上一次的位置
     private Vector3 RlastPos;//右手上一次的位置
     private Vector3 Lvector;
     private Vector3 Rvector;
-    public Transform headpos;
-    public Transform bodypos;
-    private Vector3 body_head_direction; //身體的方向
+    private Vector3 driverFace;
+    private Vector3 diveDirection; //身體的方向
 
     //v2: 用合力計算旋轉角度 & 移動
     private Vector3 LRvector;
@@ -28,32 +29,34 @@ public class DiverControll : MonoBehaviour {
     private bool rotated = false;
 
     //
-    public float drawRayTime;
+    public float drawRayTime = 10;
 
     // Use this for initialization
     void Start ()
     {
-        this.transform.position = new Vector3((LeftHand.position.x + RightHand.position.x) / 2,
-            0.47f, (LeftHand.position.z + RightHand.position.z) / 2);
+        this.transform.position = new Vector3((driverLeftHand.position.x + driverRightHand.position.x) / 2,
+            0.47f, (driverLeftHand.position.z + driverRightHand.position.z) / 2);
     }
 	
 	// Update is called once per frame
 	void Update ()
     {
-            Lvector = LlastPos - LeftHand.position;
-            Rvector = RlastPos - RightHand.position;
-            body_head_direction = headpos.position - bodypos.position;
-            Debug.Log(headpos.position);
-            Debug.Log(bodypos.position);
-            Debug.Log(body_head_direction);
-            //Debug.Log(Lvector);
-            //Debug.Log(Rvector);
-            //Debug.DrawRay(LeftHand.position, Lvector, Color.red, drawRayTime);
-            //Debug.DrawRay(RightHand.position, Rvector, Color.red, drawRayTime);
-            //Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
+            Lvector = LlastPos - driverLeftHand.position;
+            Rvector = RlastPos - driverRightHand.position;
+            diveDirection = driver.position - directionContorl.position;
+            driverFace = driverCamera.position - directionContorl.position;
+        GameDataManager.UIManager.sendDebugMessage("123");
+            Debug.Log(diveDirection);
+            Debug.Log(driverFace);
+            Debug.Log(Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(driverFace.x, 0, driverFace.z)));
+        //Debug.Log(Lvector);
+        //Debug.Log(Rvector);
+        //Debug.DrawRay(LeftHand.position, Lvector, Color.red, drawRayTime);
+        //Debug.DrawRay(RightHand.position, Rvector, Color.red, drawRayTime);
+        //Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
 
-            LRvector = Lvector + Rvector;
-            body_vector_angle = Vector3.Angle(new Vector3(body_head_direction.x, 0, body_head_direction.z), new Vector3(LRvector.x, 0, LRvector.z));
+        LRvector = Lvector + Rvector;
+            body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
 
             //rotation
             //    if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
@@ -107,15 +110,15 @@ public class DiverControll : MonoBehaviour {
             //swim forward
                 if (rotated)
             {
-                transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.05f;// 0.0005f ;
-                transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.005f * Time.deltaTime;
+                transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 0.05f;// 0.0005f ;
+                transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 0.005f * Time.deltaTime;
                 offset = offset * 0.2f;//* 0.005f;//0.0005f;//
                 Debug.Log("---rotate---");
             }
             else
             {
                 //transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
-                transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 2f * Time.deltaTime;
+                transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2f * Time.deltaTime;
                 //Debug.Log("---go straight---");
                 //Debug.Log("---transform.position---" + transform.position);
 
@@ -143,8 +146,8 @@ public class DiverControll : MonoBehaviour {
         }
 
             //reset
-            LlastPos = LeftHand.position;
-            RlastPos = RightHand.position;
+            LlastPos = driverLeftHand.position;
+            RlastPos = driverRightHand.position;
             Lvector = Vector3.zero;
             Rvector = Vector3.zero;
             counter = 0;
