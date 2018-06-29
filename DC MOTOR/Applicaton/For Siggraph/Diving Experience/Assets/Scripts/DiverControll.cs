@@ -9,7 +9,6 @@ public class DiverControll : MonoBehaviour {
 
     private int motorSegmentCounter = 0;
     //Diver Body
-    public Transform driverCamera;
     public Transform driverLeftHand;
     public Transform driverRightHand;
     public Transform driver;
@@ -41,64 +40,60 @@ public class DiverControll : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-            Lvector = LlastPos - driverLeftHand.position;
-            Rvector = RlastPos - driverRightHand.position;
-            diveDirection = driver.position - directionContorl.position;
-            driverFace = driverCamera.position - directionContorl.position;
-        GameDataManager.UIManager.sendDebugMessage("123");
-            Debug.Log(diveDirection);
-            Debug.Log(driverFace);
-            Debug.Log(Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(driverFace.x, 0, driverFace.z)));
+        Lvector = LlastPos - driverLeftHand.position;
+        Rvector = RlastPos - driverRightHand.position;
+        diveDirection = directionContorl.position - driver.position;
         //Debug.Log(Lvector);
         //Debug.Log(Rvector);
         //Debug.DrawRay(LeftHand.position, Lvector, Color.red, drawRayTime);
         //Debug.DrawRay(RightHand.position, Rvector, Color.red, drawRayTime);
         //Debug.DrawRay(bodypos.transform.position, body_head_direction * 10, Color.red, drawRayTime);
-
+        
         LRvector = Lvector + Rvector;
-            body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
+        body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
+        Debug.Log(Vector3.Angle(LRvector, diveDirection));
 
-            //rotation
-            //    if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
-            //{
-            //    if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.08f && LRvector.x > 0)
-            //    {
-            //        if (Rvector.magnitude < Lvector.magnitude)
-            //        {
-            //            //L > R: turn right
-            //                transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
-            //            //if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
-            //            //{
-            //            //    StartCoroutine(No1Work(true, false, 0, 0)); //R,L,angle,speed (OSC)
-            //            //    new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
-            //            //    Debug.Log("turn right, L motor");
-            //            //}
+        //rotation
+        //    if (Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f)
+        //{
+        //    if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) > 0.08f && LRvector.x > 0)
+        //    {
+        //        if (Rvector.magnitude < Lvector.magnitude)
+        //        {
+        //            //L > R: turn right
+        //                transform.Rotate(Vector3.up * body_vector_angle * 0.08f);
+        //            //if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
+        //            //{
+        //            //    StartCoroutine(No1Work(true, false, 0, 0)); //R,L,angle,speed (OSC)
+        //            //    new Thread(Uno.SendData).Start("20 150 120 150"); // L Lspeed R Rspeed
+        //            //    Debug.Log("turn right, L motor");
+        //            //}
 
-            //        }
-            //        else
-            //        {
-            //            //R > L: turn left
-            //                transform.Rotate(Vector3.down * body_vector_angle * 0.08f);
-            //            //if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
-            //            //{
-            //            //    StartCoroutine(No1Work(false, true, 0, 0));
-            //            //    Debug.Log("turn left, R motor");
-            //            //}
+        //        }
+        //        else
+        //        {
+        //            //R > L: turn left
+        //                transform.Rotate(Vector3.down * body_vector_angle * 0.08f);
+        //            //if (rotated == false && fish_control.fish == 0 && shark_control.shark == 0)
+        //            //{
+        //            //    StartCoroutine(No1Work(false, true, 0, 0));
+        //            //    Debug.Log("turn left, R motor");
+        //            //}
 
-            //        }
+        //        }
 
-            //        rotated = true;
-            //    }
-            //    else
-            //    {
-            //        Debug.Log("don't rotate");
-            //        rotated = false;
-            //    }
+        //        rotated = true;
+        //    }
+        //    else
+        //    {
+        //        Debug.Log("don't rotate");
+        //        rotated = false;
+        //    }
 
-            //}
+        //}
 
-            //offset control
-                if (LRvector.magnitude > 0.01f && LRvector.magnitude < 0.02f) offset += 0.1f;
+        //offset control
+        if (LRvector.magnitude > 0.01f && LRvector.magnitude < 0.02f) offset += 0.1f;
             else if (LRvector.magnitude > 0.02f && LRvector.magnitude < 0.03f) offset += 0.2f;
             else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.3f;
             else if (LRvector.magnitude> 0.04f && LRvector.magnitude < 0.05f) offset += 0.4f;
@@ -115,12 +110,9 @@ public class DiverControll : MonoBehaviour {
                 offset = offset * 0.2f;//* 0.005f;//0.0005f;//
                 Debug.Log("---rotate---");
             }
-            else
-            {
-                //transform.position += new Vector3(body_head_direction.x, 0, body_head_direction.z) * (LRvector.magnitude + offset) * 0.2f;
-                transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2f * Time.deltaTime;
-                //Debug.Log("---go straight---");
-                //Debug.Log("---transform.position---" + transform.position);
+            else//straight
+            {       
+                transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2.2f * Time.deltaTime;
 
             /*fish & shark & motor control
                 if (fish_control.fish == 1) Debug.Log("fish!!");
