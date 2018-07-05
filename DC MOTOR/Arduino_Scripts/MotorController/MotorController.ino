@@ -2,7 +2,7 @@
 #include <PinChangeInt.h>
 #include <PID_v1.h>
 #define SERIAL_BAUD 9600
-#define DEBUG 1 
+#define DEBUG 0 
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
@@ -77,10 +77,11 @@ void loop()
 
   //Control Motor noise
   if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
-  if (MotorCounter > 45) 
+  if (MotorCounter > 40 && MotorCounter < 45) 
   {
     digitalWrite(LeftMotor_EnablePin, LOW);
     digitalWrite(RightMotor_EnablePin, LOW);
+    Serial.println("P");
   }
   
   //Read Data and Handle Data

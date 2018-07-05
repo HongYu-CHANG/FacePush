@@ -18,6 +18,7 @@ public class CommunicateWithArduino
     private int ReadTimeout;
     private bool isMac;
     private bool isConnected;
+    private bool isLocked;
     private SerialPort arduinoController;
 
     public CommunicateWithArduino(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, Handshake handshake = Handshake.None,
@@ -33,6 +34,7 @@ public class CommunicateWithArduino
         this.ReadTimeout = ReadTimeout;
         this.isMac = isMac;
         this.isConnected = isConnected;
+        isLocked = false;
         startConnect();
     }
 
@@ -66,33 +68,50 @@ public class CommunicateWithArduino
             arduinoController.Open();
         }
     }
-    public void SendData(object obj)
+    public void sendData(object obj)
     {
         string data = obj as string;
-        Debug.Log(data);
-        if (isConnected)
+        if (isConnected && !isLocked)
         {
+            Debug.LogWarning(data);
             if (arduinoController != null)
             {
                 arduinoController.Write(data);
                 arduinoController.Write("\n");
+                Thread.Sleep(500);
             }
             else
             {
                 Debug.Log(arduinoController);
                 Debug.Log("nullport");
             }
+            isLocked = true;
         }
         else
         {
-            Debug.Log("not connected");
-        }
-        Thread.Sleep(500);
+            Debug.Log("Not Connected or Locked");
+        }  
     }
 
-    public string ReceiveData()
+    public string receiveData()
     {
         return arduinoController.ReadLine();
+    }
+
+    public void motorLocker()
+    {
+        string temp = "";
+        try
+        {
+            temp = arduinoController.ReadLine();
+            if (temp == "P")
+            {
+                Debug.Log(temp);
+                isLocked = false;
+
+            }
+        }
+        catch (Exception e){ }
     }
 
     public void closeSerial()

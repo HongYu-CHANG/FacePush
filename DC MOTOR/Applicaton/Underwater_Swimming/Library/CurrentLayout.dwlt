@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 2}
-  m_MinSize: {x: 950, y: 392}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -43,7 +43,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 950, y: 392}
+  m_MinSize: {x: 950, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &3
 MonoBehaviour:
@@ -176,8 +176,8 @@ MonoBehaviour:
     y: 0
     width: 886
     height: 225
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 15}
   m_Panes:
   - {fileID: 15}
@@ -234,7 +234,7 @@ MonoBehaviour:
   m_MinSize: {x: 204, y: 342}
   m_MaxSize: {x: 4004, y: 8042}
   vertical: 1
-  controlID: 98
+  controlID: 106
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -642,9 +642,9 @@ MonoBehaviour:
     height: 380
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: 
-    m_LastClickedID: 0
-    m_ExpandedIDs: defbffff00000000
+    m_SelectedIDs: f8460000
+    m_LastClickedID: 18168
+    m_ExpandedIDs: defbffff00000000f8460000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -767,7 +767,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 63}
     m_SelectedIDs: de330000
     m_LastClickedID: 13278
-    m_ExpandedIDs: 00000000dc2600007827000092270000be270000ea27000098280000e628000020290000382900005229000060290000ce2900009e2a0000562b0000722b00009a2b0000b42b0000882c0000822d0000b42d00002e2e0000382e0000323400004a34000044350000b2350000c435000010360000b837000048380000d23800004c3900000c3a0000503a00008c3a0000963a000036550000385500003a5500003c5500003e55000040550000
+    m_ExpandedIDs: 00000000dc2600007827000092270000be270000ea27000098280000e628000020290000382900005229000060290000ce2900009e2a0000562b0000722b00009a2b0000b42b0000882c0000822d0000b42d00002e2e0000382e0000323400004a34000044350000b2350000c4350000ee35000010360000b837000048380000d23800004c3900000c3a0000503a00008c3a0000963a00009e3a000036550000385500003a5500003c5500003e55000040550000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
