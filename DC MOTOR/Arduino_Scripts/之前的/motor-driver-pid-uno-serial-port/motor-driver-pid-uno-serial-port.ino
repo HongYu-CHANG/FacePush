@@ -1,19 +1,13 @@
 /* This sketch supports NILab Project FacePush, as described below:
- * - UNO receives message from Adafruit Feather M0 through I2C communication.
+ * - UNO receives message directly from PC by serial port.
  * - uses Arduino UNO and Monster Motor Shield VNH2SP30 to control 2 DC motors.
  * - control DC motors by rotary encoders and PID
  * - use interrupt pins D2, D3, D10, and D11 (by PinChangeInterrupt library)
  *   to track the value of rotary encoders.
  * 
- *   22.02.18 wjtseng93
+ *   23.02.18 wjtseng93
  */
-
-//====================================================================================
-// I2C
-#include <Wire.h>
-#define SLAVE_ADDRESS 0x12
-#define SERIAL_BAUD 9600 
-
+#define SERIAL_BAUD 9600
 //====================================================================================
 // Monster Motor Driver VNH2SP30
 #define BRAKE 0
@@ -45,6 +39,7 @@
 short speedLeft = 255;
 short speedRight = 255;
 unsigned short usMotor_Status = BRAKE;
+int motorParameters[4]; // angle left, speed left, angle right, speed right
 
 //====================================================================================
 // Interrupt and Rotary encoder
@@ -66,7 +61,7 @@ volatile long encoderRightValue = 0;
 //====================================================================================
 // PID motor control
 #include <PID_v1.h>
-double kp = 0.4, ki = 0.06, kd = 0.01;
+double kp = 0.75, ki = 0.09, kd = 0.01;
 // input: current position (value of rotary encoder)
 // output: result (where to go)
 // setPoint: target position (position cmd from Feather)
@@ -78,12 +73,9 @@ PID rightPID(&inputRight, &outputRight, &setPointRight, kp, ki, kd, DIRECT);
 
 String inputString = "";
 bool stringComplete = false;
-
+int timer = 0;
 void setup()                         
 {
-  // I2C setup
-  Wire.begin(SLAVE_ADDRESS);    // join I2C bus as a slave with address 1
-  Wire.onReceive(receiveEvent); // register event
   Serial.begin(SERIAL_BAUD);
 
   // DC motor setup
@@ -128,21 +120,37 @@ void setup()
 
 void loop() 
 {
-  inputLeft = encoderLeftValue;
-  inputRight = encoderRightValue;
 //  Uncomment below to check values of PID  
 //  Serial.print(inputLeft); Serial.print(" ");
 //  Serial.print(setPointLeft); Serial.print(" ");
 //  Serial.print(outputLeft); Serial.print(" ");
-//
 //  Serial.print(inputRight); Serial.print(" ");
 //  Serial.print(setPointRight); Serial.print(" ");
 //  Serial.println(outputRight); Serial.print(" ");
 
+  inputLeft = encoderLeftValue;
+  inputRight = encoderRightValue;
   // Update PID control
+//  int currentTime = millis();
+
   motorPIDControl(&encoderLeftValue, &setPointLeft, &outputLeft, &leftPID, EN_PIN_1, MOTOR_1);
   motorPIDControl(&encoderRightValue, &setPointRight, &outputRight, &rightPID, EN_PIN_2, MOTOR_2);
 
+//  if (inputRight == setPointRight && inputLeft == setPointLeft) {
+//    timer = 0;
+//  }
+//  else {
+//    timer += millis() - currentTime;
+//  }
+//  if (timer > 90) {
+//    setPointLeft = inputLeft;
+//    outputLeft = 0;
+//    setPointRight = inputRight;
+//    outputRight = 0;
+//  }
+
+
+  
 //  Uncomment below to send data in serial port
   while(Serial.available())
   {
@@ -155,84 +163,37 @@ void loop()
     }
   }
   if (stringComplete) {
-    if (inputString.startsWith("L")) {
-      inputString = inputString.substring(2);
-      // split cmd into angle and speed
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointLeft = (double) inputString.substring(0, i).toInt();
-          speedLeft = (short) inputString.substring(i + 1).toInt();
+//    Serial.println(inputString);
+    for (int i = 0; i < 3; i++) {
+      for (int j = 0; j < inputString.length(); j++) {
+        if (inputString.substring(j, j + 1) == " ")
+        {
+          motorParameters[i] = inputString.substring(0, j).toInt();
+          if (i == 2) {
+            motorParameters[i + 1] = inputString.substring(j + 1).toInt();
+          }
+          else {
+            inputString = inputString.substring(j + 1);
+          }
           break;
         }
       }
-      leftPID.SetOutputLimits(-speedLeft, speedLeft);
-      setPointLeft = (double) inputString.toInt();
     }
-    else if (inputString.startsWith("R")) {
-      inputString = inputString.substring(2);
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointRight = (double) inputString.substring(0, i).toInt();
-          speedRight = (short) inputString.substring(i + 1).toInt();
-          break;
-        }
-      }
-      rightPID.SetOutputLimits(-speedRight, speedRight);
-      setPointRight = (double) inputString.toInt();      
-    }
+    setPointLeft = (double) motorParameters[0];
+    speedLeft = (short) motorParameters[1];
+    setPointRight = (double) motorParameters[2];
+    speedRight = (short) motorParameters[3];
+    leftPID.SetOutputLimits(-speedLeft, speedLeft);
+    rightPID.SetOutputLimits(-speedRight, speedRight);
+//    for (int i = 0; i < 4; i++) {
+//      Serial.println(motorParameters[i]);
+//    }
     stringComplete = false;
     inputString = "";
   } 
 }
 
-// Receiving data from I2C communication
-void receiveEvent(int count) {
-  while (Wire.available()) {
-    digitalWrite(EN_PIN_1, HIGH);
-    digitalWrite(EN_PIN_2, HIGH); 
-    char c = (char) Wire.read();
-    inputString += c;
-    if (c == '\n') {
-      stringComplete = true;   
-    }
-  }
-  if (stringComplete) {
-//    Serial.println(inputString);
-    if (inputString.startsWith("L")) {
-      inputString = inputString.substring(2);
-      // split cmd into angle and speed
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointLeft = (double) inputString.substring(0, i).toInt();
-          speedLeft = (short) inputString.substring(i + 1).toInt();
-          break;
-        }
-      }
-      leftPID.SetOutputLimits(-speedLeft, speedLeft);
-    }
-    else if (inputString.startsWith("R")) {
-      inputString = inputString.substring(2);
-      for (int i = 0; i < inputString.length(); i++)
-      {
-        if (inputString.substring(i, i + 1) == " ")
-        {  
-          setPointRight = (double) inputString.substring(0, i).toInt();
-          speedRight = (short) inputString.substring(i + 1).toInt();
-          break;
-        }
-      }
-      rightPID.SetOutputLimits(-speedLeft, speedLeft);      
-    }
-    stringComplete = false;
-    inputString = "";
-  }
-} 
+
 
 // Function that controls the variables:
 // motor(0 or 1), direction (cw or ccw), and pwm (0 to 255)

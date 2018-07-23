@@ -81,7 +81,7 @@ void loop()
   {
     digitalWrite(LeftMotor_EnablePin, LOW);
     digitalWrite(RightMotor_EnablePin, LOW);
-    Serial.println("P");
+    //Serial.println("P");
   }
   
   //Read Data and Handle Data
