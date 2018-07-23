@@ -5,7 +5,6 @@ using UnityEngine;
 public class DiverControll : MonoBehaviour {
 
     public int frameSegment = 3;//num of frames between 2 position recording
-    private int counter = 0;
 
     private int motorSegmentCounter = 0;
     //Diver Body
@@ -53,30 +52,27 @@ public class DiverControll : MonoBehaviour {
         diveDirection = directionContorl.position - driver.position;
         LRvector = Lvector + Rvector;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
-        //Debug.Log(driverLeftHand.position);
-        Debug.Log(driverRightHand.position);
-        Debug.Log(Vector2.Distance(driverRightHand.position, positioningGroup.position));
         //rotation
-        if ((Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f) && isStarting)
+        Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, drawRayTime);
+        if ((Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f) && isStarting && (Lvector.x >= 0 && Lvector.z >= 0 && Rvector.x >= 0 && Rvector.z >= 0))
         {
-            //Debug.Log(body_vector_angle);
+            Debug.DrawRay(driverLeftHand.transform.position, Lvector, Color.red, 10);
+            Debug.DrawRay(driverRightHand.transform.position, Rvector, Color.red, 10);
             if ((Lvector.magnitude - Rvector.magnitude) > 0.05f) //trun right
             {
-                //Debug.LogWarning("Right!!");
-                rotateValue = Vector3.up * body_vector_angle * 0.1f;
-    
+                Debug.LogWarning("Right!!");
+                rotateValue = Vector3.up * body_vector_angle * 0.8f;
             }
             else if ((Rvector.magnitude - Lvector.magnitude) > 0.05f)//turn left
             {
-                //Debug.LogWarning("Left!!");
-                rotateValue = Vector3.down * body_vector_angle * 0.1f;
+                Debug.LogWarning("Left!!");
+                rotateValue = Vector3.down * body_vector_angle * 0.8f;
             }
-            else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.04f)
+            else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
             {
-                //Debug.LogWarning("Forward!!");
+                Debug.LogWarning("Foward!!");
                 rotateValue = Vector3.zero;
             }
-    
         }
 
         //dive offset control
@@ -90,14 +86,14 @@ public class DiverControll : MonoBehaviour {
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2.2f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime);
         rotateValue -= rotateValue * Time.deltaTime;
-        
+        if (rotateValue.magnitude <= 10)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
+            rotateValue = Vector3.zero;
 
          //reset parameter
          LlastPos = driverLeftHand.position;
          RlastPos = driverRightHand.position;
          Lvector = Vector3.zero;
          Rvector = Vector3.zero;
-         counter = 0;
          if (offset > 0.2f) offset -= 0.2f;
          else offset = 0;
          if (motorSegmentCounter == 2) motorSegmentCounter = 0;
