@@ -65,7 +65,7 @@ public class CommunicateWithArduino
             arduinoController.Handshake = handshake;
             arduinoController.RtsEnable = RtsEnable;
             arduinoController.ReadTimeout = ReadTimeout;
-            arduinoController.Open();
+            //arduinoController.Open();
         }
     }
     public void sendData(object obj)

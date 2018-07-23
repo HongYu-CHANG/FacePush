@@ -13,6 +13,7 @@ public class DiverControll : MonoBehaviour {
     public Transform driverRightHand;
     public Transform driver;
     public Transform directionContorl;
+    public Transform positioningGroup;        
     private Vector3 LlastPos;//左手上一次的位置
     private Vector3 RlastPos;//右手上一次的位置
     private Vector3 Lvector;
@@ -52,24 +53,27 @@ public class DiverControll : MonoBehaviour {
         diveDirection = directionContorl.position - driver.position;
         LRvector = Lvector + Rvector;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
+        //Debug.Log(driverLeftHand.position);
+        Debug.Log(driverRightHand.position);
+        Debug.Log(Vector2.Distance(driverRightHand.position, positioningGroup.position));
         //rotation
         if ((Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f) && isStarting)
         {
-            Debug.Log(body_vector_angle);
-            if ((Lvector.magnitude - Rvector.magnitude) > 0.08f) //trun right
+            //Debug.Log(body_vector_angle);
+            if ((Lvector.magnitude - Rvector.magnitude) > 0.05f) //trun right
             {
-                Debug.LogWarning("Right!!");
-                rotateValue = Vector3.up * body_vector_angle * 0.5f;
+                //Debug.LogWarning("Right!!");
+                rotateValue = Vector3.up * body_vector_angle * 0.1f;
     
             }
             else if ((Rvector.magnitude - Lvector.magnitude) > 0.05f)//turn left
             {
-                Debug.LogWarning("Left!!");
-                rotateValue = Vector3.down * body_vector_angle * 0.5f;
+                //Debug.LogWarning("Left!!");
+                rotateValue = Vector3.down * body_vector_angle * 0.1f;
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.04f)
             {
-                Debug.LogWarning("Forward!!");
+                //Debug.LogWarning("Forward!!");
                 rotateValue = Vector3.zero;
             }
     

@@ -79,9 +79,9 @@ void loop()
   if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
   if (MotorCounter > 40 && MotorCounter < 45) 
   {
-    digitalWrite(LeftMotor_EnablePin, LOW);
-    digitalWrite(RightMotor_EnablePin, LOW);
-    //Serial.println("P");
+    //digitalWrite(LeftMotor_EnablePin, LOW);
+    //digitalWrite(RightMotor_EnablePin, LOW);
+    Serial.println("P");
   }
   
   //Read Data and Handle Data

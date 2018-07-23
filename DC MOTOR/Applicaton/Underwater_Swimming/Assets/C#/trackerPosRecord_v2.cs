@@ -101,8 +101,8 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 				Lvector = LlastPos - Ltracker.transform.position;
 				Rvector = RlastPos - Rtracker.transform.position;
 				body_head_direction = headpos.transform.position - bodypos.transform.position;
-                Debug.Log(Lvector);
-                Debug.Log(Rvector);
+               // Debug.Log(Lvector);
+               // Debug.Log(Rvector);
 
                 Debug.DrawRay(Ltracker.transform.position, Lvector, Color.red, drawRayTime);
 				Debug.DrawRay(Rtracker.transform.position, Rvector, Color.red, drawRayTime);
@@ -245,6 +245,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			*/
 
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(20) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(120) + " " + turningSpeed); // L Lspeed R Rspeed																																						   //face
+			Debug.Log(degreeConvertToLeftRotaryCoder(20) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(120) + " " + turningSpeed);
 			//face
 			color_r.a = (float)120f / 150;
 			hit_r.GetComponent<Renderer>().material.color = color_r;
@@ -272,6 +273,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			*/
 
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(120) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(20) + " " + turningSpeed); // L Lspeed R Rspeed
+			Debug.Log(degreeConvertToLeftRotaryCoder(120) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(20) + " " + turningSpeed);
 			//face
 			color.a = (float)120f / 150;
 			hit.GetComponent<Renderer>().material.color = color;
@@ -295,6 +297,7 @@ public class trackerPosRecord_v2 : MonoBehaviour {
 			*/
 			
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + turningSpeed); // L Lspeed R Rspeed
+			Debug.Log(degreeConvertToLeftRotaryCoder(angle) + " " + turningSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + turningSpeed);
 
 			//face
 			color.a = (float)angle / 150;
