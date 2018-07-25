@@ -3,32 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class DiverControll : MonoBehaviour {
-
-    public int frameSegment = 3;//num of frames between 2 position recording
-
-    private int motorSegmentCounter = 0;
     //Diver Body
     public Transform driverLeftHand;
     public Transform driverRightHand;
     public Transform driver;
-    public Transform directionContorl;
-    public Transform positioningGroup;        
+    public Transform directionContorl;       
     private Vector3 LlastPos;//左手上一次的位置
     private Vector3 RlastPos;//右手上一次的位置
-    private Vector3 Lvector;
-    private Vector3 Rvector;
+    private Vector3 Lvector;//左手向量
+    private Vector3 Rvector;//右手向量
     private Vector3 diveDirection; //身體的方向
 
-    //v2: 用合力計算旋轉角度 & 移動
-    private Vector3 LRvector;
+    //旋轉角度 移動offset 向量和 啟動bool
+    private Vector3 LRvector; // 兩向量相加
     private float body_vector_angle;
-    private int i = 0;
     private float offset = 1;
-    private bool isRotated = false;
     private Vector3 rotateValue = Vector3.zero;
-
-    public float drawRayTime = 10;
     private bool isStarting = false;
+
+    //Motor 參數
+    private float waitingTime = 0.5f;
+    private int Left_degreeConvertToRotaryCoder(int degree) { return (degree * 1024 / 360); }
+    private int Right_degreeConvertToRotaryCoder(int degree) { return (degree * 824 / 360); }
 
     // Use this for initialization
     void Start ()
@@ -40,7 +36,6 @@ public class DiverControll : MonoBehaviour {
         RlastPos = driverRightHand.position;
         diveDirection = directionContorl.position - driver.position;
         StartCoroutine(startGame());
-        
     }
 	
 	// Update is called once per frame
@@ -53,7 +48,7 @@ public class DiverControll : MonoBehaviour {
         LRvector = Lvector + Rvector;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
         //rotation
-        Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, drawRayTime);
+        Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
         if ((Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f) && isStarting && (Lvector.x >= 0 && Lvector.z >= 0 && Rvector.x >= 0 && Rvector.z >= 0))
         {
             Debug.DrawRay(driverLeftHand.transform.position, Lvector, Color.red, 10);
@@ -86,18 +81,21 @@ public class DiverControll : MonoBehaviour {
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2.2f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime);
         rotateValue -= rotateValue * Time.deltaTime;
-        if (rotateValue.magnitude <= 10)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
-            rotateValue = Vector3.zero;
+        Debug.Log("rotateValue = " + Mathf.RoundToInt(rotateValue.magnitude));
+        Debug.Log("LRvector = " + Mathf.RoundToInt(LRvector.magnitude));
+        Debug.Log("offset = " + Mathf.RoundToInt(offset));
 
-         //reset parameter
-         LlastPos = driverLeftHand.position;
+
+        //reset parameter
+        LlastPos = driverLeftHand.position;
          RlastPos = driverRightHand.position;
          Lvector = Vector3.zero;
          Rvector = Vector3.zero;
-         if (offset > 0.2f) offset -= 0.2f;
-         else offset = 0;
-         if (motorSegmentCounter == 2) motorSegmentCounter = 0;
-         else motorSegmentCounter++;
+        if (rotateValue.magnitude <= 10)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
+            rotateValue = Vector3.zero;
+        if (offset > 0.2f) offset -= 0.2f;
+        else offset = 0;
+
         if (Input.GetKey(KeyCode.S))
         {
             GameDataManager.Uno.sendData("512 255 412 255");
@@ -113,5 +111,17 @@ public class DiverControll : MonoBehaviour {
         yield return new WaitForSeconds(1.5f);
         isStarting = true;
         GameDataManager.Uno.sendData("512 255 412 255");
+    }
+    IEnumerator Right_Turn(int angle, int speed)
+    {
+        yield return new WaitForSeconds(waitingTime);
+    }
+    IEnumerator Left_Turn(int angle, int speed)
+    {
+        yield return new WaitForSeconds(waitingTime);
+    }
+    IEnumerator Forward_Turn(int angle, int speed)
+    {
+        yield return new WaitForSeconds(waitingTime);
     }
 }

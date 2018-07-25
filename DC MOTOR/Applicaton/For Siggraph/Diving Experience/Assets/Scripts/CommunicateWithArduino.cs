@@ -73,6 +73,7 @@ public class CommunicateWithArduino
         string data = obj as string;
         if (isConnected && !isLocked)
         {
+            isLocked = true;
             Debug.LogWarning(data);
             if (arduinoController != null)
             {
@@ -85,7 +86,6 @@ public class CommunicateWithArduino
                 Debug.Log(arduinoController);
                 Debug.Log("nullport");
             }
-            isLocked = true;
         }
         else
         {
