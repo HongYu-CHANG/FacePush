@@ -30,12 +30,12 @@ public class DiverControll : MonoBehaviour {
     void Start ()
     {
         //Driver body, right hand, left hand, face, start game
+        StartCoroutine(startGame());
         this.transform.position = new Vector3((driverLeftHand.position.x + driverRightHand.position.x) / 2,
             0.47f, (driverLeftHand.position.z + driverRightHand.position.z) / 2);
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
         diveDirection = directionContorl.position - driver.position;
-        StartCoroutine(startGame());
     }
 	
 	// Update is called once per frame
@@ -49,24 +49,25 @@ public class DiverControll : MonoBehaviour {
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
         //rotation
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
-        if ((Rvector.magnitude > 0.05f || Lvector.magnitude > 0.05f) && isStarting && (Lvector.x >= 0 && Lvector.z >= 0 && Rvector.x >= 0 && Rvector.z >= 0))
+        //Debug.LogWarning(Lvector.magnitude);
+        //Debug.LogWarning(Rvector.magnitude);
+        if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && isStarting && (Lvector.x >= 0 && Lvector.z >= 0 && Rvector.x >= 0 && Rvector.z >= 0))
         {
-            Debug.DrawRay(driverLeftHand.transform.position, Lvector, Color.red, 10);
-            Debug.DrawRay(driverRightHand.transform.position, Rvector, Color.red, 10);
-            if ((Lvector.magnitude - Rvector.magnitude) > 0.05f) //trun right
+            //Debug.LogError("Come In!!");
+            if ((Lvector.magnitude - Rvector.magnitude) > 0.025f) //trun right
             {
-                Debug.LogWarning("Right!!");
-                rotateValue = Vector3.up * body_vector_angle * 0.8f;
+                rotateValue = Vector3.up * body_vector_angle * 0.4f;
+                Debug.LogWarning("Right!!" + rotateValue);
             }
-            else if ((Rvector.magnitude - Lvector.magnitude) > 0.05f)//turn left
+            else if ((Rvector.magnitude - Lvector.magnitude) > 0.025f)//turn left
             {
-                Debug.LogWarning("Left!!");
-                rotateValue = Vector3.down * body_vector_angle * 0.8f;
+                rotateValue = Vector3.down * body_vector_angle * 0.4f;
+                Debug.LogWarning("Left!!" + rotateValue);
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
             {
-                Debug.LogWarning("Foward!!");
                 rotateValue = Vector3.zero;
+                Debug.LogWarning("Foward!!" + rotateValue);
             }
         }
 
@@ -81,10 +82,7 @@ public class DiverControll : MonoBehaviour {
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 2.2f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime);
         rotateValue -= rotateValue * Time.deltaTime;
-        Debug.Log("rotateValue = " + Mathf.RoundToInt(rotateValue.magnitude));
-        Debug.Log("LRvector = " + Mathf.RoundToInt(LRvector.magnitude));
-        Debug.Log("offset = " + Mathf.RoundToInt(offset));
-
+        //Debug.LogWarning(rotateValue);
 
         //reset parameter
         LlastPos = driverLeftHand.position;
@@ -110,7 +108,8 @@ public class DiverControll : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.5f);
         isStarting = true;
-        GameDataManager.Uno.sendData("512 255 412 255");
+        Debug.Log(isStarting);
+        //GameDataManager.Uno.sendData("512 255 412 255");
     }
     IEnumerator Right_Turn(int angle, int speed)
     {
