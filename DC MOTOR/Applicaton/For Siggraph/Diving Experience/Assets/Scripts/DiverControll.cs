@@ -7,11 +7,16 @@ public class DiverControll : MonoBehaviour {
     public Transform driverLeftHand;
     public Transform driverRightHand;
     public Transform driver;
-    public Transform directionContorl;       
+    public Transform directionContorl;
+    public Transform DistanceCalculator;
     private Vector3 LlastPos;//左手上一次的位置
     private Vector3 RlastPos;//右手上一次的位置
     private Vector3 Lvector;//左手向量
     private Vector3 Rvector;//右手向量
+    private float Ldistance;//左手距離後面的有多遠的值
+    private float Rdistance;//右手距離後面的有多遠的值
+    private float LLastDistance;//左手距離後面的有多遠上一次的值
+    private float RLastDistance;//右手距離後面的有多遠上一次的值
     private Vector3 diveDirection; //身體的方向
 
     //旋轉角度 移動offset 向量和 啟動bool
@@ -36,6 +41,7 @@ public class DiverControll : MonoBehaviour {
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
         diveDirection = directionContorl.position - driver.position;
+        
     }
 	
 	// Update is called once per frame
@@ -43,21 +49,24 @@ public class DiverControll : MonoBehaviour {
     {
         GameDataManager.Uno.motorLocker();
         Lvector = new Vector3(LlastPos.x - driverLeftHand.position.x, 0, LlastPos.z - driverLeftHand.position.z);
+        Ldistance = Vector3.Distance(driverLeftHand.position, DistanceCalculator.position);
         Rvector = new Vector3(RlastPos.x - driverRightHand.position.x, 0, RlastPos.z - driverRightHand.position.z);
+        Rdistance = Vector3.Distance(driverRightHand.position, DistanceCalculator.position);
         diveDirection = directionContorl.position - driver.position;
-        LRvector = Lvector + Rvector;
+        if(((LLastDistance - Ldistance) > 0.005)) //|| ((RLastDistance - Rdistance) > 0.005)
+            LRvector = Lvector + Rvector;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
         //rotation
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
-        //Debug.LogWarning(Lvector.magnitude);
-        //Debug.LogWarning(Rvector.magnitude);
-        if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && isStarting && (Lvector.x >= 0 && Lvector.z >= 0 && Rvector.x >= 0 && Rvector.z >= 0))
+        //Debug.LogWarning((Lvector.x >= 0.005f) + "\n" + (Lvector.z >= 0.005f));
+        Debug.LogWarning(((RLastDistance - Rdistance) > 0.005) + "  ");// + (RLastDistance > Rdistance));
+        //Debug.LogWarning(driverLeftHand.position);
+        if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && isStarting && ((LLastDistance - Ldistance) > 0.005) || ((RLastDistance - Rdistance) > 0.005))//(Lvector.x >= 0.005f && Lvector.z >= 0.005f && Rvector.x >= 0 && Rvector.z >= 0))
         {
-            //Debug.LogError("Come In!!");
             if ((Lvector.magnitude - Rvector.magnitude) > 0.025f) //trun right
             {
-                rotateValue = Vector3.up * body_vector_angle * 0.4f;
-                Debug.LogWarning("Right!!" + rotateValue);
+                rotateValue = Vector3.up * body_vector_angle * 0.6f;
+                Debug.LogWarning("Right!!" + rotateValue + "\n" + Lvector.x + "\n" + Rvector.z);
             }
             else if ((Rvector.magnitude - Lvector.magnitude) > 0.025f)//turn left
             {
@@ -86,9 +95,11 @@ public class DiverControll : MonoBehaviour {
 
         //reset parameter
         LlastPos = driverLeftHand.position;
-         RlastPos = driverRightHand.position;
-         Lvector = Vector3.zero;
-         Rvector = Vector3.zero;
+        RlastPos = driverRightHand.position;
+        LLastDistance = Ldistance;
+        RLastDistance = Rdistance;
+        Lvector = Vector3.zero;
+        Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 10)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
         if (offset > 0.2f) offset -= 0.2f;
@@ -108,7 +119,6 @@ public class DiverControll : MonoBehaviour {
     {
         yield return new WaitForSeconds(1.5f);
         isStarting = true;
-        Debug.Log(isStarting);
         //GameDataManager.Uno.sendData("512 255 412 255");
     }
     IEnumerator Right_Turn(int angle, int speed)
