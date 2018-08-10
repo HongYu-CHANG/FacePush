@@ -46,41 +46,39 @@ public class DiverControll : MonoBehaviour {
 	void FixedUpdate()
     {
         GameDataManager.Uno.motorLocker();
-        //Debug.LogError("LlastPos: " + driverLeftHand.position + "RlastPos: " + driverRightHand.position);
         Lvector = new Vector3(LlastPos.x - driverLeftHand.position.x, 0, LlastPos.z - driverLeftHand.position.z);
         Ldistance = Vector3.Distance(driverLeftHand.position, DistanceCalculator.position);
         Rvector = new Vector3(RlastPos.x - driverRightHand.position.x, 0, RlastPos.z - driverRightHand.position.z);
         Rdistance = Vector3.Distance(driverRightHand.position, DistanceCalculator.position);
         diveDirection = directionContorl.position - driver.position;
         if ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005)
-        {
             LRvector = Lvector + Rvector;
-
-        }
         else
             LRvector -= LRvector * 3.0f * Time.deltaTime;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
         //rotation
-        //Debug.LogWarning("offset:"+ offset + " MA:" + LRvector.magnitude);
-        //Debug.LogWarning((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005));
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
         if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005))
         {
             if ((Lvector.magnitude - Rvector.magnitude) > 0.025f) //trun right
             {
-                rotateValue = Vector3.up * body_vector_angle * 0.16f;
+                if (rotateValue.magnitude <= 25)
+                    rotateValue += Vector3.up * body_vector_angle * 0.16f;
                 Debug.LogWarning("Right!!");
+                if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, 25, 0);
             }
             else if ((Rvector.magnitude - Lvector.magnitude) > 0.025f)//turn left
             {
-                rotateValue = Vector3.down * body_vector_angle * 0.16f;
+                if (rotateValue.magnitude <= 25)
+                    rotateValue += Vector3.down * body_vector_angle * 0.16f;
                 Debug.LogWarning("Left!!");
+                if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, -25, 0);
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
             {
-                rotateValue = Vector3.zero;
                 Debug.LogWarning("Foward!!");
             }
+            
         }
 
         //dive Foward offset control
@@ -90,9 +88,10 @@ public class DiverControll : MonoBehaviour {
         else if (LRvector.magnitude > 0.05f) offset += 0.11f;
         if (offset > 12) offset = 12;
 
+        //foward and rotation
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3.0f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
-        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 25);
+        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
 
         //reset parameter
         LlastPos = driverLeftHand.position;
@@ -101,7 +100,7 @@ public class DiverControll : MonoBehaviour {
         RLastDistance = Rdistance;
         Lvector = Vector3.zero;
         Rvector = Vector3.zero;
-        if (rotateValue.magnitude <= 10)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
+        if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
         if (offset > 0.021125) offset -= 0.021125f;
         else
