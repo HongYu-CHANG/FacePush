@@ -245,7 +245,7 @@ namespace FishFlock
             flockingParent.gameObject.SetActive(false);
             yield return new WaitForSeconds(20f);
             flockingParent.gameObject.SetActive(true);
-            Debug.Log("FishFlock is Finish!!");
+            Debug.Log("FishFlock Finish!!");
         }
 
         void Update()

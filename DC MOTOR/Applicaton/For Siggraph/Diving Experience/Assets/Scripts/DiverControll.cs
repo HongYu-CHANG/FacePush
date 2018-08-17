@@ -91,7 +91,7 @@ public class DiverControll : MonoBehaviour {
         else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.11f;
         else if (LRvector.magnitude> 0.04f && LRvector.magnitude < 0.05f) offset += 0.1f;
         else if (LRvector.magnitude > 0.05f) offset += 0.11f;
-        if (offset > 12) offset = 12;
+        if (offset > 6) offset = 6;
 
         //foward and rotation
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3.0f * Time.deltaTime;
