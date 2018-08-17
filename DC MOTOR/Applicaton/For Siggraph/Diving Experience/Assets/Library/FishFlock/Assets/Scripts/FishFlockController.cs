@@ -238,8 +238,23 @@ namespace FishFlock
 
         Vector3 groupAnchorOffset;
 
+        IEnumerator fishflock()
+        {
+            flockingParent.gameObject.SetActive(true);
+            yield return new WaitForSeconds(20f);
+            flockingParent.gameObject.SetActive(false);
+            yield return new WaitForSeconds(20f);
+            flockingParent.gameObject.SetActive(true);
+            Debug.Log("FishFlock is Finish!!");
+        }
+
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F) && transform.parent.name == "Driver")
+            {
+                StartCoroutine(fishflock());
+            }
+
             globalParent = Vector3.Lerp(globalParent, groupAnchor, Time.smoothDeltaTime * 10);
 
             if (frameSkipAmountCount >= frameSkipAmount) frameSkipAmountCount = 0;

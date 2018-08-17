@@ -19,6 +19,11 @@ public class DiverControll : MonoBehaviour {
     private float RLastDistance;//右手距離後面的有多遠上一次的值
     private Vector3 diveDirection = Vector3.zero; //身體的方向
 
+    //Fishflock
+    public FishFlock.FishFlockController fishflockFlowControl;
+    public Transform fishflockOn;
+    public Transform fishflockOff;
+
     //旋轉角度 移動offset 向量和 啟動bool
     private Vector3 LRvector = Vector3.zero; // 兩向量相加
     private float body_vector_angle;
@@ -117,6 +122,10 @@ public class DiverControll : MonoBehaviour {
         {
             GameDataManager.Uno.sendData("0 255 0 255");
         }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartCoroutine(fishflock());
+        }
     }                                                                                                                                                                       
 
     IEnumerator Right_Turn(int angle, int speed)
@@ -130,5 +139,11 @@ public class DiverControll : MonoBehaviour {
     IEnumerator Forward_Turn(int angle, int speed)
     {
         yield return new WaitForSeconds(waitingTime);
+    }
+    IEnumerator fishflock()
+    {
+        fishflockFlowControl.target = fishflockOn;
+        yield return new WaitForSeconds(20f);
+        fishflockFlowControl.target = fishflockOff;
     }
 }
