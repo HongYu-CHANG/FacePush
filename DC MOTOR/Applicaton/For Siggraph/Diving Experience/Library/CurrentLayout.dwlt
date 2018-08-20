@@ -20,7 +20,7 @@ MonoBehaviour:
   m_ShowMode: 4
   m_Title: 
   m_RootView: {fileID: 7}
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 521}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &2
 MonoBehaviour:
@@ -68,10 +68,10 @@ MonoBehaviour:
     y: 0
     width: 321
     height: 947
-  m_MinSize: {x: 234, y: 492}
-  m_MaxSize: {x: 10004, y: 14042}
+  m_MinSize: {x: 234, y: 471}
+  m_MaxSize: {x: 10004, y: 14021}
   vertical: 1
-  controlID: 12
+  controlID: 74
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -90,8 +90,8 @@ MonoBehaviour:
     y: 0
     width: 321
     height: 429
-  m_MinSize: {x: 204, y: 221}
-  m_MaxSize: {x: 4004, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 16}
   m_Panes:
   - {fileID: 16}
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_MinSize: {x: 202, y: 442}
   m_MaxSize: {x: 4002, y: 8042}
   vertical: 1
-  controlID: 36
+  controlID: 52
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -168,7 +168,7 @@ MonoBehaviour:
     y: 0
     width: 1920
     height: 997
-  m_MinSize: {x: 950, y: 300}
+  m_MinSize: {x: 950, y: 521}
   m_MaxSize: {x: 10000, y: 10000}
 --- !u!114 &8
 MonoBehaviour:
@@ -232,10 +232,10 @@ MonoBehaviour:
     y: 30
     width: 1920
     height: 947
-  m_MinSize: {x: 713, y: 492}
-  m_MaxSize: {x: 18008, y: 14042}
+  m_MinSize: {x: 713, y: 471}
+  m_MaxSize: {x: 18008, y: 14021}
   vertical: 0
-  controlID: 98
+  controlID: 51
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -254,8 +254,8 @@ MonoBehaviour:
     y: 0
     width: 1237
     height: 502
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 17}
   m_Panes:
   - {fileID: 17}
@@ -498,9 +498,9 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: f8f50100
-    m_LastClickedID: 128504
-    m_ExpandedIDs: 08836eff30836effb2836eff7e856effa8886fff5e936fffeabb6fff04be6fff281f72ff2e4072fffe1674ff2c11f5ffd611f5ff3a59f7ff346ef7ff9efbffff00000000de830000fc8300001e850000c4c100008aea010006f40100
+    m_SelectedIDs: 38450000
+    m_LastClickedID: 17720
+    m_ExpandedIDs: 9efbffff00000000a0450000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -584,7 +584,7 @@ MonoBehaviour:
   m_Rotation:
     m_Target: {x: 0.01862495, y: 0.96590894, z: -0.07259878, w: 0.24779528}
     speed: 2
-    m_Value: {x: 0.01862495, y: 0.96590894, z: -0.07259878, w: 0.24779528}
+    m_Value: {x: 0.01862495, y: 0.96590894, z: -0.07259878, w: 0.2477953}
   m_Size:
     m_Target: 391.74207
     speed: 2
@@ -678,7 +678,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: e0280000
     m_LastClickedID: 10464
-    m_ExpandedIDs: 00000000de290000602a0000642a0000762c0000282d00006c2d0000882d00001c2e0000542e00006c2e0000122f0000962f0000543000008e330000f83300008435000090360000e2360000ec36000080370000103d00008c3d0000da3e00002a3f0000b43f0000ce3f0000de3f0000fa3f00000c4000003a400000cc470000
+    m_ExpandedIDs: 00000000de290000602a0000642a0000822c00008c2d0000d02d0000ec2d0000802e0000b82e0000d02e00007c2f0000c23000006e340000da34000068360000ca370000d4370000043e0000803e0000ce3f00001e400000a8400000c8400000d8400000f4400000024100000641000036410000ae490000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -706,21 +706,21 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000de290000602a0000642a0000762c0000282d00006c2d0000882d00001c2e0000542e00006c2e0000122f0000543000008e330000f833000084350000e2360000ec360000103d00008c3d0000da3e00002a3f0000b43f0000ce3f0000de3f0000fa3f0000084000000c4000003a400000cc470000
+    m_ExpandedIDs: 00000000de290000602a0000642a0000822c00008c2d0000d02d0000ec2d0000802e0000b82e0000d02e00007c2f0000c23000006e340000da34000068360000ca370000d4370000043e0000803e0000ce3f00001e400000a8400000c8400000d8400000f4400000024100000641000036410000ae490000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Shark Whale_FV_RM_MX_BRM
-      m_OriginalName: Shark Whale_FV_RM_MX_BRM
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 20928
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 1
       m_ClientGUIView: {fileID: 2}
     m_SearchString: 
