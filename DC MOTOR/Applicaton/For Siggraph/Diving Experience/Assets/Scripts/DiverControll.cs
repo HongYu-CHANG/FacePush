@@ -36,6 +36,12 @@ public class DiverControll : MonoBehaviour {
     private int Left_degreeConvertToRotaryCoder(int degree) { return (degree * 1024 / 360); }
     private int Right_degreeConvertToRotaryCoder(int degree) { return (degree * 824 / 360); }
 
+    //Shark
+    public Transform shark;
+    public Transform sharkShow;
+    private Animator _sharkAnimator;
+    private int randomTurn = 0;
+    private static bool isShark = false;
     // Use this for initialization
     void Start ()
     {
@@ -45,12 +51,19 @@ public class DiverControll : MonoBehaviour {
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
         diveDirection = directionContorl.position - driver.position;
+        UnityEngine.Random.InitState(1337);
+        _sharkAnimator = shark.GetComponent<Animator>();
+        _sharkAnimator.SetInteger("Second", 0);
+        _sharkAnimator.SetInteger("Start", 0);
+        _sharkAnimator.SetInteger("Turn", 0);
     }
 	
 	// Update is called once per frame
 	void FixedUpdate()
     {
         GameDataManager.Uno.motorLocker();
+
+        // Move
         Lvector = new Vector3(LlastPos.x - driverLeftHand.position.x, 0, LlastPos.z - driverLeftHand.position.z);
         Ldistance = Vector3.Distance(driverLeftHand.position, DistanceCalculator.position);
         Rvector = new Vector3(RlastPos.x - driverRightHand.position.x, 0, RlastPos.z - driverRightHand.position.z);
@@ -94,7 +107,7 @@ public class DiverControll : MonoBehaviour {
         if (offset > 6) offset = 6;
 
         //foward and rotation
-        transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3.0f * Time.deltaTime;
+        transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
         rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
 
@@ -113,8 +126,55 @@ public class DiverControll : MonoBehaviour {
             offset = 0;
             LRvector = Vector3.zero;
         }
+        // Shark
+        if (Input.GetKeyDown(KeyCode.S) && _sharkAnimator.GetBool("On"))
+        {
+            Debug.Log("Press\"S\" for shark");
+            randomTurn = UnityEngine.Random.Range(1, 3);
+            _sharkAnimator.SetBool("On", false);
+            _sharkAnimator.SetInteger("Start", 1);
+            _sharkAnimator.SetInteger("Turn", randomTurn);
+            shark.transform.localPosition = new Vector3(sharkShow.position.x, 0.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
+            shark.transform.localRotation = Quaternion.EulerRotation(0f, 0f, 0f);
+        }
+        Debug.Log(Vector3.Distance(shark.position,this.transform.position));
+        if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
+        {
 
-        if (Input.GetKey(KeyCode.S))
+            if (isShark)
+            {
+                isShark = false;
+                _sharkAnimator.SetInteger("Start", 0);
+            }
+            else if (Vector3.Distance(shark.position, this.transform.position) < 20)
+            {
+                _sharkAnimator.SetBool("On", true);
+            }
+        }
+        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Left"))// Trun = 2
+        {
+            if (!isShark)
+            {
+                Debug.Log("shark_right");
+            }
+            isShark = true;
+        }
+        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Right"))// Trun = 1
+        {
+            if (!isShark)
+            {
+                Debug.Log("shark_left");
+            }
+            isShark = true;
+        }
+
+        //FishFlock
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartCoroutine(fishflock());
+        }
+
+        if (Input.GetKey(KeyCode.Q))
         {
             GameDataManager.Uno.sendData("512 255 412 255");
         }
@@ -122,10 +182,7 @@ public class DiverControll : MonoBehaviour {
         {
             GameDataManager.Uno.sendData("0 255 0 255");
         }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            StartCoroutine(fishflock());
-        }
+        
     }                                                                                                                                                                       
 
     IEnumerator Right_Turn(int angle, int speed)
