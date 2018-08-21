@@ -42,6 +42,9 @@ public class DiverControll : MonoBehaviour {
     private Animator _sharkAnimator;
     private int randomTurn = 0;
     private static bool isShark = false;
+
+    //For test
+    private int i = 150;
     // Use this for initialization
     void Start ()
     {
@@ -137,7 +140,7 @@ public class DiverControll : MonoBehaviour {
             shark.transform.localPosition = new Vector3(sharkShow.position.x, 0.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
             shark.transform.localRotation = Quaternion.EulerRotation(0f, 0f, 0f);
         }
-        Debug.Log(Vector3.Distance(shark.position,this.transform.position));
+        //Debug.Log(Vector3.Distance(shark.position,this.transform.position));
         if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
         {
 
@@ -173,7 +176,7 @@ public class DiverControll : MonoBehaviour {
         {
             StartCoroutine(fishflock());
         }
-
+        
         if (Input.GetKey(KeyCode.Q))
         {
             GameDataManager.Uno.sendData("512 255 412 255");
@@ -202,5 +205,9 @@ public class DiverControll : MonoBehaviour {
         fishflockFlowControl.target = fishflockOn;
         yield return new WaitForSeconds(20f);
         fishflockFlowControl.target = fishflockOff;
+    }
+    private void OnDestroy()
+    {
+        GameDataManager.Uno.closeSerial();
     }
 }

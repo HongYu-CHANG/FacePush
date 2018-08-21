@@ -65,7 +65,8 @@ public class CommunicateWithArduino
             arduinoController.Handshake = handshake;
             arduinoController.RtsEnable = RtsEnable;
             arduinoController.ReadTimeout = ReadTimeout;
-            //arduinoController.Open();
+            arduinoController.Open();
+            Debug.Log("Connected!!");
         }
     }
     public void sendData(object obj)
@@ -73,13 +74,13 @@ public class CommunicateWithArduino
         string data = obj as string;
         if (isConnected && !isLocked)
         {
-            isLocked = true;
             Debug.LogWarning(data);
             if (arduinoController != null)
             {
                 arduinoController.Write(data);
                 arduinoController.Write("\n");
-                Thread.Sleep(500);
+                isLocked = true;
+                Thread.Sleep(500);        
             }
             else
             {
