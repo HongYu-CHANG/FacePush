@@ -36,6 +36,11 @@ public class DiverControll : MonoBehaviour {
     private float waitingTime = 0.5f;
     private int Left_degreeConvertToRotaryCoder(int degree) { return (degree * 1024 / 360); }
     private int Right_degreeConvertToRotaryCoder(int degree) { return (degree * 824 / 360); }
+    private struct angle
+    {
+        public int leftAngle;
+        public int rightAngle;
+    };
 
     //Shark
     public Transform shark;
@@ -45,7 +50,7 @@ public class DiverControll : MonoBehaviour {
     private static bool isShark = false;
 
     //For test
-    private float i = 0;
+    private angle i;
     // Use this for initialization
     void Start ()
     {
@@ -113,11 +118,10 @@ public class DiverControll : MonoBehaviour {
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
         rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
-        Debug.Log(LRvector.magnitude + offset);
-        Debug.Log(valueToAngle(LRvector.magnitude + offset));
-        i = valueToAngle(LRvector.magnitude + offset);
-        Debug.Log(degreeConvertToLeftRotaryCoder((int)i) + "  " + degreeConvertToRightRotaryCoder((int)i));
-        new Thread(GameDataManager.Uno.sendData).Start(degreeConvertToLeftRotaryCoder((int)i) + " 255 " + degreeConvertToRightRotaryCoder((int)i) + " 255");
+        //Debug.Log(LRvector.magnitude + offset + "rotateValue" + (rotateValue.y > 0));
+        i = motorAngle(LRvector.magnitude + offset, rotateValue.y);
+        Debug.Log(i.leftAngle + " " + i.rightAngle);
+        new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)i.leftAngle) + " 255 " + Right_degreeConvertToRotaryCoder((int)i.rightAngle) + " 255");
         //reset parameter
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
@@ -179,9 +183,6 @@ public class DiverControll : MonoBehaviour {
         {
             StartCoroutine(fishflock());
         }
-        //Debug.Log(i);
-        //if (i < 175) i += 0.5f;
-        //else i = 0;
         
         if (Input.GetKey(KeyCode.Q))
         {
@@ -192,29 +193,67 @@ public class DiverControll : MonoBehaviour {
             new Thread(GameDataManager.Uno.sendData).Start("0 255 0 255");
         }
     }
-    private int degreeConvertToLeftRotaryCoder(int degree)
-    {
-        // alternation
-        // increase another converter for right motor
-        return (degree * 1024 / 360);
-    }
 
-    private int degreeConvertToRightRotaryCoder(int degree)
+    private angle motorAngle (float fowardValue, float rotateValue)
     {
-        // alternation
-        // increase another converter for right motor
-        return (degree * 824 / 360);
-    }
-
-    private float valueToAngle (float nowValue)
-    {
-        float answer = 0;
-        //0~1.5 20
-        if (nowValue >= 0 && nowValue <= 1.5) answer = 20;
-        //1.5~5 100
-        if (nowValue > 1.5 && nowValue <= 5) answer = 70;
-        //5up 130
-        if (nowValue > 5) answer = 130;
+        angle answer = new angle();
+        if (rotateValue > 15f) // right
+        {
+            Debug.Log("right");
+            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+            {
+                answer.rightAngle = 20;
+                answer.leftAngle = 20;
+            }
+            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+            {
+                answer.rightAngle = 20;
+                answer.leftAngle = 60;
+            }
+            else if (fowardValue > 5)//5up 130
+            {
+                answer.rightAngle = 60;
+                answer.leftAngle = 130;
+            }
+        }
+        else if (rotateValue < -15f) //left
+        {
+            Debug.Log("left");
+            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+            {
+                answer.rightAngle = 20;
+                answer.leftAngle = 20;
+            }
+            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+            {
+                answer.rightAngle = 60;
+                answer.leftAngle = 20;
+            }
+            else if (fowardValue > 5)//5up 130
+            {
+                answer.rightAngle = 130;
+                answer.leftAngle = 60;
+            }
+        }
+        else // foward
+        {
+            Debug.Log("foward");
+            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+            {
+                answer.rightAngle = 20;
+                answer.leftAngle = 20;
+            }
+            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+            {
+                answer.rightAngle = 70;
+                answer.leftAngle = 70;
+            }
+            else if (fowardValue > 5)//5up 130
+            {
+                answer.rightAngle = 130;
+                answer.leftAngle = 130;
+            }
+        }
 
         return answer;
     }
