@@ -41,6 +41,7 @@ public class DiverControll : MonoBehaviour {
         public int leftAngle;
         public int rightAngle;
     };
+    private angle i;
 
     //Shark
     public Transform shark;
@@ -50,7 +51,8 @@ public class DiverControll : MonoBehaviour {
     private static bool isShark = false;
 
     //For test
-    private angle i;
+    private bool specialEffectOn;
+
     // Use this for initialization
     void Start ()
     {
@@ -140,6 +142,7 @@ public class DiverControll : MonoBehaviour {
         // Shark
         if (Input.GetKeyDown(KeyCode.S) && _sharkAnimator.GetBool("On"))
         {
+            specialEffectOn = true;
             Debug.Log("Press\"S\" for shark");
             randomTurn = UnityEngine.Random.Range(1, 3);
             _sharkAnimator.SetBool("On", false);
@@ -182,15 +185,6 @@ public class DiverControll : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.F))
         {
             StartCoroutine(fishflock());
-        }
-        
-        if (Input.GetKey(KeyCode.Q))
-        {
-            
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            new Thread(GameDataManager.Uno.sendData).Start("0 255 0 255");
         }
     }
 
@@ -258,20 +252,9 @@ public class DiverControll : MonoBehaviour {
         return answer;
     }
 
-    IEnumerator Right_Turn(int angle, int speed)
-    {
-        yield return new WaitForSeconds(waitingTime);
-    }
-    IEnumerator Left_Turn(int angle, int speed)
-    {
-        yield return new WaitForSeconds(waitingTime);
-    }
-    IEnumerator Forward_Turn(int angle, int speed)
-    {
-        yield return new WaitForSeconds(waitingTime);
-    }
     IEnumerator fishflock()
     {
+        specialEffectOn = true;
         fishflockFlowControl.target = fishflockOn;
         yield return new WaitForSeconds(20f);
         fishflockFlowControl.target = fishflockOff;
