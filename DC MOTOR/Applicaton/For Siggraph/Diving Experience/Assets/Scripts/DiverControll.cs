@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class DiverControll : MonoBehaviour {
@@ -44,7 +45,7 @@ public class DiverControll : MonoBehaviour {
     private static bool isShark = false;
 
     //For test
-    private int i = 150;
+    private float i = 0;
     // Use this for initialization
     void Start ()
     {
@@ -65,7 +66,7 @@ public class DiverControll : MonoBehaviour {
 	void FixedUpdate()
     {
         GameDataManager.Uno.motorLocker();
-
+        
         // Move
         Lvector = new Vector3(LlastPos.x - driverLeftHand.position.x, 0, LlastPos.z - driverLeftHand.position.z);
         Ldistance = Vector3.Distance(driverLeftHand.position, DistanceCalculator.position);
@@ -75,7 +76,7 @@ public class DiverControll : MonoBehaviour {
         if ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005)
             LRvector = Lvector + Rvector;
         else
-            LRvector -= LRvector * 3.0f * Time.deltaTime;
+            LRvector -= LRvector * 3f * Time.deltaTime;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
         //rotation
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
@@ -113,7 +114,7 @@ public class DiverControll : MonoBehaviour {
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
         rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
-
+        Debug.Log(LRvector.magnitude + offset);
         //reset parameter
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
@@ -140,10 +141,9 @@ public class DiverControll : MonoBehaviour {
             shark.transform.localPosition = new Vector3(sharkShow.position.x, 0.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
             shark.transform.localRotation = Quaternion.EulerRotation(0f, 0f, 0f);
         }
-        //Debug.Log(Vector3.Distance(shark.position,this.transform.position));
+        
         if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
         {
-
             if (isShark)
             {
                 isShark = false;
@@ -176,17 +176,32 @@ public class DiverControll : MonoBehaviour {
         {
             StartCoroutine(fishflock());
         }
-        
+
         if (Input.GetKey(KeyCode.Q))
         {
-            GameDataManager.Uno.sendData("512 255 412 255");
+            Debug.Log(i);
+            if (i < 175) i += 0.5f;
+            else i = 0;
+            new Thread(GameDataManager.Uno.sendData).Start(degreeConvertToLeftRotaryCoder((int)i) + " 255 " + degreeConvertToRightRotaryCoder((int)i) + " 255");
         }
         if (Input.GetKey(KeyCode.A))
         {
-            GameDataManager.Uno.sendData("0 255 0 255");
+            new Thread(GameDataManager.Uno.sendData).Start("0 255 0 255");
         }
-        
-    }                                                                                                                                                                       
+    }
+    private int degreeConvertToLeftRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 1024 / 360);
+    }
+
+    private int degreeConvertToRightRotaryCoder(int degree)
+    {
+        // alternation
+        // increase another converter for right motor
+        return (degree * 824 / 360);
+    }
 
     IEnumerator Right_Turn(int angle, int speed)
     {

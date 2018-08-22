@@ -19,6 +19,8 @@ public class CommunicateWithArduino
     private bool isMac;
     private bool isConnected;
     private bool isLocked;
+    private string motorFinishMessage = "";
+    private DateTime getFinishMessageTime = DateTime.Now;
     private SerialPort arduinoController;
 
     public CommunicateWithArduino(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, Handshake handshake = Handshake.None,
@@ -72,21 +74,14 @@ public class CommunicateWithArduino
     public void sendData(object obj)
     {
         string data = obj as string;
-        if (isConnected && !isLocked)
+        if (isConnected && !isLocked && arduinoController != null)
         {
+            isLocked = true;
             Debug.LogWarning(data);
-            if (arduinoController != null)
-            {
-                arduinoController.Write(data);
-                arduinoController.Write("\n");
-                isLocked = true;
-                Thread.Sleep(500);        
-            }
-            else
-            {
-                Debug.Log(arduinoController);
-                Debug.Log("nullport");
-            }
+            arduinoController.Write(data);
+            arduinoController.Write("\n");
+            getFinishMessageTime = DateTime.Now;
+            Thread.Sleep(500);
         }
         else
         {
@@ -101,18 +96,32 @@ public class CommunicateWithArduino
 
     public void motorLocker()
     {
-        string temp = "";
+        double seconds = (DateTime.Now - getFinishMessageTime).TotalSeconds;
+        //Debug.Log(seconds);
         try
         {
-            temp = arduinoController.ReadLine();
-            if (temp == "P")
-            {
-                Debug.Log(temp);
-                isLocked = false;
-
-            }
+            motorFinishMessage = arduinoController.ReadLine();
         }
-        catch (Exception e){ }
+        catch (Exception e)
+        {
+            if (seconds > 2.5f)
+            {
+                motorFinishMessage = "P";
+            }
+
+        }
+        if (motorFinishMessage == "P" && seconds > 1.0f)
+        {
+            getFinishMessageTime = DateTime.Now;
+            isLocked = false;
+            motorFinishMessage = "";
+        }
+
+    }
+
+    public bool getisLocked()
+    {
+        return isLocked;
     }
 
     public void closeSerial()
