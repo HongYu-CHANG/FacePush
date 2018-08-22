@@ -77,7 +77,7 @@ public class CommunicateWithArduino
         if (isConnected && !isLocked && arduinoController != null)
         {
             isLocked = true;
-            Debug.LogWarning(data);
+            Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
             arduinoController.Write("\n");
             getFinishMessageTime = DateTime.Now;
@@ -85,7 +85,7 @@ public class CommunicateWithArduino
         }
         else
         {
-            Debug.Log("Not Connected or Locked");
+            //Debug.LogError("Not Connected or Locked");
         }  
     }
 
@@ -104,14 +104,15 @@ public class CommunicateWithArduino
         }
         catch (Exception e)
         {
-            if (seconds > 2.5f)
+            if (seconds > 1.5f)
             {
                 motorFinishMessage = "P";
             }
 
         }
-        if (motorFinishMessage == "P" && seconds > 1.0f)
+        if (motorFinishMessage == "P" && seconds > 0.5f)
         {
+            Debug.Log(motorFinishMessage);
             getFinishMessageTime = DateTime.Now;
             isLocked = false;
             motorFinishMessage = "";
@@ -126,6 +127,6 @@ public class CommunicateWithArduino
 
     public void closeSerial()
     {
-        arduinoController.Close();
+        new Thread(GameDataManager.Uno.sendData).Start("0 255 0 255");
     }
 }

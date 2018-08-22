@@ -57,7 +57,6 @@ public class DiverControll : MonoBehaviour {
         diveDirection = directionContorl.position - driver.position;
         UnityEngine.Random.InitState(1337);
         _sharkAnimator = shark.GetComponent<Animator>();
-        _sharkAnimator.SetInteger("Second", 0);
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
     }
@@ -86,28 +85,28 @@ public class DiverControll : MonoBehaviour {
             {
                 if (rotateValue.magnitude <= 25)
                     rotateValue += Vector3.up * body_vector_angle * 0.16f;
-                Debug.LogWarning("Right!!");
+                //Debug.LogWarning("Right!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, 25, 0);
             }
             else if ((Rvector.magnitude - Lvector.magnitude) > 0.025f)//turn left
             {
                 if (rotateValue.magnitude <= 25)
                     rotateValue += Vector3.down * body_vector_angle * 0.16f;
-                Debug.LogWarning("Left!!");
+                //Debug.LogWarning("Left!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, -25, 0);
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
             {
-                Debug.LogWarning("Foward!!");
+                //Debug.LogWarning("Foward!!");
             }
             
         }
 
         //dive Foward offset control
-        if (LRvector.magnitude > 0.02f && LRvector.magnitude < 0.03f) offset += 0.12f;
-        else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.11f;
-        else if (LRvector.magnitude> 0.04f && LRvector.magnitude < 0.05f) offset += 0.1f;
-        else if (LRvector.magnitude > 0.05f) offset += 0.11f;
+        if (LRvector.magnitude > 0.02f && LRvector.magnitude < 0.03f) offset += 0.06f;
+        else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.055f;
+        else if (LRvector.magnitude> 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
+        else if (LRvector.magnitude > 0.05f) offset += 0.055f;
         if (offset > 6) offset = 6;
 
         //foward and rotation
@@ -115,6 +114,10 @@ public class DiverControll : MonoBehaviour {
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
         rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
         Debug.Log(LRvector.magnitude + offset);
+        Debug.Log(valueToAngle(LRvector.magnitude + offset));
+        i = valueToAngle(LRvector.magnitude + offset);
+        Debug.Log(degreeConvertToLeftRotaryCoder((int)i) + "  " + degreeConvertToRightRotaryCoder((int)i));
+        new Thread(GameDataManager.Uno.sendData).Start(degreeConvertToLeftRotaryCoder((int)i) + " 255 " + degreeConvertToRightRotaryCoder((int)i) + " 255");
         //reset parameter
         LlastPos = driverLeftHand.position;
         RlastPos = driverRightHand.position;
@@ -124,7 +127,7 @@ public class DiverControll : MonoBehaviour {
         Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
-        if (offset > 0.021125) offset -= 0.021125f;
+        if (offset > 0.0105625) offset -= 0.0105625f;
         else
         {
             offset = 0;
@@ -176,13 +179,13 @@ public class DiverControll : MonoBehaviour {
         {
             StartCoroutine(fishflock());
         }
-
+        //Debug.Log(i);
+        //if (i < 175) i += 0.5f;
+        //else i = 0;
+        
         if (Input.GetKey(KeyCode.Q))
         {
-            Debug.Log(i);
-            if (i < 175) i += 0.5f;
-            else i = 0;
-            new Thread(GameDataManager.Uno.sendData).Start(degreeConvertToLeftRotaryCoder((int)i) + " 255 " + degreeConvertToRightRotaryCoder((int)i) + " 255");
+            
         }
         if (Input.GetKey(KeyCode.A))
         {
@@ -203,6 +206,19 @@ public class DiverControll : MonoBehaviour {
         return (degree * 824 / 360);
     }
 
+    private float valueToAngle (float nowValue)
+    {
+        float answer = 0;
+        //0~1.5 20
+        if (nowValue >= 0 && nowValue <= 1.5) answer = 20;
+        //1.5~5 100
+        if (nowValue > 1.5 && nowValue <= 5) answer = 70;
+        //5up 130
+        if (nowValue > 5) answer = 130;
+
+        return answer;
+    }
+
     IEnumerator Right_Turn(int angle, int speed)
     {
         yield return new WaitForSeconds(waitingTime);
@@ -220,9 +236,5 @@ public class DiverControll : MonoBehaviour {
         fishflockFlowControl.target = fishflockOn;
         yield return new WaitForSeconds(20f);
         fishflockFlowControl.target = fishflockOff;
-    }
-    private void OnDestroy()
-    {
-        GameDataManager.Uno.closeSerial();
     }
 }
