@@ -4,7 +4,7 @@ using System.Threading;
 using UnityEngine;
 
 public class DiverControll : MonoBehaviour {
-    //Diver Body
+    //Diver Body parameter
     public Transform driverLeftHand;
     public Transform driverRightHand;
     public Transform driver;
@@ -20,7 +20,7 @@ public class DiverControll : MonoBehaviour {
     private float RLastDistance;//右手距離後面的有多遠上一次的值
     private Vector3 diveDirection = Vector3.zero; //身體的方向
 
-    //Fishflock
+    //Fishflock parameter
     public FishFlock.FishFlockController fishflockFlowControl;
     public Transform fishflockOn;
     public Transform fishflockOff;
@@ -30,9 +30,8 @@ public class DiverControll : MonoBehaviour {
     private float body_vector_angle;
     private float offset = 0;
     private Vector3 rotateValue = Vector3.zero;
-    private bool isStarting = false;
 
-    //Motor 參數
+    //馬達參數
     private float waitingTime = 0.5f;
     private int Left_degreeConvertToRotaryCoder(int degree) { return (degree * 1024 / 360); }
     private int Right_degreeConvertToRotaryCoder(int degree) { return (degree * 824 / 360); }
@@ -40,10 +39,19 @@ public class DiverControll : MonoBehaviour {
     {
         public int leftAngle;
         public int rightAngle;
+        public static bool operator ==(angle a1, angle a2)
+        {
+            return a1.Equals(a2);
+        }
+        public static bool operator !=(angle a1, angle a2)
+        {
+            return !a1.Equals(a2);
+        }
     };
-    private angle i;
+    private angle lastAngle;
+    private angle nowAngle;
 
-    //Shark
+    //Shark parameter
     public Transform shark;
     public Transform sharkShow;
     private Animator _sharkAnimator;
@@ -71,9 +79,40 @@ public class DiverControll : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate()
     {
+        //檢測Arduino是否可以接受訊號
         GameDataManager.Uno.motorLocker();
-        
-        // Move
+
+        // 抓取左右手的位置，並計算成前進的方向、角度和速度
+        positionCal();
+
+        //決定是只有往前還是有往左右
+        numeralCal();
+
+        //send informantion to motor
+        nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y);
+        Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle);
+        if (lastAngle != nowAngle)
+        {
+            new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " 255 " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle) + " 255");
+            lastAngle = nowAngle;
+        }
+
+        //reset parameter
+        resetParameter();
+
+        // Shark
+        sharkControl();
+
+        //FishFlock
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            StartCoroutine(fishflock());
+        }
+    }
+
+    private void positionCal()
+    {
+        // 抓取左右手的位置，並計算成前進的方向、角度和速度
         Lvector = new Vector3(LlastPos.x - driverLeftHand.position.x, 0, LlastPos.z - driverLeftHand.position.z);
         Ldistance = Vector3.Distance(driverLeftHand.position, DistanceCalculator.position);
         Rvector = new Vector3(RlastPos.x - driverRightHand.position.x, 0, RlastPos.z - driverRightHand.position.z);
@@ -84,7 +123,11 @@ public class DiverControll : MonoBehaviour {
         else
             LRvector -= LRvector * 3f * Time.deltaTime;
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
-        //rotation
+    }
+
+    private void numeralCal()
+    {
+        //決定是只有往前還是有往左右
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
         if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005))
         {
@@ -106,40 +149,24 @@ public class DiverControll : MonoBehaviour {
             {
                 //Debug.LogWarning("Foward!!");
             }
-            
+
         }
 
-        //dive Foward offset control
+        //前進時的offset計算
         if (LRvector.magnitude > 0.02f && LRvector.magnitude < 0.03f) offset += 0.06f;
         else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.055f;
-        else if (LRvector.magnitude> 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
+        else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
         else if (LRvector.magnitude > 0.05f) offset += 0.055f;
         if (offset > 6) offset = 6;
 
-        //foward and rotation
+        //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
         rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
-        //Debug.Log(LRvector.magnitude + offset + "rotateValue" + (rotateValue.y > 0));
-        i = motorAngle(LRvector.magnitude + offset, rotateValue.y);
-        Debug.Log(i.leftAngle + " " + i.rightAngle);
-        new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)i.leftAngle) + " 255 " + Right_degreeConvertToRotaryCoder((int)i.rightAngle) + " 255");
-        //reset parameter
-        LlastPos = driverLeftHand.position;
-        RlastPos = driverRightHand.position;
-        LLastDistance = Ldistance;
-        RLastDistance = Rdistance;
-        Lvector = Vector3.zero;
-        Rvector = Vector3.zero;
-        if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
-            rotateValue = Vector3.zero;
-        if (offset > 0.0105625) offset -= 0.0105625f;
-        else
-        {
-            offset = 0;
-            LRvector = Vector3.zero;
-        }
-        // Shark
+    }
+
+    private void sharkControl()
+    {
         if (Input.GetKeyDown(KeyCode.S) && _sharkAnimator.GetBool("On"))
         {
             specialEffectOn = true;
@@ -151,7 +178,7 @@ public class DiverControll : MonoBehaviour {
             shark.transform.localPosition = new Vector3(sharkShow.position.x, 0.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
             shark.transform.localRotation = Quaternion.EulerRotation(0f, 0f, 0f);
         }
-        
+
         if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
         {
             if (isShark)
@@ -180,11 +207,23 @@ public class DiverControll : MonoBehaviour {
             }
             isShark = true;
         }
+    }
 
-        //FishFlock
-        if (Input.GetKeyDown(KeyCode.F))
+    private void resetParameter()
+    {
+        LlastPos = driverLeftHand.position;
+        RlastPos = driverRightHand.position;
+        LLastDistance = Ldistance;
+        RLastDistance = Rdistance;
+        Lvector = Vector3.zero;
+        Rvector = Vector3.zero;
+        if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
+            rotateValue = Vector3.zero;
+        if (offset > 0.0105625) offset -= 0.0105625f;
+        else
         {
-            StartCoroutine(fishflock());
+            offset = 0;
+            LRvector = Vector3.zero;
         }
     }
 
