@@ -106,6 +106,7 @@ public class DiverControll : MonoBehaviour {
         //FishFlock
         if (Input.GetKeyDown(KeyCode.F))
         {
+            Debug.Log("Fish");
             StartCoroutine(fishflock());
         }
     }
