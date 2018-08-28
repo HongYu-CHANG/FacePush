@@ -232,63 +232,63 @@ public class DiverControll : MonoBehaviour {
     private angle motorAngle (float fowardValue, float rotateValue)
     {
         angle answer = new angle();
-        if (rotateValue > 15f) // right
-        {
-            Debug.Log("right");
-            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+        //if (rotateValue > 15f) // right
+        //{
+        //    Debug.Log("right");
+        //    if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+        //    {
+        //        answer.rightAngle = 20;
+        //        answer.leftAngle = 20;
+        //    }
+        //    else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+        //    {
+        //        answer.rightAngle = 20;
+        //        answer.leftAngle = 77;
+        //    }
+        //    else if (fowardValue > 5)//5up 130
+        //    {
+        //        answer.rightAngle = 60;
+        //        answer.leftAngle = 147;
+        //    }
+        //}
+        //else if (rotateValue < -15f) //left
+        //{
+        //    Debug.Log("left");
+        //    if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
+        //    {
+        //        answer.rightAngle = 20;
+        //        answer.leftAngle = 20;
+        //    }
+        //    else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+        //    {
+        //        answer.rightAngle = 60;
+        //        answer.leftAngle = 20;
+        //    }
+        //    else if (fowardValue > 5)//5up 130
+        //    {
+        //        answer.rightAngle = 130;
+        //        answer.leftAngle = 77;
+        //    }
+        //}
+        //else // foward
+        //{
+            //Debug.Log("foward");
+            if (fowardValue >= 0 && fowardValue <= 3.5)  //0~1.5 20
             {
-                answer.rightAngle = 20;
-                answer.leftAngle = 20;
+                answer.rightAngle = 0;
+                answer.leftAngle = 0;
             }
-            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
+            else if (fowardValue > 3.5 && fowardValue <= 5)//1.5~5 100
             {
-                answer.rightAngle = 20;
-                answer.leftAngle = 77;
+                answer.rightAngle = 35;
+                answer.leftAngle = 82;
             }
             else if (fowardValue > 5)//5up 130
             {
-                answer.rightAngle = 60;
-                answer.leftAngle = 147;
-            }
-        }
-        else if (rotateValue < -15f) //left
-        {
-            Debug.Log("left");
-            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
-            {
-                answer.rightAngle = 20;
-                answer.leftAngle = 20;
-            }
-            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
-            {
-                answer.rightAngle = 60;
-                answer.leftAngle = 20;
-            }
-            else if (fowardValue > 5)//5up 130
-            {
-                answer.rightAngle = 130;
-                answer.leftAngle = 77;
-            }
-        }
-        else // foward
-        {
-            Debug.Log("foward");
-            if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
-            {
-                answer.rightAngle = 20;
-                answer.leftAngle = 20;
-            }
-            else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
-            {
-                answer.rightAngle = 70;
+                answer.rightAngle = 50;
                 answer.leftAngle = 107;
             }
-            else if (fowardValue > 5)//5up 130
-            {
-                answer.rightAngle = 130;
-                answer.leftAngle = 167;
-            }
-        }
+        //}
 
         return answer;
     }

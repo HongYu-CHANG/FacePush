@@ -2,7 +2,7 @@
 #include <PinChangeInt.h>
 #include <PID_v1.h>
 #define SERIAL_BAUD 9600
-#define DEBUG 1 
+#define DEBUG  0
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
@@ -66,7 +66,18 @@ void loop()
     Serial.print(AllMotor_Parameters[2]); Serial.print(" ");
     Serial.print(AllMotor_Parameters[3]); Serial.print(" ");
     Serial.print(MotorCounter); Serial.println(" ");
-  #else
+  #endif
+  #if DEBUG == 2
+     Serial.print(LeftPID_Input); Serial.print(" ");
+    Serial.print(LeftPID_Target); Serial.print(" ");
+    Serial.print(LeftPID_Output); Serial.print(" ");
+    Serial.print(RightPID_Input); Serial.print(" ");
+    Serial.print(RightPID_Target); Serial.print(" ");
+    Serial.print(RightPID_Output); Serial.print(" ");
+    Serial.println(" ");
+    delay(20);
+  #endif
+  #if DEBUG == 0
     delay(50);
   #endif
     
@@ -76,7 +87,8 @@ void loop()
   PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
 
   //Control Motor noise
-  if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
+  MotorCounter++;
+  //if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
   if (MotorCounter > 40 && MotorCounter < 45) 
   {
     LeftPID_Target = LeftPID_Input;
@@ -102,12 +114,12 @@ void loop()
     {
       ReadString_Input += c;
     }
-  }
-   LeftPID_Target = AllMotor_Parameters[0];
+    LeftPID_Target = AllMotor_Parameters[0];
    LeftMotor_Speed = AllMotor_Parameters[1];
-   LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
    RightPID_Target = AllMotor_Parameters[2];
    RightMotor_Speed = AllMotor_Parameters[3];
+  }
+   LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
    RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
 }
 
