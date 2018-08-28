@@ -76,6 +76,8 @@ public class CommunicateWithArduino
         string data = obj as string;
         if (isConnected && !isLocked && arduinoController != null)
         {
+            arduinoController.DiscardInBuffer();       //clear buffer
+            arduinoController.DiscardOutBuffer();     //clear buffer
             isLocked = true;
             Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
@@ -112,7 +114,7 @@ public class CommunicateWithArduino
         }
         if (motorFinishMessage == "P" && seconds > 0.5f)
         {
-            Debug.Log(motorFinishMessage);
+            //Debug.LogError(motorFinishMessage);
             getFinishMessageTime = DateTime.Now;
             isLocked = false;
             motorFinishMessage = "";

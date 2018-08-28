@@ -91,11 +91,12 @@ public class DiverControll : MonoBehaviour {
         //send informantion to motor
         nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y);
         Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle);
-        if (lastAngle != nowAngle)
-        {
+       //if (lastAngle != nowAngle)
+        //{
+            //Debug.Log("in!");
             new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " 255 " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle) + " 255");
             lastAngle = nowAngle;
-        }
+        //}
 
         //reset parameter
         resetParameter();
@@ -242,12 +243,12 @@ public class DiverControll : MonoBehaviour {
             else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 20;
-                answer.leftAngle = 60;
+                answer.leftAngle = 77;
             }
             else if (fowardValue > 5)//5up 130
             {
                 answer.rightAngle = 60;
-                answer.leftAngle = 130;
+                answer.leftAngle = 147;
             }
         }
         else if (rotateValue < -15f) //left
@@ -266,7 +267,7 @@ public class DiverControll : MonoBehaviour {
             else if (fowardValue > 5)//5up 130
             {
                 answer.rightAngle = 130;
-                answer.leftAngle = 60;
+                answer.leftAngle = 77;
             }
         }
         else // foward
@@ -280,12 +281,12 @@ public class DiverControll : MonoBehaviour {
             else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 70;
-                answer.leftAngle = 70;
+                answer.leftAngle = 107;
             }
             else if (fowardValue > 5)//5up 130
             {
                 answer.rightAngle = 130;
-                answer.leftAngle = 130;
+                answer.leftAngle = 167;
             }
         }
 

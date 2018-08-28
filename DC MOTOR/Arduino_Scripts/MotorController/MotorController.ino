@@ -2,7 +2,7 @@
 #include <PinChangeInt.h>
 #include <PID_v1.h>
 #define SERIAL_BAUD 9600
-#define DEBUG 0 
+#define DEBUG 1 
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
