@@ -43,7 +43,7 @@ double RightPID_Output = 0;// output: result (where to go)
 double RightPID_Target = 0;// Target: target position (position cmd from Feather)
 double Right_kp = 0.8, Right_ki = 0.09, Right_kd = 0.1; //PID Parameter
 PID RightPID_Contorller(&RightPID_Input, &RightPID_Output, &RightPID_Target, Right_kp, Right_ki, Right_kd, DIRECT);
-
+  
 void setup()                         
 {
   Serial.begin(SERIAL_BAUD);
@@ -55,32 +55,26 @@ void loop()
 {
   //  DEBUG == 1 below to check values of PID
   #if DEBUG == 1  
+    Serial.print("L: ");
     Serial.print(LeftPID_Input); Serial.print(" ");
     Serial.print(LeftPID_Target); Serial.print(" ");
     Serial.print(LeftPID_Output); Serial.print(" ");
+    Serial.print(digitalRead(LeftMotor_A1_PIN)); Serial.print(" ");
+    Serial.print(digitalRead(LeftMotor_B1_PIN)); Serial.print(" ");
+    Serial.print("R: ");
     Serial.print(RightPID_Input); Serial.print(" ");
     Serial.print(RightPID_Target); Serial.print(" ");
     Serial.print(RightPID_Output); Serial.print(" ");
+    Serial.print(digitalRead(RightMotor_A2_PIN)); Serial.print(" ");
+    Serial.print(digitalRead(RightMotor_B2_PIN)); Serial.print(" ");
+    Serial.print("Order: ");
     Serial.print(AllMotor_Parameters[0]); Serial.print(" ");
     Serial.print(AllMotor_Parameters[1]); Serial.print(" ");
-    Serial.print(AllMotor_Parameters[2]); Serial.print(" ");
-    Serial.print(AllMotor_Parameters[3]); Serial.print(" ");
     Serial.print(MotorCounter); Serial.println(" ");
-  #endif
-  #if DEBUG == 2
-     Serial.print(LeftPID_Input); Serial.print(" ");
-    Serial.print(LeftPID_Target); Serial.print(" ");
-    Serial.print(LeftPID_Output); Serial.print(" ");
-    Serial.print(RightPID_Input); Serial.print(" ");
-    Serial.print(RightPID_Target); Serial.print(" ");
-    Serial.print(RightPID_Output); Serial.print(" ");
-    Serial.println(" ");
-    delay(20);
-  #endif
-  #if DEBUG == 0
+  #else DEBUG == 0
     delay(50);
   #endif
-    
+
   LeftPID_Input = LeftEncoder_Value;
   PID_Calculation(&LeftPID_Output, &LeftPID_Contorller, LeftMotor);
   RightPID_Input = RightEncoder_Value;
@@ -89,11 +83,13 @@ void loop()
   //Control Motor noise
   MotorCounter++;
   //if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
-  if (MotorCounter > 40 && MotorCounter < 45) 
+  if (MotorCounter > 80 && MotorCounter < 85) 
   {
     LeftPID_Target = LeftPID_Input;
     RightPID_Target = RightPID_Input;
     Serial.println("P");
+    AllMotor_Parameters[0] = 0;
+    AllMotor_Parameters[1] = 0;
   }
   
   //Read Data and Handle Data
@@ -115,9 +111,16 @@ void loop()
       ReadString_Input += c;
     }
     LeftPID_Target = AllMotor_Parameters[0];
-   LeftMotor_Speed = AllMotor_Parameters[1];
-   RightPID_Target = AllMotor_Parameters[2];
-   RightMotor_Speed = AllMotor_Parameters[3];
+    RightPID_Target = AllMotor_Parameters[1];
+    if(AllMotor_Parameters[0] < 0)
+    {
+      digitalWrite(LeftMotor_EnablePin, LOW);
+    }
+    if(AllMotor_Parameters[1] < 0)
+    {
+      digitalWrite(RightMotor_EnablePin, LOW);
+    }
+    Serial.flush();
   }
    LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
    RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);

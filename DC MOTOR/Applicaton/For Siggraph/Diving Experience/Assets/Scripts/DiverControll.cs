@@ -94,7 +94,7 @@ public class DiverControll : MonoBehaviour {
        //if (lastAngle != nowAngle)
         //{
             //Debug.Log("in!");
-            new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " 255 " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle) + " 255");
+            new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
             lastAngle = nowAngle;
         //}
 
@@ -273,20 +273,23 @@ public class DiverControll : MonoBehaviour {
         //else // foward
         //{
             //Debug.Log("foward");
-            if (fowardValue >= 0 && fowardValue <= 3.5)  //0~1.5 20
+            if (fowardValue >= 0 && fowardValue <= 1)  //0~1.5 20
             {
-                answer.rightAngle = 0;
-                answer.leftAngle = 0;
+                //answer.rightAngle = -20;
+                //answer.leftAngle = -30;
+
+                answer.rightAngle = 60;
+                answer.leftAngle = 77;
             }
-            else if (fowardValue > 3.5 && fowardValue <= 5)//1.5~5 100
+            else if (fowardValue > 1 && fowardValue <= 5)//1.5~5 100
             {
-                answer.rightAngle = 35;
-                answer.leftAngle = 82;
+                answer.rightAngle = 40;
+                answer.leftAngle = 57;
             }
             else if (fowardValue > 5)//5up 130
             {
-                answer.rightAngle = 50;
-                answer.leftAngle = 107;
+                answer.rightAngle = 60;
+                answer.leftAngle = 77;
             }
         //}
 

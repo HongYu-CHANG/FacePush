@@ -79,7 +79,7 @@ public class CommunicateWithArduino
             arduinoController.DiscardInBuffer();       //clear buffer
             arduinoController.DiscardOutBuffer();     //clear buffer
             isLocked = true;
-            //Debug.LogWarning(DateTime.Now + data);
+            Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
             arduinoController.Write("\n");
             getFinishMessageTime = DateTime.Now;
