@@ -68,21 +68,21 @@ public class CommunicateWithArduino
             arduinoController.RtsEnable = RtsEnable;
             arduinoController.ReadTimeout = ReadTimeout;
             arduinoController.Open();
-            Debug.Log("Connected!!");
         }
     }
     public void sendData(object obj)
     {
         string data = obj as string;
-        if (isConnected && !isLocked && arduinoController != null)
+        if (isConnected && arduinoController != null)  //&& !isLocked
         {
+            getFinishMessageTime = DateTime.Now;
+            //isLocked = true;
             arduinoController.DiscardInBuffer();       //clear buffer
             arduinoController.DiscardOutBuffer();     //clear buffer
-            isLocked = true;
             Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
             arduinoController.Write("\n");
-            getFinishMessageTime = DateTime.Now;
+            
             Thread.Sleep(500);
         }
         else
@@ -96,32 +96,21 @@ public class CommunicateWithArduino
         return arduinoController.ReadLine();
     }
 
-    public void motorLocker()
+    public double getIntervalSeconds()
     {
-        double seconds = (DateTime.Now - getFinishMessageTime).TotalSeconds;
-        //Debug.Log(seconds);
-        try
-        {
-            motorFinishMessage = arduinoController.ReadLine();
-        }
-        catch (Exception e)
-        {
-            if (seconds > 1.5f)
-            {
-                motorFinishMessage = "P";
-            }
-
-        }
-        if (motorFinishMessage == "P" && seconds > 0.5f)
-        {
-            //Debug.LogError(motorFinishMessage);
-            getFinishMessageTime = DateTime.Now;
-            isLocked = false;
-            motorFinishMessage = "";
-        }
-
+        return (DateTime.Now - getFinishMessageTime).TotalSeconds;
+        //double seconds = (DateTime.Now - getFinishMessageTime).TotalSeconds;
+        //if (seconds > 2.2f)
+        //{
+        //    getFinishMessageTime = DateTime.Now;
+        //    isLocked = false;
+        //}
     }
 
+    public void set_isLocked(bool state)
+    {
+        isLocked = state;
+    }
     public bool getisLocked()
     {
         return isLocked;

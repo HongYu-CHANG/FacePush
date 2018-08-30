@@ -50,6 +50,7 @@ public class DiverControll : MonoBehaviour {
     };
     private angle lastAngle;
     private angle nowAngle;
+    private double waitTime = 1.75f;
 
     //Shark parameter
     public Transform shark;
@@ -80,7 +81,7 @@ public class DiverControll : MonoBehaviour {
 	void FixedUpdate()
     {
         //檢測Arduino是否可以接受訊號
-        GameDataManager.Uno.motorLocker();
+        //GameDataManager.Uno.motorLocker();
 
         // 抓取左右手的位置，並計算成前進的方向、角度和速度
         positionCal();
@@ -90,13 +91,17 @@ public class DiverControll : MonoBehaviour {
 
         //send informantion to motor
         nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y);
-        Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle);
-       //if (lastAngle != nowAngle)
-        //{
-            //Debug.Log("in!");
+        Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + waitTime);
+        if (( lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 1.5f) || GameDataManager.Uno.getIntervalSeconds() > waitTime)
+        {
+            if (GameDataManager.Uno.getIntervalSeconds() > waitTime)
+                waitTime *= 1.18;
+            else
+                waitTime = 1.75f;
+            //Debug.LogError(waitTime);
             new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
             lastAngle = nowAngle;
-        //}
+        }
 
         //reset parameter
         resetParameter();
@@ -273,25 +278,33 @@ public class DiverControll : MonoBehaviour {
         //else // foward
         //{
             //Debug.Log("foward");
-            if (fowardValue >= 0 && fowardValue <= 1)  //0~1.5 20
+            if (fowardValue >= 0 && fowardValue <= 0.5)  //0~1.5 20
             {
-                //answer.rightAngle = -20;
-                //answer.leftAngle = -30;
-
-                answer.rightAngle = 60;
-                answer.leftAngle = 77;
+                answer.rightAngle = -30;
+                answer.leftAngle = -30;
             }
-            else if (fowardValue > 1 && fowardValue <= 5)//1.5~5 100
+            else if (fowardValue > 0.5 && fowardValue <= 2)  //0~1.5 20
+            {
+                answer.rightAngle = 0;
+                answer.leftAngle = 0;
+            }
+            else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 40;
                 answer.leftAngle = 57;
             }
             else if (fowardValue > 5)//5up 130
             {
-                answer.rightAngle = 60;
-                answer.leftAngle = 77;
+                answer.rightAngle = 63;
+                answer.leftAngle = 82;
             }
         //}
+
+        if (Input.GetKey(KeyCode.Q))
+        {
+            answer.rightAngle = -20;
+            answer.leftAngle = -30;
+        }
 
         return answer;
     }

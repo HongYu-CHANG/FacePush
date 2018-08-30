@@ -1,7 +1,7 @@
 
 #include <PinChangeInt.h>
 #include <PID_v1.h>
-#define SERIAL_BAUD 9600
+#define SERIAL_BAUD 115200
 #define DEBUG  0
 
 //All Ｍotor Parameter
@@ -24,7 +24,7 @@ volatile long LeftEncoder_Value = 0;
 double LeftPID_Input = 0;// input: current position (value of rotary encoder)
 double LeftPID_Output = 0;// output: result (where to go)
 double LeftPID_Target = 0;// Target: target position (position cmd from Feather)
-double Left_kp = 0.5, Left_ki = 0.09, Left_kd = 0.1; //PID Parameter
+double Left_kp = 0.8, Left_ki = 0.09, Left_kd = 0.05; //PID Parameter
 PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT); 
 
 //Right default setting(Motor，Rotary Encoder，PID)
@@ -41,7 +41,7 @@ volatile long RightEncoder_Value = 0;
 double RightPID_Input = 0;// input: current position (value of rotary encoder)
 double RightPID_Output = 0;// output: result (where to go)
 double RightPID_Target = 0;// Target: target position (position cmd from Feather)
-double Right_kp = 0.8, Right_ki = 0.09, Right_kd = 0.1; //PID Parameter
+double Right_kp = 0.8, Right_ki = 0.09, Right_kd = 0.05; //PID Parameter
 PID RightPID_Contorller(&RightPID_Input, &RightPID_Output, &RightPID_Target, Right_kp, Right_ki, Right_kd, DIRECT);
   
 void setup()                         
@@ -61,6 +61,7 @@ void loop()
     Serial.print(LeftPID_Output); Serial.print(" ");
     Serial.print(digitalRead(LeftMotor_A1_PIN)); Serial.print(" ");
     Serial.print(digitalRead(LeftMotor_B1_PIN)); Serial.print(" ");
+    Serial.print(digitalRead(LeftMotor_EnablePin)); Serial.print(" ");
     Serial.print("R: ");
     Serial.print(RightPID_Input); Serial.print(" ");
     Serial.print(RightPID_Target); Serial.print(" ");
@@ -72,7 +73,9 @@ void loop()
     Serial.print(AllMotor_Parameters[1]); Serial.print(" ");
     Serial.print(MotorCounter); Serial.println(" ");
   #else DEBUG == 0
-    delay(50);
+//    Serial.print(LeftPID_Output); Serial.print(" ");
+//    Serial.print(MotorCounter); Serial.println(" ");
+    delay(10);
   #endif
 
   LeftPID_Input = LeftEncoder_Value;
@@ -81,15 +84,10 @@ void loop()
   PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
 
   //Control Motor noise
-  MotorCounter++;
-  //if (RightPID_Input != RightPID_Target && LeftPID_Input != LeftPID_Target) MotorCounter++;
-  if (MotorCounter > 80 && MotorCounter < 85) 
+  if (LeftPID_Output == 255 || RightPID_Output == 255) 
   {
-    LeftPID_Target = LeftPID_Input;
-    RightPID_Target = RightPID_Input;
-    Serial.println("P");
-    AllMotor_Parameters[0] = 0;
-    AllMotor_Parameters[1] = 0;
+      LeftMotor_Speed = 50;
+      RightMotor_Speed = 50; 
   }
   
   //Read Data and Handle Data
@@ -98,7 +96,6 @@ void loop()
   {
     digitalWrite(LeftMotor_EnablePin, HIGH);
     digitalWrite(RightMotor_EnablePin, HIGH); 
-    MotorCounter = 0;
     char c = Serial.read();
     if (c == ' ' || c == '\n')
     {
@@ -112,14 +109,9 @@ void loop()
     }
     LeftPID_Target = AllMotor_Parameters[0];
     RightPID_Target = AllMotor_Parameters[1];
-    if(AllMotor_Parameters[0] < 0)
-    {
-      digitalWrite(LeftMotor_EnablePin, LOW);
-    }
-    if(AllMotor_Parameters[1] < 0)
-    {
-      digitalWrite(RightMotor_EnablePin, LOW);
-    }
+    MotorCounter = 0;
+    LeftMotor_Speed = 255;
+    RightMotor_Speed = 255;
     Serial.flush();
   }
    LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
