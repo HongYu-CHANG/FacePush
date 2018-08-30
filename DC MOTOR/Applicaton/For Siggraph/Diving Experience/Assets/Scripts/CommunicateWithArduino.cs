@@ -18,7 +18,6 @@ public class CommunicateWithArduino
     private int ReadTimeout;
     private bool isMac;
     private bool isConnected;
-    private bool isLocked;
     private string motorFinishMessage = "";
     private DateTime getFinishMessageTime = DateTime.Now;
     private SerialPort arduinoController;
@@ -36,7 +35,6 @@ public class CommunicateWithArduino
         this.ReadTimeout = ReadTimeout;
         this.isMac = isMac;
         this.isConnected = isConnected;
-        isLocked = false;
         startConnect();
     }
 
@@ -76,10 +74,9 @@ public class CommunicateWithArduino
         if (isConnected && arduinoController != null)  //&& !isLocked
         {
             getFinishMessageTime = DateTime.Now;
-            //isLocked = true;
             arduinoController.DiscardInBuffer();       //clear buffer
             arduinoController.DiscardOutBuffer();     //clear buffer
-            Debug.LogWarning(DateTime.Now + data);
+            //Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
             arduinoController.Write("\n");
             
@@ -99,21 +96,6 @@ public class CommunicateWithArduino
     public double getIntervalSeconds()
     {
         return (DateTime.Now - getFinishMessageTime).TotalSeconds;
-        //double seconds = (DateTime.Now - getFinishMessageTime).TotalSeconds;
-        //if (seconds > 2.2f)
-        //{
-        //    getFinishMessageTime = DateTime.Now;
-        //    isLocked = false;
-        //}
-    }
-
-    public void set_isLocked(bool state)
-    {
-        isLocked = state;
-    }
-    public bool getisLocked()
-    {
-        return isLocked;
     }
 
     public void closeSerial()

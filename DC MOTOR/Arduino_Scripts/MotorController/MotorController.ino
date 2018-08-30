@@ -6,7 +6,6 @@
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
-int MotorCounter = 0;
 //Read String Parameter
 String ReadString_Input = "";
 
@@ -109,7 +108,15 @@ void loop()
     }
     LeftPID_Target = AllMotor_Parameters[0];
     RightPID_Target = AllMotor_Parameters[1];
-    MotorCounter = 0;
+    if(AllMotor_Parameters[0] < -10)
+    {
+      digitalWrite(LeftMotor_EnablePin, LOW);
+    }
+    if(AllMotor_Parameters[1] < -10)
+    {
+      digitalWrite(RightMotor_EnablePin, LOW);
+    }
+
     LeftMotor_Speed = 255;
     RightMotor_Speed = 255;
     Serial.flush();

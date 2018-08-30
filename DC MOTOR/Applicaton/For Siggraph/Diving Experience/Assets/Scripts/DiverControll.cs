@@ -237,46 +237,46 @@ public class DiverControll : MonoBehaviour {
     private angle motorAngle (float fowardValue, float rotateValue)
     {
         angle answer = new angle();
-        //if (rotateValue > 15f) // right
-        //{
-        //    Debug.Log("right");
-        //    if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
-        //    {
-        //        answer.rightAngle = 20;
-        //        answer.leftAngle = 20;
-        //    }
-        //    else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
-        //    {
-        //        answer.rightAngle = 20;
-        //        answer.leftAngle = 77;
-        //    }
-        //    else if (fowardValue > 5)//5up 130
-        //    {
-        //        answer.rightAngle = 60;
-        //        answer.leftAngle = 147;
-        //    }
-        //}
-        //else if (rotateValue < -15f) //left
-        //{
-        //    Debug.Log("left");
-        //    if (fowardValue >= 0 && fowardValue <= 1.5)  //0~1.5 20
-        //    {
-        //        answer.rightAngle = 20;
-        //        answer.leftAngle = 20;
-        //    }
-        //    else if (fowardValue > 1.5 && fowardValue <= 5)//1.5~5 100
-        //    {
-        //        answer.rightAngle = 60;
-        //        answer.leftAngle = 20;
-        //    }
-        //    else if (fowardValue > 5)//5up 130
-        //    {
-        //        answer.rightAngle = 130;
-        //        answer.leftAngle = 77;
-        //    }
-        //}
-        //else // foward
-        //{
+        if (rotateValue > 15f) // right
+        {
+            //Debug.Log("right");
+            if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+            {
+                answer.rightAngle = -30;
+                answer.leftAngle = -30;
+            }
+            else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
+            {
+                answer.rightAngle = -9;
+                answer.leftAngle = 57;
+            }
+            else if (fowardValue > 3.5)//5up 130
+            {
+                answer.rightAngle = 5;
+                answer.leftAngle = 82;
+            }
+        }
+        else if (rotateValue < -15f) //left
+        {
+            //Debug.Log("left");
+            if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+            {
+                answer.rightAngle = -30;
+                answer.leftAngle = -30;
+            }
+            else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
+            {
+                answer.rightAngle = 40;
+                answer.leftAngle = -9;
+            }
+            else if (fowardValue > 3.5)//5up 130
+            {
+                answer.rightAngle = 63;
+                answer.leftAngle = 5;
+            }
+        }
+        else // foward
+        {
             //Debug.Log("foward");
             if (fowardValue >= 0 && fowardValue <= 0.5)  //0~1.5 20
             {
@@ -285,8 +285,8 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 0.5 && fowardValue <= 2)  //0~1.5 20
             {
-                answer.rightAngle = 0;
-                answer.leftAngle = 0;
+                answer.rightAngle = -9;
+                answer.leftAngle = -9;
             }
             else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
@@ -298,7 +298,7 @@ public class DiverControll : MonoBehaviour {
                 answer.rightAngle = 63;
                 answer.leftAngle = 82;
             }
-        //}
+        }
 
         if (Input.GetKey(KeyCode.Q))
         {
