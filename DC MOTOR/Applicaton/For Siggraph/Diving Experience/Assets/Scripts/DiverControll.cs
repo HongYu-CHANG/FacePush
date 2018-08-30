@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
@@ -50,7 +51,8 @@ public class DiverControll : MonoBehaviour {
     };
     private angle lastAngle;
     private angle nowAngle;
-    private double waitTime = 1.75f;
+    private float waitTime = 1.3f;
+    private DateTime motorTurnTime = DateTime.Now;
 
     //Shark parameter
     public Transform shark;
@@ -90,14 +92,15 @@ public class DiverControll : MonoBehaviour {
         numeralCal();
 
         //send informantion to motor
-        nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y);
-        Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + waitTime);
-        if (( lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 1.5f) || GameDataManager.Uno.getIntervalSeconds() > waitTime)
+        nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y, lastAngle);
+        
+        if ((lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 0.5f) || GameDataManager.Uno.getIntervalSeconds() > waitTime)
         {
             if (GameDataManager.Uno.getIntervalSeconds() > waitTime)
-                waitTime *= 1.18;
+                waitTime = Mathf.Pow(waitTime, 1.6f);
             else
-                waitTime = 1.75f;
+                waitTime = 1.3f;
+            Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + waitTime);
             //Debug.LogError(waitTime);
             new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
             lastAngle = nowAngle;
@@ -234,12 +237,12 @@ public class DiverControll : MonoBehaviour {
         }
     }
 
-    private angle motorAngle (float fowardValue, float rotateValue)
+    private angle motorAngle (float fowardValue, float rotateValue, angle last)
     {
-        angle answer = new angle();
-        if (rotateValue > 15f) // right
+        angle answer = last;
+        if (rotateValue > 20f) // right
         {
-            //Debug.Log("right");
+            //Debug.Log("right: " + rotateValue);
             if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
             {
                 answer.rightAngle = -30;
@@ -247,18 +250,18 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
             {
-                answer.rightAngle = -9;
+                answer.rightAngle = -5;
                 answer.leftAngle = 57;
             }
             else if (fowardValue > 3.5)//5up 130
             {
-                answer.rightAngle = 5;
+                answer.rightAngle = -5;
                 answer.leftAngle = 82;
             }
         }
-        else if (rotateValue < -15f) //left
+        else if (rotateValue < -20f) //left
         {
-            //Debug.Log("left");
+            //Debug.Log("left: " + rotateValue);
             if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
             {
                 answer.rightAngle = -30;
@@ -267,31 +270,31 @@ public class DiverControll : MonoBehaviour {
             else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
             {
                 answer.rightAngle = 40;
-                answer.leftAngle = -9;
+                answer.leftAngle = -5;
             }
             else if (fowardValue > 3.5)//5up 130
             {
                 answer.rightAngle = 63;
-                answer.leftAngle = 5;
+                answer.leftAngle = -5;
             }
         }
-        else // foward
+        else if (rotateValue > -12.5f && rotateValue < 12.5f) // foward
         {
-            //Debug.Log("foward");
-            if (fowardValue >= 0 && fowardValue <= 0.5)  //0~1.5 20
+            //Debug.Log("foward: " + rotateValue);
+            if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
             {
                 answer.rightAngle = -30;
                 answer.leftAngle = -30;
             }
-            else if (fowardValue > 0.5 && fowardValue <= 2)  //0~1.5 20
+            else if (fowardValue > 0.25 && fowardValue <= 2)  //0~1.5 20
             {
-                answer.rightAngle = -9;
-                answer.leftAngle = -9;
+                answer.rightAngle = -5;
+                answer.leftAngle = -5;
             }
             else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
-                answer.rightAngle = 40;
-                answer.leftAngle = 57;
+                answer.rightAngle = 20;
+                answer.leftAngle = 37;
             }
             else if (fowardValue > 5)//5up 130
             {
@@ -302,8 +305,8 @@ public class DiverControll : MonoBehaviour {
 
         if (Input.GetKey(KeyCode.Q))
         {
-            answer.rightAngle = -20;
-            answer.leftAngle = -30;
+            answer.rightAngle = 10;
+            answer.leftAngle = 27;
         }
 
         return answer;
