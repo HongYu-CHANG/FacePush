@@ -16,13 +16,6 @@ public class hitted_v2 : MonoBehaviour
 
 	//hit_pos_on_face
 
-	/*
-	public GameObject RMotor;
-	public GameObject LMotor;
-	private OSCSender ROSCSender;
-	private OSCSender LOSCSender;
-    */
-
 	// Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino();
 
@@ -57,8 +50,6 @@ public class hitted_v2 : MonoBehaviour
 	private int writecounter = 0;
 	private bool send2motor = false;
 	private string motordata = "";
-	public String userName = "User1";
-	private StreamWriter fileWriter;
 	public GameObject HMD;
 	public GameObject Lcontroller;
 	public GameObject Rcontroller;
@@ -79,18 +70,6 @@ public class hitted_v2 : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
-
-		/*
-		ROSCSender = RMotor.GetComponent<OSCSender>();
-		ROSCSender.setWhichMotor("R");
-		LOSCSender = LMotor.GetComponent<OSCSender>();
-		LOSCSender.setWhichMotor("L");
-        */
-
-		//controller setActive
-		//Lcontroller.SetActive(true);
-		//Rcontroller.SetActive(true);
-
 		new Thread(Uno.connectToArdunio).Start();
 
 		//hit_pos_on_face
@@ -104,9 +83,6 @@ public class hitted_v2 : MonoBehaviour
 		hit_face = GameObject.FindGameObjectWithTag("hitted").transform;//show where boxer hit on sphere
 
 		player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
-		
-		//write data
-		writeFile("Time, HMD_pos.x, HMD_pos.y, HMD_pos.z, HMD_rot.x, HMD_rot.y, HMD_rot.z, Lcontroller_pos.x, Lcontroller_pos.y, Lcontroller_pos.z, Lcontroller_rot.x, Lcontroller_rot.y, Lcontroller_rot.z, Rcontroller_pos.x, Rcontroller_pos.y, Rcontroller_pos.z, Rcontroller_rot.x, Rcontroller_rot.y, Rcontroller_rot.z, send2motor, motor_data, punch_type\n");
 	}
 
 	void Update()
@@ -335,12 +311,6 @@ public class hitted_v2 : MonoBehaviour
 				motor_release = 0;
 				motor_data_release = "";
 			}
-			writeFile(System.DateTime.Now.ToString() + "," + HMD.transform.position.ToString("f4") + "," + HMD.transform.rotation.eulerAngles.ToString("f4") + ","
-				+ Lcontroller.transform.position.ToString("f4") + "," + Lcontroller.transform.rotation.eulerAngles.ToString("f4") + ","
-				+ Rcontroller.transform.position.ToString("f4") + "," + Rcontroller.transform.rotation.eulerAngles.ToString("f4") + ","
-				+ send2motor.ToString() + "," + motordata + ","
-				+ state + "\n");
-
 			send2motor = false;
 			motordata = "";
 
@@ -377,16 +347,6 @@ public class hitted_v2 : MonoBehaviour
 		lr.SetPosition(0, start);
 		lr.SetPosition(1, end);
 		GameObject.Destroy(myLine, duration);
-	}
-
-	//write data
-	private void writeFile(String data)
-	{
-		fileWriter = new StreamWriter("Results\\" + userName + "_" + times + ".csv", true);
-		fileWriter.Write(data);
-		fileWriter.Flush();
-		fileWriter.Close();
-		fileWriter.Dispose();
 	}
 
 	//motor & blood
