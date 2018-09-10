@@ -10,7 +10,6 @@ using UnityEngine.UI;
 
 public class hitted_v2 : MonoBehaviour
 {
-
 	int s = 0;
 	int state = 0;
 
@@ -59,12 +58,10 @@ public class hitted_v2 : MonoBehaviour
 
 	//timer
 	public Text timerTextDisplay;
-	private float remainingTime = 30;
-	private int t = 1;
-	private int T = 0;
+	private float remainingTime = 60;
 
-	//gameover
-	private int gameover = 0;
+    //gameover
+    private bool isGameover = false;
 	public GameObject black;
 
 	// Use this for initialization
@@ -319,20 +316,20 @@ public class hitted_v2 : MonoBehaviour
 
 		//Timer
 		if (Input.GetKeyDown(KeyCode.S)) {
-			t = 1;
-			remainingTime = 30;
+			remainingTime = 60;
 		} 
 
-		if(t == 1) remainingTime -= (Time.deltaTime);
-		if(remainingTime > 0 && T != (int)remainingTime) {Debug.Log((int)remainingTime); T = (int)remainingTime; timerTextDisplay.text = T.ToString();}
-		
-		//gameover
-		if(T == 0) gameover = 1;
-		if(hp == 250) gameover = 1;
-		if(gameover == 1) black.SetActive(true);
-	}
+        remainingTime -= (Time.deltaTime);
+		if(remainingTime > 0 )
+            timerTextDisplay.text = ((int)remainingTime).ToString();
 
-	void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
+        //gameover
+        if ((int)remainingTime <= 0) isGameover = true;
+		if(hp >= 200) isGameover = true;
+        if(isGameover) StartCoroutine(gameoverScene());
+    }
+
+    void DrawLine(Vector3 start, Vector3 end, float duration = 1f)
 	{
 		myLine = new GameObject();
 		myLine.transform.SetParent(superGameObject.transform);
@@ -419,7 +416,15 @@ public class hitted_v2 : MonoBehaviour
 		return ((degree * 682 / 360) + 60);
 	}
 
-	class CommunicateWithArduino
+    IEnumerator gameoverScene()
+    {
+        yield return new WaitForSeconds(0.8f);
+        float fadeTime = GameObject.Find("Canvas").GetComponent<fading>().BeginFade(1);
+        yield return new WaitForSeconds(fadeTime);
+        //SceneManager.LoadScene("Yurt-V2");
+    }
+
+    class CommunicateWithArduino
 	{
 		public bool connected = true;
 		public bool mac = false;

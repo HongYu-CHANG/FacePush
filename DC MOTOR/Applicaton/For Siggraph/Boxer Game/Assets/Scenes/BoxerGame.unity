@@ -1301,6 +1301,7 @@ GameObject:
   - component: {fileID: 176956683}
   - component: {fileID: 176956682}
   - component: {fileID: 176956681}
+  - component: {fileID: 176956685}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1387,6 +1388,19 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &176956685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 176956680}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13118fa14653f7c498d1e94f1242efaf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeOutTexture: {fileID: 2800000, guid: 407d6242006e0e54ab3d71001a2c0a01, type: 3}
+  fadeSpeed: 0.8
 --- !u!1 &184210560
 GameObject:
   m_ObjectHideFlags: 0
@@ -9661,6 +9675,10 @@ Prefab:
       propertyPath: m_Name
       value: Boxer_Avatar
       objectReference: {fileID: 0}
+    - target: {fileID: 467226, guid: 56a121aae622f5244b233750c9383806, type: 2}
+      propertyPath: m_RootOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 56a121aae622f5244b233750c9383806, type: 2}
   m_IsPrefabParent: 0
@@ -12309,6 +12327,18 @@ GameObject:
 Transform:
   m_PrefabParentObject: {fileID: 493318, guid: 56a121aae622f5244b233750c9383806, type: 2}
   m_PrefabInternal: {fileID: 1289068115}
+--- !u!114 &1574453757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1574453754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80e4daffe71a11a46a7077abe4d203e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  black: {fileID: 397557890}
 --- !u!114 &1574453758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12351,18 +12381,6 @@ CapsuleCollider:
   m_Height: 3.9351022
   m_Direction: 1
   m_Center: {x: 2.0233453e-15, y: 1.4675508, z: 1.6608101e-15}
---- !u!114 &1574453763
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1574453754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 80e4daffe71a11a46a7077abe4d203e3, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  black: {fileID: 397557890}
 --- !u!1 &1576494140
 GameObject:
   m_ObjectHideFlags: 0
