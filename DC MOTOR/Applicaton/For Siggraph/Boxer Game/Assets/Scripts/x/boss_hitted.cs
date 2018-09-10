@@ -17,17 +17,14 @@ public class boss_hitted : MonoBehaviour {
 	void Start () {
 		boss_blood = GameObject.FindGameObjectWithTag("Boss_blood").transform;
 		_animator = this.GetComponent<Animator>();
-
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if(hit == 1) count++ ; 
 		if(count == 2){_animator.SetInteger("boss_hitted", 0);  _animator.SetInteger("gameover", 0);}
-		if(count == 30) hit = 0 ;
+		if(count == 120) hit = 0 ;
 		boss_blood.localPosition = new Vector3(-232 * (hp / 180f), 0, 0);
-
-        Debug.Log(hp);	
 	}
 	void OnTriggerEnter(Collider other)
     {
@@ -52,6 +49,5 @@ public class boss_hitted : MonoBehaviour {
         yield return new WaitForSeconds(2.7f);
         float fadeTime = GameObject.Find("Canvas").GetComponent<fading>().BeginFade(1);
         yield return new WaitForSeconds(fadeTime);
-        //SceneManager.LoadScene("Yurt-V2");
     }
 }
