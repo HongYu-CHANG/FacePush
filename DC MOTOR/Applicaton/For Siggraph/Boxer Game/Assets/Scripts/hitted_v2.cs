@@ -421,7 +421,6 @@ public class hitted_v2 : MonoBehaviour
         yield return new WaitForSeconds(0.8f);
         float fadeTime = GameObject.Find("Camera (eye)").GetComponent<SteamVrFade>().FadeToBlack();
         yield return new WaitForSeconds(fadeTime);
-        //SceneManager.LoadScene("Yurt-V2");
     }
 
     class CommunicateWithArduino
