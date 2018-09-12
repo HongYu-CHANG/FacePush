@@ -47,7 +47,7 @@ public class boss_hitted : MonoBehaviour {
     IEnumerator gameoverScene()
     {
         yield return new WaitForSeconds(2.7f);
-        float fadeTime = GameObject.Find("Canvas").GetComponent<fading>().BeginFade(1);
+        float fadeTime = GameObject.Find("Camera (eye)").GetComponent<SteamVrFade>().FadeToBlack();
         yield return new WaitForSeconds(fadeTime);
     }
 }
