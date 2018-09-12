@@ -38,7 +38,7 @@ public class boss_hitted : MonoBehaviour {
             count = 0; 
             if (hp + 10 < 200) hp += 10;
 			else hp = 200;
-			if(hp < 200) _animator.SetInteger("boss_hitted", 1);
+			if(hp < 200) _animator.SetInteger("boss_hitted", Random.Range(1, 3));
 			if(hp >= 200)
             {
                 _animator.SetInteger("gameover", 1);
