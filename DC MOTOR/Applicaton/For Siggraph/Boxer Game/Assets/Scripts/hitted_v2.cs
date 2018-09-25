@@ -362,7 +362,7 @@ public class hitted_v2 : MonoBehaviour
 
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 100; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) { /*RSpeed = 255;*/ angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start("0 " + degreeConvertToRightRotaryCoder(angle)/* + " " + RSpeed*/); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
@@ -374,7 +374,7 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) {/* LSpeed = 255; */angle = 134; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {/* LSpeed = 255; */angle = 100; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) {/* LSpeed = 255; */ angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "/* + LSpeed*/ + "0"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
@@ -386,7 +386,7 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 134; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 100; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) { /*RSpeed = 255;*/ angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
@@ -409,14 +409,14 @@ public class hitted_v2 : MonoBehaviour
 	{
 		// alternation
 		// increase another converter for right motor
-		return ((degree * 1024 / 360) + 100);
+		return (degree * 1024 / 360);
 	}
 
 	private int degreeConvertToRightRotaryCoder(int degree)
 	{
 		// alternation
 		// increase another converter for right motor
-		return ((degree * 682 / 360) + 60);
+		return (degree * 824 / 360);
 	}
 
     IEnumerator gameoverScene()
