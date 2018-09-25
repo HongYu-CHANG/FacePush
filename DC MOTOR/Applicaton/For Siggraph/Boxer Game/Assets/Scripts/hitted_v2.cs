@@ -62,7 +62,7 @@ public class hitted_v2 : MonoBehaviour
 
     //gameover
     private bool isGameover = false;
-	public GameObject black;
+	//public GameObject black;
 
 	// Use this for initialization
 	void Start()
@@ -145,7 +145,7 @@ public class hitted_v2 : MonoBehaviour
 			mySequence.Join(rot1);
 			mySequence.Append(move2);
 			mySequence.Join(rot2);
-			Debug.Log("Rhit ");
+			//Debug.Log("Rhit ");
 			collider_dir.Rhit = 0;
 
 			//hit_pos_on_face
@@ -176,7 +176,7 @@ public class hitted_v2 : MonoBehaviour
 			}
 			count++;
 			Line = hit.transform.position;
-			DrawLine(hit_position + move * k * 2, hit_position, 1f);
+			//DrawLine(hit_position + move * k * 2, hit_position, 1f);
 
 		}
 		else if (collider_dir.Lhit == 1)
@@ -240,7 +240,7 @@ public class hitted_v2 : MonoBehaviour
 			mySequence.Join(rot1);
 			mySequence.Append(move2);
 			mySequence.Join(rot2);
-			Debug.Log("Lhit ");
+			//Debug.Log("Lhit ");
 			collider_dir.Lhit = 0;
 
 			//hit_pos_on_face
@@ -271,7 +271,7 @@ public class hitted_v2 : MonoBehaviour
 			}
 			count++;
 			Line = hit.transform.position;
-			DrawLine(hit_position + move * k * 2, hit_position, 1f);
+			//DrawLine(hit_position + move * k * 2, hit_position, 1f);
 
 		}
 
@@ -350,8 +350,8 @@ public class hitted_v2 : MonoBehaviour
 	IEnumerator No1Work(bool R, bool L, int state)
 	{
 		float time = 0.5f;
-		int RSpeed = 50;
-		int LSpeed = 50;
+		//int RSpeed = 50;
+		//int LSpeed = 50;
 		int angle = 150;
 		int langle = 150;
 
@@ -359,41 +359,41 @@ public class hitted_v2 : MonoBehaviour
 
 		if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
-			new Thread(Uno.SendData).Start("0 255 " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) { /*RSpeed = 255;*/ angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			new Thread(Uno.SendData).Start("0 " + degreeConvertToRightRotaryCoder(angle)/* + " " + RSpeed*/); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("0 255 0 " + RSpeed); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 0 "/* + RSpeed */); //L Lspeed R Rspeed
 
 			//write data
-			motordata = "0 255 " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
-			motor_data_release = "0 255 0 " + RSpeed.ToString();
+			//motordata = "0 255 " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
+			//motor_data_release = "0 255 0 " + RSpeed.ToString();
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) { LSpeed = 255; angle = 134; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) { LSpeed = 255; angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
-			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + LSpeed + " 0 255"); //L Lspeed R Rspeed
+			if (state == 1 || state == 2 || state == 5) {/* LSpeed = 255; */angle = 134; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) {/* LSpeed = 255; */ angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "/* + LSpeed*/ + "0"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("0 " + LSpeed + " 0 255"); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 "/* + LSpeed */+ "0"); //L Lspeed R Rspeed
 
 			//write data
-			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + LSpeed.ToString() + " 0 255";
-			motor_data_release = "0 " + LSpeed.ToString() + " 0 255";
+			//motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + LSpeed.ToString() + " 0 255";
+			//motor_data_release = "0 " + LSpeed.ToString() + " 0 255";
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) { RSpeed = 255; angle = 134; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) { RSpeed = 255; angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 134; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) { /*RSpeed = 255;*/ angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
-			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + RSpeed + " " + degreeConvertToRightRotaryCoder(angle) + " " + RSpeed); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "/* + RSpeed + " " */+ degreeConvertToRightRotaryCoder(angle)/* + " " + RSpeed*/); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("0 " + RSpeed + " 0 " + RSpeed); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 "/* + RSpeed*/ + " 0 "/* + RSpeed*/); //L Lspeed R Rspeed
 
 			//write data
-			motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + RSpeed.ToString() + " " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
-			motor_data_release = "0 " + RSpeed.ToString() + " 0 " + RSpeed.ToString();
+			//motordata = degreeConvertToLeftRotaryCoder(angle).ToString() + " " + RSpeed.ToString() + " " + degreeConvertToRightRotaryCoder(angle).ToString() + " " + RSpeed.ToString();
+			//motor_data_release = "0 " + RSpeed.ToString() + " 0 " + RSpeed.ToString();
 		}
 
 		//write data
