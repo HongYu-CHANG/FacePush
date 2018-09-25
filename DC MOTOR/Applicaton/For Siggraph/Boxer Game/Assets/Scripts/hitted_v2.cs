@@ -93,7 +93,7 @@ public class hitted_v2 : MonoBehaviour
 
 		//blood
 		player_blood.localPosition = new Vector3(-332 * (hp / 250f), 0, 0);
-		
+		//Debug.Log (collider_dir.pos.x);
 
 		if (collider_dir.Rhit == 1)
 		{
@@ -251,14 +251,17 @@ public class hitted_v2 : MonoBehaviour
 			hit_position = new Vector3(face.position.x + collider_dir.hit_pos.x * 0.5f, face.position.y + collider_dir.hit_pos.y * 0.5f, face.position.z);
 
 			hit_face.position = collider_dir.pos;
+
 			if (collider_dir.hit_pos.x > 0.1)
 			{
+				Debug.Log ("Right !!");
 				if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[1];
 				else head.GetComponent<Renderer>().material.mainTexture = myTextures[4];
 				StartCoroutine(No1Work(true, false, state));
 			}
 			else if (collider_dir.hit_pos.x < -0.1)
 			{
+				Debug.Log ("Left !!");
 				if (state == 4) head.GetComponent<Renderer>().material.mainTexture = myTextures[3];
 				else head.GetComponent<Renderer>().material.mainTexture = myTextures[6];
 				StartCoroutine(No1Work(false, true, state));
@@ -455,7 +458,7 @@ public class hitted_v2 : MonoBehaviour
 					}
 					portChoice = "/dev/" + choice;
 				}
-				arduinoController = new SerialPort(portChoice, 9600, Parity.None, 8, StopBits.One);
+				arduinoController = new SerialPort(portChoice, 115200, Parity.None, 8, StopBits.One);
 				arduinoController.Handshake = Handshake.None;
 				arduinoController.RtsEnable = true;
 				arduinoController.Open();
