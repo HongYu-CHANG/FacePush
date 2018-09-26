@@ -71,6 +71,7 @@ public class CommunicateWithArduino
     public void sendData(object obj)
     {
         string data = obj as string;
+        Debug.Log(data);
         if (isConnected && arduinoController != null)  //&& !isLocked
         {
             getFinishMessageTime = DateTime.Now;

@@ -84,8 +84,8 @@ void loop()
   //Control Motor noise
   if (LeftPID_Output == 255 || RightPID_Output == 255) 
   {
-      LeftMotor_Speed = 50;
-      RightMotor_Speed = 50; 
+      LeftMotor_Speed = 225;
+      RightMotor_Speed = 225; 
   }
     
   //Read Data and Handle Data
