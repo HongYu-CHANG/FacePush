@@ -188,7 +188,7 @@ public class DiverControll : MonoBehaviour {
             _sharkAnimator.SetBool("On", false);
             _sharkAnimator.SetInteger("Start", 1);
             _sharkAnimator.SetInteger("Turn", randomTurn);
-            shark.transform.position = new Vector3(sharkShow.position.x, 0.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
+            shark.transform.position = new Vector3(sharkShow.position.x, 1.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
             shark.transform.rotation = Quaternion.EulerRotation(0f, 0f, 0f);
         }
 
@@ -293,8 +293,8 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 0.25 && fowardValue <= 2)  //0~1.5 20
             {
-                answer.rightAngle = -5;
-                answer.leftAngle = -5;
+                answer.rightAngle = -10;
+                answer.leftAngle = -10;
             }
             else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {

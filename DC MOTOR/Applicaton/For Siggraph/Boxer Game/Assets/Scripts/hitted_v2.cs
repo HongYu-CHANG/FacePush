@@ -358,9 +358,9 @@ public class hitted_v2 : MonoBehaviour
 		int angle = 150;
 		int langle = 150;
 
-		//study2 94 , 134
-
-		if (R)//奇數次點擊
+        //study2 94 , 134
+        yield return new WaitForSeconds(0.2f);
+        if (R)//奇數次點擊
 		{
 			if (state == 1 || state == 2 || state == 5) { /*RSpeed = 255;*/ angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) { /*RSpeed = 255;*/ angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
@@ -374,7 +374,7 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) {/* LSpeed = 255; */angle = 134; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {/* LSpeed = 255; */angle = 145; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) {/* LSpeed = 255; */ angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "/* + LSpeed*/ + "0"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);

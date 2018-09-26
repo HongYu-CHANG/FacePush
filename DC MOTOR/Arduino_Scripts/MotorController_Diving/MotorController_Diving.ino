@@ -130,13 +130,13 @@ void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value)
   {
     digitalWrite(LeftMotor_A1_PIN, PinA_Value); 
     digitalWrite(LeftMotor_B1_PIN, PinB_Value);
-    analogWrite(LeftMotor_PWM, pwm);
+    analogWrite(LeftMotor_PWM, pwm + 12.5);
   }
   else if(motor == RightMotor)
   {
     digitalWrite(RightMotor_A2_PIN, PinA_Value);
     digitalWrite(RightMotor_B2_PIN, PinB_Value);
-    analogWrite(RightMotor_PWM, pwm);
+    analogWrite(RightMotor_PWM, pwm + 25);
   }
 }
 
