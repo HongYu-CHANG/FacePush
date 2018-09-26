@@ -97,10 +97,10 @@ public class DiverControll : MonoBehaviour {
         if ((lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 0.5f) || GameDataManager.Uno.getIntervalSeconds() > waitTime)
         {
             if (GameDataManager.Uno.getIntervalSeconds() > waitTime)
-                waitTime = Mathf.Pow(waitTime, 1.6f);
+                waitTime = Mathf.Pow(waitTime, 1.1f);
             else
                 waitTime = 1.3f;
-            Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + waitTime);
+			Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + rotateValue.y);
             //Debug.LogError(waitTime);
             new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
             lastAngle = nowAngle;
@@ -141,14 +141,14 @@ public class DiverControll : MonoBehaviour {
         Debug.DrawRay(driver.transform.position, diveDirection * 10, Color.red, 10);
         if ((Rvector.magnitude > 0.025f || Lvector.magnitude > 0.025f) && ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005))
         {
-            if ((Lvector.magnitude - Rvector.magnitude) > 0.025f) //trun right
+			if ((Lvector.magnitude - Rvector.magnitude) > 0.075f) //旋轉的閾值
             {
                 if (rotateValue.magnitude <= 25)
                     rotateValue += Vector3.up * body_vector_angle * 0.16f;
                 //Debug.LogWarning("Right!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, 25, 0);
             }
-            else if ((Rvector.magnitude - Lvector.magnitude) > 0.025f)//turn left
+			else if ((Rvector.magnitude - Lvector.magnitude) > 0.075f)//旋轉的閾值
             {
                 if (rotateValue.magnitude <= 25)
                     rotateValue += Vector3.down * body_vector_angle * 0.16f;
@@ -157,7 +157,8 @@ public class DiverControll : MonoBehaviour {
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
             {
-                //Debug.LogWarning("Foward!!");
+				rotateValue = Vector3.zero;
+				//Debug.LogWarning("Foward!!");
             }
 
         }
@@ -237,18 +238,18 @@ public class DiverControll : MonoBehaviour {
         }
     }
 
-    private angle motorAngle (float fowardValue, float rotateValue, angle last)
+    	private angle motorAngle (float fowardValue, float rotateValue, angle last)
     {
         angle answer = last;
-        if (rotateValue > 20f) // right
+        if (rotateValue > 22.5f) // right
         {
             //Debug.Log("right: " + rotateValue);
-            if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
             {
                 answer.rightAngle = -30;
                 answer.leftAngle = -30;
             }
-            else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
+			else if (fowardValue > 0.25 && fowardValue <= 3.5)//1.5~5 100
             {
                 answer.rightAngle = -5;
                 answer.leftAngle = 57;
@@ -259,15 +260,15 @@ public class DiverControll : MonoBehaviour {
                 answer.leftAngle = 82;
             }
         }
-        else if (rotateValue < -20f) //left
+        else if (rotateValue < -22.5f) //left
         {
             //Debug.Log("left: " + rotateValue);
-            if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
             {
                 answer.rightAngle = -30;
                 answer.leftAngle = -30;
             }
-            else if (fowardValue > 2 && fowardValue <= 3.5)//1.5~5 100
+			else if (fowardValue > 0.25 && fowardValue <= 3.5)//1.5~5 100
             {
                 answer.rightAngle = 40;
                 answer.leftAngle = -5;
