@@ -82,14 +82,14 @@ void loop()
   PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
 
   //Control Motor noise
-  if (LeftPID_Output == 255) 
-  {
-      LeftMotor_Speed = 200;
-  }
-   if (RightPID_Output == 255) 
-  {
-      RightMotor_Speed = 200; 
-  }
+//  if (LeftPID_Output == 255) 
+//  {
+//      LeftMotor_Speed = 200;
+//  }
+//   if (RightPID_Output == 255) 
+//  {
+//      RightMotor_Speed = 200; 
+//  }
   
   //Read Data and Handle Data
   int i = 0;

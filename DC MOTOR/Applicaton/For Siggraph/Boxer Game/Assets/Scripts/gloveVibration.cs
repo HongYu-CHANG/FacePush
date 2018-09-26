@@ -20,7 +20,7 @@ public class gloveVibration : MonoBehaviour {
     {
         if (other.gameObject.CompareTag("Boss") && ColliderOn)
         {
-            SteamVR_Controller.Input((int)controller.index).TriggerHapticPulse(2000);
+            //SteamVR_Controller.Input((int)controller.index).TriggerHapticPulse(2000);
         }
     }
 

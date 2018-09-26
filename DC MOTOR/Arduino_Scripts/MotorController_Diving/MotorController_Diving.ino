@@ -107,11 +107,11 @@ void loop()
     }
     LeftPID_Target = AllMotor_Parameters[0];
     RightPID_Target = AllMotor_Parameters[1];
-    if(AllMotor_Parameters[0] < -10)
+    if(AllMotor_Parameters[0] < -60)
     {
       digitalWrite(LeftMotor_EnablePin, LOW);
     }
-    if(AllMotor_Parameters[1] < -10)
+    if(AllMotor_Parameters[1] < -60)
     {
       digitalWrite(RightMotor_EnablePin, LOW);
     }

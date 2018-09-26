@@ -168,7 +168,7 @@ public class DiverControll : MonoBehaviour {
         else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.055f;
         else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
         else if (LRvector.magnitude > 0.05f) offset += 0.055f;
-        if (offset > 6) offset = 6;
+        if (offset > 8) offset = 8;
 
         //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
@@ -257,7 +257,7 @@ public class DiverControll : MonoBehaviour {
             else if (fowardValue > 3.5)//5up 130
             {
                 answer.rightAngle = -5;
-                answer.leftAngle = 82;
+                answer.leftAngle = 90;
             }
         }
         else if (rotateValue < -22.5f) //left
@@ -275,7 +275,7 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 3.5)//5up 130
             {
-                answer.rightAngle = 63;
+                answer.rightAngle = 60;
                 answer.leftAngle = -5;
             }
         }
@@ -299,8 +299,8 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 5)//5up 130
             {
-                answer.rightAngle = 63;
-                answer.leftAngle = 82;
+                answer.rightAngle = 60 ;
+                answer.leftAngle = 90;
             }
         }
 
