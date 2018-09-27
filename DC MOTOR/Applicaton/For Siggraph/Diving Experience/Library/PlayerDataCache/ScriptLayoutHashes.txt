@@ -1,6 +1,6 @@
 WindowsStandalone
 PlayerPath?
-C:/Users/liwei/Downloads/Diving.exe
+D:/ppp.exe
 SceneListBegin?
 Assets/Scenes/Diving Experience.unity
 SceneListEnd?
@@ -333,7 +333,7 @@ f4b175ffc1eeca85d2783436b4c764a7 Assembly-CSharp.dll:UnityStandardAssets.Effects
 fabcfe9e357813f9a21556a68a721103 Assembly-CSharp.dll:DG.Tweening.DOTweenAnimation
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:.SceneLoad
 6746ad828d32ad6e5c07a63950fd4be6 Assembly-CSharp.dll:UnityStandardAssets.Water.WaterTile
-c6d418a130208c236a1b90b24888af5a Assembly-CSharp.dll:.DiverControll
+c501542975df71e5eac38e628a1951c6 Assembly-CSharp.dll:.DiverControll
 676d9ee9f050d1064e9e308848904d5a Assembly-CSharp.dll:Valve.VR.InteractionSystem.CircularDrive
 05524b8f659e7bfe5756d1335fec24ba Assembly-CSharp.dll:UnityStandardAssets.Utility.FPSCounter
 2c5a3b009ee570a3164e73d6a8cd4890 Assembly-CSharp.dll:Valve.VR.InteractionSystem.Arrow

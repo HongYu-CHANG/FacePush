@@ -188,7 +188,7 @@ public class DiverControll : MonoBehaviour {
             _sharkAnimator.SetInteger("Start", 1);
             _sharkAnimator.SetInteger("Turn", randomTurn);
             shark.transform.localPosition = new Vector3(1.7f, 1.5f, -25.25465f);
-            shark.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            shark.transform.rotation = Quaternion.Euler(0f, this.transform.rotation.eulerAngles.y, 0f);
         }
 
         if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
@@ -198,7 +198,7 @@ public class DiverControll : MonoBehaviour {
                 isShark = false;
                 _sharkAnimator.SetInteger("Start", 0);
             }
-            else if (Vector3.Distance(shark.position, this.transform.position) < 16)
+            else if (Vector3.Distance(shark.position, this.transform.position) < 17)
             {
                 StartCoroutine(sharkMotor(randomTurn));
                 _sharkAnimator.SetBool("On", true);
@@ -334,14 +334,19 @@ public class DiverControll : MonoBehaviour {
             {
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder(134));
                 yield return new WaitForSeconds(0.5f);
-                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+                if(nowAngle.leftAngle != -30 || nowAngle.rightAngle != -30)
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+                else
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(-5) + " " + Right_degreeConvertToRotaryCoder(-5);
             }
             else
             {
-                //new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(134) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(150) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
                 yield return new WaitForSeconds(0.5f);
-                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+                if (nowAngle.leftAngle != -30 || nowAngle.rightAngle != -30)
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+                else
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(-5) + " " + Right_degreeConvertToRotaryCoder(-5);
             }
         }
         
