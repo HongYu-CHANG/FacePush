@@ -8,7 +8,7 @@ public class anim_change : MonoBehaviour {
     private Animator _animator;
     int count = 0;
     public static int s = 1;
-
+    private bool isGameOver = false;
 	//control
 	public int control = 1;
     public int auto = 1;
@@ -29,7 +29,7 @@ public class anim_change : MonoBehaviour {
     
 	// Update is called once per frame
 	void Update () {
-        if (AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("State"))
+        if (AnimatorIsPlaying() && _animator.GetCurrentAnimatorStateInfo(0).IsName("State") && !isGameOver)
         {
             if (count == 0)
             {
@@ -111,9 +111,14 @@ public class anim_change : MonoBehaviour {
 
     }
 
-    bool AnimatorIsPlaying()
+    private bool AnimatorIsPlaying()
     {
         return _animator.GetCurrentAnimatorStateInfo(0).length >
                _animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+    }
+
+    public void GameOver()
+    {
+        isGameOver = true;
     }
 }
