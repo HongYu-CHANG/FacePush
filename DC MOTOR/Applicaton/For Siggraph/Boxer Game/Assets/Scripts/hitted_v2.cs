@@ -353,7 +353,7 @@ public class hitted_v2 : MonoBehaviour
 
         //study2 94 , 134
         if(state != 5)
-            yield return new WaitForSeconds(0.165f);
+            yield return new WaitForSeconds(0.1f);
         else
             yield return new WaitForSeconds(0.175f);
         if (R)//奇數次點擊
