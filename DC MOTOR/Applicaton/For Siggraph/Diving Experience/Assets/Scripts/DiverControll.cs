@@ -56,7 +56,6 @@ public class DiverControll : MonoBehaviour {
 
     //Shark parameter
     public Transform shark;
-    public Transform sharkShow;
     private Animator _sharkAnimator;
     private int randomTurn = 0;
     private static bool isShark = false;
@@ -188,8 +187,8 @@ public class DiverControll : MonoBehaviour {
             _sharkAnimator.SetBool("On", false);
             _sharkAnimator.SetInteger("Start", 1);
             _sharkAnimator.SetInteger("Turn", randomTurn);
-            shark.transform.position = new Vector3(sharkShow.position.x, 1.58f, sharkShow.position.z);//new Vector3(-0.82f, 0.58f, -40f);
-            shark.transform.rotation = Quaternion.EulerRotation(0f, 0f, 0f);
+            shark.transform.localPosition = new Vector3(1.7f, 1.5f, -25.25465f);
+            shark.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
         }
 
         if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Swiming"))
@@ -199,14 +198,14 @@ public class DiverControll : MonoBehaviour {
                 isShark = false;
                 _sharkAnimator.SetInteger("Start", 0);
             }
-            else if (Vector3.Distance(shark.position, this.transform.position) < 17.5)
+            else if (Vector3.Distance(shark.position, this.transform.position) < 16)
             {
                 StartCoroutine(sharkMotor(randomTurn));
                 _sharkAnimator.SetBool("On", true);
                 
             }
         }
-        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Left"))// Trun = 2
+        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Left"))// Trun = 2 Right
         {
             if (!isShark)
             {
@@ -214,7 +213,7 @@ public class DiverControll : MonoBehaviour {
             }
             isShark = true;
         }
-        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Right"))// Trun = 1
+        else if (_sharkAnimator.GetCurrentAnimatorStateInfo(0).IsName("Turn Right"))// Trun = 1 //Left
         {
             if (!isShark)
             {
@@ -333,7 +332,6 @@ public class DiverControll : MonoBehaviour {
             specialEffectOn = false;
             if (state == 1)
             {
-                //new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder(134));
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder(134));
                 yield return new WaitForSeconds(0.5f);
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
