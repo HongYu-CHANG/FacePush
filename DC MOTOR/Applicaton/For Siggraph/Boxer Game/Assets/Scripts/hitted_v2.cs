@@ -175,7 +175,7 @@ public class hitted_v2 : MonoBehaviour
 			}
 			count++;
 			Line = hit.transform.position;
-			DrawLine(hit_position + move * k * 2, hit_position, 1f);
+			//DrawLine(hit_position + move * k * 2, hit_position, 1f);
 
 		}
 		else if (collider_dir.Lhit == 1)
@@ -269,7 +269,7 @@ public class hitted_v2 : MonoBehaviour
 			}
 			count++;
 			Line = hit.transform.position;
-			DrawLine(hit_position + move * k * 2, hit_position, 1f);
+			//DrawLine(hit_position + move * k * 2, hit_position, 1f);
 
 		}
 
