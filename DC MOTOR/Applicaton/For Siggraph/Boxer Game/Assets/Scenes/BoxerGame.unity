@@ -4207,10 +4207,10 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 65.25167
-  m_Height: 167.21039
+  m_Radius: 65.2517
+  m_Height: 961.4817
   m_Direction: 1
-  m_Center: {x: 1.7694947, y: 56, z: -87.43369}
+  m_Center: {x: -1.7678018, y: 451.99356, z: 87.43357}
 --- !u!54 &593537415
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -12863,7 +12863,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4431567944581460, guid: d7a2ff2bba084b848afb8263f5356c96, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4431567944581460, guid: d7a2ff2bba084b848afb8263f5356c96, type: 2}
       propertyPath: m_LocalRotation.x
@@ -12891,7 +12891,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4431567944581460, guid: d7a2ff2bba084b848afb8263f5356c96, type: 2}
       propertyPath: m_LocalScale.y
-      value: 0.003
+      value: 0.0015525499
       objectReference: {fileID: 0}
     - target: {fileID: 4431567944581460, guid: d7a2ff2bba084b848afb8263f5356c96, type: 2}
       propertyPath: m_LocalScale.z
@@ -14370,7 +14370,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4972994339247810, guid: d469c67a9caad3d498d99d1c99d17627, type: 2}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 4972994339247810, guid: d469c67a9caad3d498d99d1c99d17627, type: 2}
       propertyPath: m_LocalRotation.x
@@ -14394,7 +14394,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4972994339247810, guid: d469c67a9caad3d498d99d1c99d17627, type: 2}
       propertyPath: m_LocalScale.y
-      value: 0.003
+      value: 0.00155255
       objectReference: {fileID: 0}
     - target: {fileID: 4972994339247810, guid: d469c67a9caad3d498d99d1c99d17627, type: 2}
       propertyPath: m_LocalScale.z
@@ -16821,9 +16821,9 @@ CapsuleCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 65.2517
-  m_Height: 169.50357
+  m_Height: 961.4817
   m_Direction: 1
-  m_Center: {x: -1.7692493, y: 56, z: 87.43369}
+  m_Center: {x: -1.7678018, y: 451.99356, z: 87.43357}
 --- !u!1 &2105600047
 GameObject:
   m_ObjectHideFlags: 0
