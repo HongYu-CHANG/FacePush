@@ -198,7 +198,7 @@ public class DiverControll : MonoBehaviour {
                 isShark = false;
                 _sharkAnimator.SetInteger("Start", 0);
             }
-            else if (Vector3.Distance(shark.position, this.transform.position) < 16)
+            else if (Vector3.Distance(shark.position, this.transform.position) < 16.5)
             {
                 StartCoroutine(sharkMotor(randomTurn));
                 _sharkAnimator.SetBool("On", true);
