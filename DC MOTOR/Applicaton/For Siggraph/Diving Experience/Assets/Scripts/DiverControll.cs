@@ -198,7 +198,7 @@ public class DiverControll : MonoBehaviour {
                 isShark = false;
                 _sharkAnimator.SetInteger("Start", 0);
             }
-            else if (Vector3.Distance(shark.position, this.transform.position) < 16.5)
+            else if (Vector3.Distance(shark.position, this.transform.position) < 16)
             {
                 StartCoroutine(sharkMotor(randomTurn));
                 _sharkAnimator.SetBool("On", true);
@@ -326,7 +326,7 @@ public class DiverControll : MonoBehaviour {
 
     IEnumerator sharkMotor(int state)
     {
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.75f);
         if (specialEffectOn)
         {
             specialEffectOn = false;
@@ -337,7 +337,7 @@ public class DiverControll : MonoBehaviour {
                 if(nowAngle.leftAngle != -30 || nowAngle.rightAngle != -30)
                     new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
                 else
-                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(-5) + " " + Right_degreeConvertToRotaryCoder(-5));
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(5) + " " + Right_degreeConvertToRotaryCoder(5));
             }
             else
             {
@@ -346,7 +346,7 @@ public class DiverControll : MonoBehaviour {
                 if (nowAngle.leftAngle != -30 || nowAngle.rightAngle != -30)
                     new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
                 else
-                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(-5) + " " + Right_degreeConvertToRotaryCoder(-5));
+                    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(5) + " " + Right_degreeConvertToRotaryCoder(5));
             }
         }
         
