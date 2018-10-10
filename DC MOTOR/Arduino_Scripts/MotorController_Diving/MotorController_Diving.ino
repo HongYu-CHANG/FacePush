@@ -23,7 +23,7 @@ volatile long LeftEncoder_Value = 0;
 double LeftPID_Input = 0;// input: current position (value of rotary encoder)
 double LeftPID_Output = 0;// output: result (where to go)
 double LeftPID_Target = 0;// Target: target position (position cmd from Feather)
-double Left_kp = 0.8, Left_ki = 0.09, Left_kd = 0.05; //PID Parameter
+double Left_kp = 1, Left_ki = 0.45, Left_kd = 0.1; //PID Parameter
 PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT); 
 
 //Right default setting(Motor，Rotary Encoder，PID)
@@ -40,7 +40,7 @@ volatile long RightEncoder_Value = 0;
 double RightPID_Input = 0;// input: current position (value of rotary encoder)
 double RightPID_Output = 0;// output: result (where to go)
 double RightPID_Target = 0;// Target: target position (position cmd from Feather)
-double Right_kp = 0.8, Right_ki = 0.09, Right_kd = 0.05; //PID Parameter
+double Right_kp = 1, Right_ki = 0.1, Right_kd = 0; //PID Parameter
 PID RightPID_Contorller(&RightPID_Input, &RightPID_Output, &RightPID_Target, Right_kp, Right_ki, Right_kd, DIRECT);
   
 void setup()                         

@@ -74,13 +74,13 @@ public class CommunicateWithArduino
         Debug.Log(data);
         if (isConnected && arduinoController != null)  //&& !isLocked
         {
-            getFinishMessageTime = DateTime.Now;
+            
             arduinoController.DiscardInBuffer();       //clear buffer
             arduinoController.DiscardOutBuffer();     //clear buffer
             //Debug.LogWarning(DateTime.Now + data);
             arduinoController.Write(data);
             arduinoController.Write("\n");
-            
+            getFinishMessageTime = DateTime.Now;
             Thread.Sleep(500);
         }
         else
