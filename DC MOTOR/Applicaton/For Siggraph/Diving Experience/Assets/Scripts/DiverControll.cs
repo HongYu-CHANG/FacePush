@@ -256,12 +256,12 @@ public class DiverControll : MonoBehaviour {
         if (rotateValue > 12.5f) // right
         {
             //Debug.Log("right: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 3)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-			else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
+			else if (fowardValue > 3 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 20;
@@ -275,12 +275,12 @@ public class DiverControll : MonoBehaviour {
         else if (rotateValue < -12.5f) //left
         {
             //Debug.Log("left: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 3)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-			else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
+			else if (fowardValue > 3 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 20;
                 answer.leftAngle = 0;
@@ -298,12 +298,12 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
-                //Debug.LogError("!!!!");
             }
             else if (fowardValue > 0.25 && fowardValue <= 2)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
+                Debug.LogError("!!!!!");
             }
             else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
