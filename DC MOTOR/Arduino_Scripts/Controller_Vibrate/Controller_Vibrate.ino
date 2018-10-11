@@ -39,13 +39,17 @@ Adafruit_TPA2016 audioamp01 = Adafruit_TPA2016();
 //wifi setting
 //osc
 int status = WL_IDLE_STATUS;
-char ssid[] = "NextInterfaces Lab";
+char ssid[] = "NextInterfaces Lab 2";
 char pass[] = "nextinterfaces";
 int keyIndex = 0;
 
-IPAddress sendToUnityPC_Ip(192, 168, 0, 125);
-unsigned int sendToUnityPC_Port = 8000;
-unsigned int listenPort = 9000;
+IPAddress sendToUnityPC_Ip(10, 0, 1, 4);
+unsigned int sendToUnityPC_Port = 8001; // the other is 8001
+unsigned int listenPort = 9001; // the other is 9001
+
+// 10.0.1.4
+// 10.0.1.6, 8001, 9001
+// 10.0.1.7, 8000, 9000
 
 char packetBuffer[255];
 char ReplyBuffer[] = "acknowledged";
@@ -253,10 +257,6 @@ void initWifi()
   WiFi.setPins(8,7,4,2);
   //Initialize serial and wait for port to open:
   Serial.begin(9600);
-  while (!Serial) 
-  {
-    //; // wait for serial port to connect. Needed for native USB port only
-  }
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) 
   {
