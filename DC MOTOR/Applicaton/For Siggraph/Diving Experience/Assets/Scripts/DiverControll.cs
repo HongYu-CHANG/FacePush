@@ -95,6 +95,7 @@ public class DiverControll : MonoBehaviour {
         if (!specialEffectOn)
         {
             nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y, lastAngle);
+            Debug.LogWarning("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle + " \n" + LRvector.magnitude + " " + offset + " " + rotateValue.y);
             //Debug.Log("Last:" + lastAngle.leftAngle + " " + lastAngle.rightAngle);
             //Debug.Log("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle);
             //StartCoroutine(diveMotor());
@@ -102,6 +103,7 @@ public class DiverControll : MonoBehaviour {
             //Debug.Log(GameDataManager.Uno.getIntervalSeconds());
             if (lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 0.5f && inControlMotor)
             {
+                
                 inControlMotor = false;
                 StartCoroutine(diveMotor());
                 //    if (GameDataManager.Uno.getIntervalSeconds() > waitTime)
@@ -152,14 +154,14 @@ public class DiverControll : MonoBehaviour {
 			if ((Lvector.magnitude - Rvector.magnitude) > 0.075f) //旋轉的閾值
             {
                 if (rotateValue.magnitude <= 25)
-                    rotateValue += Vector3.up * body_vector_angle * 0.16f;
+                    rotateValue += Vector3.up * body_vector_angle * 0.3f;// 0.16f;
                 //Debug.LogWarning("Right!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, 25, 0);
             }
 			else if ((Rvector.magnitude - Lvector.magnitude) > 0.075f)//旋轉的閾值
             {
                 if (rotateValue.magnitude <= 25)
-                    rotateValue += Vector3.down * body_vector_angle * 0.16f;
+                    rotateValue += Vector3.down * body_vector_angle * 0.3f;//0.16f;
                 //Debug.LogWarning("Left!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, -25, 0);
             }
@@ -176,12 +178,12 @@ public class DiverControll : MonoBehaviour {
         else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.055f;
         else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
         else if (LRvector.magnitude > 0.05f) offset += 0.055f;
-        if (offset > 8) offset = 8;
+        if (offset > 7) offset = 7;
 
         //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
-        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 50);
+        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 12);
     }
 
     private void sharkControl()
@@ -189,8 +191,8 @@ public class DiverControll : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.S) && _sharkAnimator.GetBool("On"))
         {
             specialEffectOn = true;
-            Debug.Log("Press\"S\" for shark");
-            randomTurn = 2;//UnityEngine.Random.Range(1, 3);
+            Debug.LogWarning("Press\"S\" for shark");
+            randomTurn = 1;//UnityEngine.Random.Range(1, 3);
             _sharkAnimator.SetBool("On", false);
             _sharkAnimator.SetInteger("Start", 1);
             _sharkAnimator.SetInteger("Turn", randomTurn);
@@ -251,51 +253,52 @@ public class DiverControll : MonoBehaviour {
     private angle motorAngle (float fowardValue, float rotateValue, angle last)
     {
         angle answer = last;
-        if (rotateValue > 22.5f) // right
+        if (rotateValue > 12.5f) // right
         {
             //Debug.Log("right: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-			else if (fowardValue > 0.25 && fowardValue <= 3.5)//1.5~5 100
+			else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 20;
             }
-            else if (fowardValue > 3.5)//5up 130
+            else if (fowardValue > 5)//5up 130
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 37;
             }
         }
-        else if (rotateValue < -22.5f) //left
+        else if (rotateValue < -12.5f) //left
         {
             //Debug.Log("left: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 2)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-			else if (fowardValue > 0.25 && fowardValue <= 3.5)//1.5~5 100
+			else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
                 answer.rightAngle = 20;
                 answer.leftAngle = 0;
             }
-            else if (fowardValue > 3.5)//5up 130
+            else if (fowardValue > 5)//5up 130
             {
                 answer.rightAngle = 37;
                 answer.leftAngle = 0;
             }
         }
-        else if (rotateValue > -12.5f && rotateValue < 12.5f) // foward
+        else if (rotateValue > -6.5f && rotateValue < 6.5f) // foward
         {
             //Debug.Log("foward: " + rotateValue);
             if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
+                //Debug.LogError("!!!!");
             }
             else if (fowardValue > 0.25 && fowardValue <= 2)  //0~1.5 20
             {
@@ -333,41 +336,32 @@ public class DiverControll : MonoBehaviour {
 
     IEnumerator sharkMotor(int state)
     {
+        angle sharkMotor = nowAngle;
         yield return new WaitForSeconds(1.75f);
         if (specialEffectOn)
         {
             specialEffectOn = false;
             if (state == 1)
             {
-                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder(100));
-                yield return new WaitForSeconds(0.5f);
-                //if(nowAngle.leftAngle != 0 || nowAngle.rightAngle != -5)
-                //    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                //else
-                //    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(5) + " " + Right_degreeConvertToRotaryCoder(5));
+                sharkMotor.rightAngle = 60;
+                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)sharkMotor.rightAngle));
             }
             else// right
             {
+                sharkMotor.leftAngle = 60;
                 Debug.LogWarning("send! shark");
-                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(60) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                yield return new WaitForSeconds(0.5f);
-                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(0) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                //if (nowAngle.leftAngle != 0 || nowAngle.rightAngle != -5)
-                //new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                //else
-                //new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(5) + " " + Right_degreeConvertToRotaryCoder(5));
+                new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+                
             }
-            //new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder(0) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
+            lastAngle = sharkMotor;
         }
-        
-
     }
 
     IEnumerator diveMotor()
     {
         yield return new WaitForSeconds(0f);
-        Debug.LogWarning("Last:" + lastAngle.leftAngle + " " + lastAngle.rightAngle);
-        Debug.LogWarning("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle);
+        //Debug.LogWarning("Last:" + lastAngle.leftAngle + " " + lastAngle.rightAngle);
+        //Debug.LogWarning("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle + " \n" + LRvector.magnitude + " " + offset + " " + rotateValue.y);
         new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
         lastAngle = nowAngle;
         inControlMotor = true;

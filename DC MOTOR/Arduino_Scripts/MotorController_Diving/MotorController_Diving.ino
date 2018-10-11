@@ -23,7 +23,7 @@ volatile long LeftEncoder_Value = 0;
 double LeftPID_Input = 0;// input: current position (value of rotary encoder)
 double LeftPID_Output = 0;// output: result (where to go)
 double LeftPID_Target = 0;// Target: target position (position cmd from Feather)
-double Left_kp = 2, Left_ki = 0.1, Left_kd = 0; //PID Parameter
+double Left_kp = 2, Left_ki = 0, Left_kd = 0; //PID Parameter
 PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT); 
 
 //Right default setting(Motor，Rotary Encoder，PID)
