@@ -5,6 +5,7 @@ using UnityEngine;
 public class gloveVibration : MonoBehaviour {
 
     public SteamVR_TrackedObject controller;
+    public OSCSender_UIST osc_sender;
     private bool ColliderOn = true;
     // Use this for initialization
     void Start () {
@@ -18,9 +19,12 @@ public class gloveVibration : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag("Boss") && ColliderOn)
+        //print("I am in OnTriggerEnter");
+        if ((other.gameObject.CompareTag("Boss") || other.gameObject.CompareTag("LHand") || other.gameObject.CompareTag("RHand")) && ColliderOn)
         {
             //SteamVR_Controller.Input((int)controller.index).TriggerHapticPulse(2000);
+            osc_sender.callVibrate();
+            //print("I am in IF of OnTriggerEnter");
         }
     }
 
