@@ -82,9 +82,6 @@ public class DiverControll : MonoBehaviour {
 	// Update is called once per frame
 	void FixedUpdate()
     {
-        //檢測Arduino是否可以接受訊號
-        //GameDataManager.Uno.motorLocker();
-
         // 抓取左右手的位置，並計算成前進的方向、角度和速度
         positionCal();
 
@@ -96,23 +93,10 @@ public class DiverControll : MonoBehaviour {
         {
             nowAngle = motorAngle(LRvector.magnitude + offset, rotateValue.y, lastAngle);
             Debug.LogWarning("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle + " \n" + LRvector.magnitude + " " + offset + " " + rotateValue.y);
-            //Debug.Log("Last:" + lastAngle.leftAngle + " " + lastAngle.rightAngle);
-            //Debug.Log("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle);
-            //StartCoroutine(diveMotor());
-            //if ((lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 0.5f) || GameDataManager.Uno.getIntervalSeconds() > waitTime)
-            //Debug.Log(GameDataManager.Uno.getIntervalSeconds());
             if (lastAngle != nowAngle && GameDataManager.Uno.getIntervalSeconds() > 0.5f && inControlMotor)
-            {
-                
+            {       
                 inControlMotor = false;
                 StartCoroutine(diveMotor());
-                //    if (GameDataManager.Uno.getIntervalSeconds() > waitTime)
-                //        waitTime = Mathf.Pow(waitTime, 1.3f);
-                //    else
-                //        waitTime = 1.3f;
-                //    Debug.Log(nowAngle.leftAngle + " " + nowAngle.rightAngle + " " + waitTime);
-                //    new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                //    lastAngle = nowAngle;
             }
         }
 
@@ -165,10 +149,11 @@ public class DiverControll : MonoBehaviour {
                 //Debug.LogWarning("Left!!");
                 if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, -25, 0);
             }
-            else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.02f)
+            else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.03f)
             {
-				rotateValue = Vector3.zero;
-				//Debug.LogWarning("Foward!!");
+				//rotateValue = Vector3.zero;
+                rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 100);
+                //Debug.LogWarning("Foward!!");
             }
 
         }
@@ -183,7 +168,7 @@ public class DiverControll : MonoBehaviour {
         //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
-        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 12);
+        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 10);
     }
 
     private void sharkControl()
@@ -291,7 +276,7 @@ public class DiverControll : MonoBehaviour {
                 answer.leftAngle = 0;
             }
         }
-        else if (rotateValue > -6.5f && rotateValue < 6.5f) // foward
+        else if (rotateValue > -10.5f && rotateValue < 10.5f) // foward
         {
             //Debug.Log("foward: " + rotateValue);
             if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
@@ -303,7 +288,6 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
-                Debug.LogError("!!!!!");
             }
             else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
             {
@@ -337,7 +321,7 @@ public class DiverControll : MonoBehaviour {
     IEnumerator sharkMotor(int state)
     {
         angle sharkMotor = nowAngle;
-        yield return new WaitForSeconds(1.75f);
+        yield return new WaitForSeconds(1.68f);
         if (specialEffectOn)
         {
             specialEffectOn = false;
@@ -360,8 +344,6 @@ public class DiverControll : MonoBehaviour {
     IEnumerator diveMotor()
     {
         yield return new WaitForSeconds(0f);
-        //Debug.LogWarning("Last:" + lastAngle.leftAngle + " " + lastAngle.rightAngle);
-        //Debug.LogWarning("Now:" + nowAngle.leftAngle + " " + nowAngle.rightAngle + " \n" + LRvector.magnitude + " " + offset + " " + rotateValue.y);
         new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
         lastAngle = nowAngle;
         inControlMotor = true;
