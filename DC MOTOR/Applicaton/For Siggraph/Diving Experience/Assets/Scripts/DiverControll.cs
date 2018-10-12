@@ -125,7 +125,12 @@ public class DiverControll : MonoBehaviour {
         if ((LLastDistance - Ldistance) > 0.005 || (RLastDistance - Rdistance) > 0.005)
             LRvector = Lvector + Rvector;
         else
+        {
             LRvector -= LRvector * 3f * Time.deltaTime;
+            if (offset > 8) offset -= 0.1f;
+            else if (offset > 5 && offset <= 8) offset -= 0.03f;
+            else if (offset > 2.5 && offset <= 5) offset -= 0.025f;
+        }
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
     }
 
@@ -137,17 +142,32 @@ public class DiverControll : MonoBehaviour {
         {
 			if ((Lvector.magnitude - Rvector.magnitude) > 0.075f) //旋轉的閾值
             {
-                if (rotateValue.magnitude <= 25)
-                    rotateValue += Vector3.up * body_vector_angle * 0.3f;// 0.16f;
-                //Debug.LogWarning("Right!!");
-                if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, 25, 0);
+                if (rotateValue.magnitude <= 30)
+                {
+                    if ((Lvector.magnitude - Rvector.magnitude) > 0.08f && (Lvector.magnitude - Rvector.magnitude) <= 0.09f)
+                        rotateValue += Vector3.up * body_vector_angle * 0.9f;
+                    else if ((Lvector.magnitude - Rvector.magnitude) > 0.09f && (Lvector.magnitude - Rvector.magnitude) <= 0.1f)
+                        rotateValue += Vector3.up * body_vector_angle * 1.1f;
+                    else if ((Lvector.magnitude - Rvector.magnitude) > 0.1f)
+                        rotateValue += Vector3.up * body_vector_angle * 1.5f;
+                }
+                if (rotateValue.magnitude > 30) rotateValue = new Vector3(0, 30, 0);
             }
 			else if ((Rvector.magnitude - Lvector.magnitude) > 0.075f)//旋轉的閾值
             {
-                if (rotateValue.magnitude <= 25)
-                    rotateValue += Vector3.down * body_vector_angle * 0.3f;//0.16f;
                 //Debug.LogWarning("Left!!");
-                if (rotateValue.magnitude > 25) rotateValue = new Vector3(0, -25, 0);
+                if (rotateValue.magnitude <= 30)
+                {
+                    rotateValue += Vector3.down * body_vector_angle * 0.6f;// 0.16f;
+                    if ((Rvector.magnitude - Lvector.magnitude) > 0.08f && (Rvector.magnitude - Lvector.magnitude) <= 0.09f)
+                        rotateValue += Vector3.down * body_vector_angle * 0.9f;
+                    else if ((Rvector.magnitude - Lvector.magnitude) > 0.09f && (Rvector.magnitude - Lvector.magnitude) <= 0.1f)
+                        rotateValue += Vector3.down * body_vector_angle * 1.1f;
+                    else if ((Rvector.magnitude - Lvector.magnitude) > 0.1f)
+                        rotateValue += Vector3.down * body_vector_angle * 1.5f;
+                }
+                if (rotateValue.magnitude > 30) rotateValue = new Vector3(0, -30, 0);
+
             }
             else if (Mathf.Abs(Rvector.magnitude - Lvector.magnitude) < 0.03f)
             {
@@ -160,15 +180,25 @@ public class DiverControll : MonoBehaviour {
 
         //前進時的offset計算
         if (LRvector.magnitude > 0.02f && LRvector.magnitude < 0.03f) offset += 0.06f;
-        else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.055f;
-        else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.05f;
-        else if (LRvector.magnitude > 0.05f) offset += 0.055f;
-        if (offset > 7) offset = 7;
+        else if (LRvector.magnitude > 0.03f && LRvector.magnitude < 0.04f) offset += 0.065f;
+        else if (LRvector.magnitude > 0.04f && LRvector.magnitude < 0.05f) offset += 0.07f;
+        else if (LRvector.magnitude > 0.05f) offset += 0.275f;
+        if (offset > 12) offset = 12;
 
         //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
-        rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 10);
+        //rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 10);
+
+        if (rotateValue.magnitude > 12.5 && rotateValue.magnitude <= 17.5f)
+            rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 30);
+        else if (rotateValue.magnitude > 17.5 && rotateValue.magnitude <= 20)
+            rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 35);
+        else if (rotateValue.magnitude > 20)
+            rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 45);
+
+        if (rotateValue.magnitude <= 12.5) rotateValue = new Vector3(0, 0, 0);
+        /**TODO: 旋轉減速*/
     }
 
     private void sharkControl()
@@ -227,12 +257,13 @@ public class DiverControll : MonoBehaviour {
         Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
-        if (offset > 0.0105625) offset -= 0.0105625f;
-        else
+        if (offset < 0.105625) //offset -= 0.021125f;
+        //else
         {
             offset = 0;
             LRvector = Vector3.zero;
         }
+        //LRvector = Vector3.zero;
     }
 
     private angle motorAngle (float fowardValue, float rotateValue, angle last)
@@ -241,60 +272,55 @@ public class DiverControll : MonoBehaviour {
         if (rotateValue > 12.5f) // right
         {
             //Debug.Log("right: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 3)  //0~1.5 20
+			if (fowardValue >= 0 && fowardValue <= 5)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-			else if (fowardValue > 3 && fowardValue <= 5)//1.5~5 100
-            {
-                answer.rightAngle = 0;
-                answer.leftAngle = 20;
-            }
-            else if (fowardValue > 5)//5up 130
-            {
-                answer.rightAngle = 0;
-                answer.leftAngle = 37;
-            }
-        }
-        else if (rotateValue < -12.5f) //left
-        {
-            //Debug.Log("left: " + rotateValue);
-			if (fowardValue >= 0 && fowardValue <= 3)  //0~1.5 20
-            {
-                answer.rightAngle = 0;
-                answer.leftAngle = 0;
-            }
-			else if (fowardValue > 3 && fowardValue <= 5)//1.5~5 100
+			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
                 answer.rightAngle = 20;
                 answer.leftAngle = 0;
             }
-            else if (fowardValue > 5)//5up 130
+            else if (fowardValue > 5.5)//5up 130
             {
                 answer.rightAngle = 37;
                 answer.leftAngle = 0;
             }
         }
+        else if (rotateValue < -12.5f) //left
+        {
+            //Debug.Log("left: " + rotateValue);
+			if (fowardValue >= 0 && fowardValue <= 5)  //0~1.5 20
+            {
+                answer.rightAngle = 0;
+                answer.leftAngle = 0;
+            }
+			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
+            {
+                answer.rightAngle = 0;
+                answer.leftAngle = 20;
+            }
+            else if (fowardValue > 5.5)//5up 130
+            {
+                answer.rightAngle = 0;
+                answer.leftAngle = 37;
+            }
+        }
         else if (rotateValue > -10.5f && rotateValue < 10.5f) // foward
         {
             //Debug.Log("foward: " + rotateValue);
-            if (fowardValue >= 0 && fowardValue <= 0.25)  //0~1.5 20
+            if (fowardValue >= 0 && fowardValue <= 5)  //0~1.5 20
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
             }
-            else if (fowardValue > 0.25 && fowardValue <= 2)  //0~1.5 20
-            {
-                answer.rightAngle = 0;
-                answer.leftAngle = 0;
-            }
-            else if (fowardValue > 2 && fowardValue <= 5)//1.5~5 100
+            else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
                 answer.rightAngle = 20;
                 answer.leftAngle = 20;
             }
-            else if (fowardValue > 5)//5up 130
+            else if (fowardValue > 5.5)//5up 130
             {
                 answer.rightAngle = 37;
                 answer.leftAngle = 37;

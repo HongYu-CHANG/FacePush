@@ -19,8 +19,7 @@ public class gloveVibration : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
-        //print("I am in OnTriggerEnter");
-        if ((other.gameObject.CompareTag("Boss") || other.gameObject.CompareTag("LHand") || other.gameObject.CompareTag("RHand")) && ColliderOn)
+        if ((other.gameObject.CompareTag("Boss") || other.gameObject.CompareTag("HEAD")) && ColliderOn)
         {
             //SteamVR_Controller.Input((int)controller.index).TriggerHapticPulse(2000);
             osc_sender.callVibrate();

@@ -44,12 +44,12 @@ char pass[] = "nextinterfaces";
 int keyIndex = 0;
 
 IPAddress sendToUnityPC_Ip(10, 0, 1, 4);
-unsigned int sendToUnityPC_Port = 8001; // the other is 8001
-unsigned int listenPort = 9001; // the other is 9001
+unsigned int sendToUnityPC_Port = 8000; // the other is 8001
+unsigned int listenPort = 9000; // the other is 9001
 
 // 10.0.1.4
-// 10.0.1.6, 8001, 9001
-// 10.0.1.7, 8000, 9000
+// 10.0.1.6, 8000, 9000
+// 10.0.1.7, 8001, 9001
 
 char packetBuffer[255];
 char ReplyBuffer[] = "acknowledged";
@@ -260,14 +260,14 @@ void initWifi()
   // check for the presence of the shield:
   if (WiFi.status() == WL_NO_SHIELD) 
   {
-    //Serial.println("WiFi shield not present");
+    Serial.println("WiFi shield not present");
     // don't continue:
     while (true);
   }
   // attempt to connect to Wifi network:
   while ( status != WL_CONNECTED) 
   {
-    //Serial.print("Attempting to connect to SSID: ");
+//    Serial.print("Attempting to connect to SSID: ");
     //Serial.println(ssid);
     // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
     status = WiFi.begin(ssid, pass);

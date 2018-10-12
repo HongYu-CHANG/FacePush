@@ -20,12 +20,15 @@ public class boss_hitted : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(hit == 1) count++ ; 
+        if (hit == 1)
+        {
+            count++;
+            Rglove.setColliderOn(false);
+            Lglove.setColliderOn(false);
+        }
 		if(count == 2){
             _animator.SetInteger("boss_hitted", 0);
             _animator.SetInteger("gameover", 0);
-            Rglove.setColliderOn(false);
-            Lglove.setColliderOn(false);
         }
         if (count == 150) { hit = 0; Rglove.setColliderOn(true); Lglove.setColliderOn(true); }
         boss_blood.localPosition = new Vector3(-232 * (hp / 180f), 0, 0);
