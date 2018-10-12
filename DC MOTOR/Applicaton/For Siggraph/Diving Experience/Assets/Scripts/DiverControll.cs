@@ -256,7 +256,7 @@ public class DiverControll : MonoBehaviour {
         Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
-        if (offset < 0.2) //offset -= 0.021125f;
+        if (offset < 0.15) //offset -= 0.021125f;
         {
             offset = 0;
             LRvector = Vector3.zero;
