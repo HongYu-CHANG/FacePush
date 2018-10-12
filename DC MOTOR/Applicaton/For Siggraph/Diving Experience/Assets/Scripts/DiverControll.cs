@@ -188,7 +188,6 @@ public class DiverControll : MonoBehaviour {
         //最後進行物體移動或旋轉的時候
         transform.position += new Vector3(diveDirection.x, 0, diveDirection.z) * (LRvector.magnitude + offset) * 3f * Time.deltaTime;
         transform.Rotate(rotateValue * Time.deltaTime * (Time.deltaTime * 25));
-        //rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 10);
 
         if (rotateValue.magnitude > 12.5 && rotateValue.magnitude <= 17.5f)
             rotateValue -= rotateValue * Time.deltaTime * (Time.deltaTime * 30);
@@ -257,8 +256,7 @@ public class DiverControll : MonoBehaviour {
         Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
-        if (offset < 0.105625) //offset -= 0.021125f;
-        //else
+        if (offset < 0.2) //offset -= 0.021125f;
         {
             offset = 0;
             LRvector = Vector3.zero;

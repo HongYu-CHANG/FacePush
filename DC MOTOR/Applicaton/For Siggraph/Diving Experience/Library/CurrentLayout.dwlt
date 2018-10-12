@@ -110,7 +110,7 @@ MonoBehaviour:
   m_MinSize: {x: 683, y: 442}
   m_MaxSize: {x: 12008, y: 8042}
   vertical: 0
-  controlID: 52
+  controlID: 141
 --- !u!114 &6
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -180,8 +180,8 @@ MonoBehaviour:
     y: 463
     width: 1142
     height: 484
-  m_MinSize: {x: 202, y: 221}
-  m_MaxSize: {x: 4002, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 13}
   m_Panes:
   - {fileID: 13}
@@ -393,14 +393,14 @@ MonoBehaviour:
     height: 442
   m_PersistentViewDataDictionary: {fileID: 0}
   m_SceneLighting: 1
-  lastFramingTime: 117.64063029628792
+  lastFramingTime: 297.4289975869649
   m_2DMode: 0
   m_isRotationLocked: 0
   m_AudioPlay: 0
   m_Position:
-    m_Target: {x: 6.054942, y: 3.8709245, z: -1.356705}
+    m_Target: {x: 6.04, y: 1.5500001, z: 0.52}
     speed: 2
-    m_Value: {x: 6.054942, y: 3.8709245, z: -1.356705}
+    m_Value: {x: 6.04, y: 1.5500001, z: 0.52}
   m_RenderMode: 0
   m_ValidateTrueMetals: 0
   m_SceneViewState:
@@ -428,9 +428,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0.37684894, y: -0.45356968, z: 0.21995719, w: 0.7770961}
   m_Size:
-    m_Target: 1.0921441
+    m_Target: 22
     speed: 2
-    m_Value: 1.0921441
+    m_Value: 22
   m_Ortho:
     m_Target: 0
     speed: 2
@@ -575,23 +575,23 @@ MonoBehaviour:
   m_PersistentViewDataDictionary: {fileID: 0}
   m_TreeViewState:
     scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: e8450000
-    m_LastClickedID: 17896
-    m_ExpandedIDs: 00fbffff9efbffff00000000e84300001c440000
+    m_SelectedIDs: fefaffff
+    m_LastClickedID: -1282
+    m_ExpandedIDs: 00fbffff9efbffff00000000e84300001e440000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: Canvas
-      m_OriginalName: Canvas
+      m_Name: 
+      m_OriginalName: 
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 17436
+      m_UserData: 0
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
-      m_OriginalEventType: 0
+      m_OriginalEventType: 11
       m_IsRenamingFilename: 0
       m_ClientGUIView: {fileID: 10}
     m_SearchString: 
