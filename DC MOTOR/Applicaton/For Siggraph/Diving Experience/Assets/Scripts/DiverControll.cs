@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
+new Thread(GameDataManager.UnoThermo.sendData).Start("S" + " " + "S");
+
 public class DiverControll : MonoBehaviour {
     //Diver Body parameter
     public Transform driverLeftHand;

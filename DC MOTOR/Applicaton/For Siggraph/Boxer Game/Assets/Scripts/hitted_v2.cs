@@ -16,7 +16,8 @@ public class hitted_v2 : MonoBehaviour
 	//hit_pos_on_face
 
 	// Arduino connection
-	private CommunicateWithArduino Uno = new CommunicateWithArduino();
+	private CommunicateWithArduino Uno = new CommunicateWithArduino("COM5", baudRate:115200);
+	private CommunicateWithArduino UnoThermo = new CommunicateWithArduino("COM7", baudRate:115200);
 
 	private GameObject hit;
 	private Transform face;
@@ -67,6 +68,7 @@ public class hitted_v2 : MonoBehaviour
 	void Start()
 	{
 		new Thread(Uno.connectToArdunio).Start();
+		new Thread(UnoThermo.connectToArdunio).Start();
 
 		//hit_pos_on_face
 		hit = GameObject.FindGameObjectWithTag("Hit");//show where hitted on image---> delete now
@@ -421,12 +423,38 @@ public class hitted_v2 : MonoBehaviour
 		public string choice = "cu.usbmodem1421";
 		private SerialPort arduinoController;
 
+		private string portName;
+	    private int baudRate;
+	    private Parity parity;
+	    private int dataBits;
+	    private StopBits stopBits;
+	    private Handshake handshake;
+	    private bool RtsEnable;
+	    private int ReadTimeout;
+	    private bool isMac;
+	    private bool isConnected;
+
+		public CommunicateWithArduino(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One, Handshake handshake = Handshake.None,
+		        bool RtsEnable = true, int ReadTimeout = 1, bool isMac = false, bool isConnected = true)
+		    {
+		        this.portName = portName;
+		        this.baudRate = baudRate;
+		        this.parity = parity;
+		        this.dataBits = dataBits;
+		        this.stopBits = stopBits;
+		        this.handshake = handshake;
+		        this.RtsEnable = RtsEnable;
+		        this.ReadTimeout = ReadTimeout;
+		        this.isMac = isMac;
+		        this.isConnected = isConnected;
+		        //connectToArdunio();
+		    }
 		public void connectToArdunio()
 		{
 
 			if (connected)
 			{
-				string portChoice = "COM5";
+				string portChoice = portName;
 				if (mac)
 				{
 					int p = (int)Environment.OSVersion.Platform;
