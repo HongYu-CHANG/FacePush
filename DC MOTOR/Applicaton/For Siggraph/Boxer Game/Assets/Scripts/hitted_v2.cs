@@ -79,6 +79,7 @@ public class hitted_v2 : MonoBehaviour
 		hit_face = GameObject.FindGameObjectWithTag("hitted").transform;//show where boxer hit on sphere
 
 		player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
+		new Thread(Uno.SendData).Start("B"); //Boxing Setting
 	}
 
 	void Update()
@@ -353,9 +354,9 @@ public class hitted_v2 : MonoBehaviour
 
         //study2 94 , 134
         if(state != 5 && state != 1)
-            yield return new WaitForSeconds(0.09f);
+            yield return new WaitForSeconds(0f);
         else if (state == 5)
-            yield return new WaitForSeconds(0.035f);
+            yield return new WaitForSeconds(0f);
         else if (state == 1)
             yield return new WaitForSeconds(0);
         if (R)//奇數次點擊

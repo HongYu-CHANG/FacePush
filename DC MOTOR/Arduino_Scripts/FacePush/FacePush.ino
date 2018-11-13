@@ -2,7 +2,7 @@
 #include <PinChangeInt.h>
 #include <PID_v1.h>
 #define SERIAL_BAUD 115200
-#define DEBUG  0
+#define DEBUG  1
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
@@ -106,11 +106,13 @@ void loop()
     {
       LeftPID_Contorller.SetTunings(2, 0, 0);
       RightPID_Contorller.SetTunings(1, 0.1, 0);
+      char test = Serial.read();
     }
     else if (c == 'B')
     {
        LeftPID_Contorller.SetTunings(0.8, 0.09, 0.05);
        RightPID_Contorller.SetTunings(0.8, 0.09, 0.05);
+       char test = Serial.read();
     }
     else
     {
