@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine;
 
-new Thread(GameDataManager.UnoThermo.sendData).Start("S" + " " + "S");
+
 
 public class DiverControll : MonoBehaviour {
     //Diver Body parameter
@@ -62,9 +62,13 @@ public class DiverControll : MonoBehaviour {
     private int randomTurn = 0;
     private static bool isShark = false;
 
-    //For test
+    //For controlMotor
     private bool specialEffectOn;
     private bool inControlMotor = true;
+
+    //Timer
+    private float timer_f = 0f;
+    private int timer_i = 0;
 
     // Use this for initialization
     void Start ()
@@ -79,11 +83,17 @@ public class DiverControll : MonoBehaviour {
         _sharkAnimator = shark.GetComponent<Animator>();
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
+
     }
 	
 	// Update is called once per frame
 	void FixedUpdate()
     {
+        
+        timer_f += Time.deltaTime;
+        timer_i = (int)timer_f;
+        StartCoroutine(diveThermal(150, 150, 1f));
+
         // 抓取左右手的位置，並計算成前進的方向、角度和速度
         positionCal();
 
@@ -324,6 +334,7 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 37;
                 answer.leftAngle = 37;
+                StartCoroutine(diveThermal(150, 150, 1f));
             }
         }
 
@@ -355,15 +366,16 @@ public class DiverControll : MonoBehaviour {
             {
                 sharkMotor.rightAngle = 60;
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)sharkMotor.rightAngle));
+                StartCoroutine(diveThermal(0, 150, 1f));
             }
             else// right
             {
                 sharkMotor.leftAngle = 60;
                 Debug.LogWarning("send! shark");
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                
+                StartCoroutine(diveThermal(150, 0, 1f));
             }
-            lastAngle = sharkMotor;
+           	lastAngle = sharkMotor;
         }
     }
 
@@ -373,5 +385,16 @@ public class DiverControll : MonoBehaviour {
         new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)nowAngle.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
         lastAngle = nowAngle;
         inControlMotor = true;
+    }
+    IEnumerator diveThermal(int Left, int Right, float time)
+    {
+	    if(timer_i >= 5)
+	    {
+		    timer_f = 0;
+	        timer_i = 0;
+		    new Thread(GameDataManager.UnoThermo.sendData).Start(Left + " " + Right);
+		    yield return new WaitForSeconds(time);
+		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
+   		}
     }
 }

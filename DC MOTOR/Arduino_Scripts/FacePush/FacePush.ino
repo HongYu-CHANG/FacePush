@@ -2,7 +2,7 @@
 #include <PinChangeInt.h>
 #include <PID_v1.h>
 #define SERIAL_BAUD 115200
-#define DEBUG  1
+#define DEBUG  0
 
 //All Ｍotor Parameter
 int AllMotor_Parameters[4] = {0}; // angle left, speed left, angle right, speed right
@@ -23,8 +23,8 @@ volatile long LeftEncoder_Value = 0;
 double LeftPID_Input = 0;// input: current position (value of rotary encoder)
 double LeftPID_Output = 0;// output: result (where to go)
 double LeftPID_Target = 0;// Target: target position (position cmd from Feather)
-double Left_kp = 2, Left_ki = 0, Left_kd = 0; //PID Parameter
-PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT); 
+double Left_kp = 0.8, Left_ki = 0.09, Left_kd = 0.05; //PID Parameter
+PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT);
 
 //Right default setting(Motor，Rotary Encoder，PID)
 #define RightMotor_A2_PIN 4
@@ -40,9 +40,8 @@ volatile long RightEncoder_Value = 0;
 double RightPID_Input = 0;// input: current position (value of rotary encoder)
 double RightPID_Output = 0;// output: result (where to go)
 double RightPID_Target = 0;// Target: target position (position cmd from Feather)
-double Right_kp = 1, Right_ki = 0.1, Right_kd = 0; //PID Parameter
+double Right_kp = 0.8, Right_ki = 0.09, Right_kd = 0.05; //PID Parameter
 PID RightPID_Contorller(&RightPID_Input, &RightPID_Output, &RightPID_Target, Right_kp, Right_ki, Right_kd, DIRECT);
-  
 void setup()                         
 {
   Serial.begin(SERIAL_BAUD);
@@ -61,6 +60,8 @@ void loop()
     Serial.print(LeftPID_Contorller.GetKp()); Serial.print(" ");
     Serial.print(LeftPID_Contorller.GetKi()); Serial.print(" ");
     Serial.print(LeftPID_Contorller.GetKd()); Serial.print(" ");
+    Serial.print(LeftPID_Contorller.GetMode()); Serial.print(" ");
+    Serial.print(LeftPID_Contorller.GetDirection()); Serial.print(" ");
     Serial.print("R: ");
     Serial.print(RightPID_Input); Serial.print(" ");
     Serial.print(RightPID_Target); Serial.print(" ");
@@ -68,6 +69,8 @@ void loop()
     Serial.print(RightPID_Contorller.GetKp()); Serial.print(" ");
     Serial.print(RightPID_Contorller.GetKi()); Serial.print(" ");
     Serial.print(RightPID_Contorller.GetKd()); Serial.print(" ");
+    Serial.print(RightPID_Contorller.GetMode()); Serial.print(" ");
+    Serial.print(RightPID_Contorller.GetDirection()); Serial.print(" ");
     Serial.print("Order: ");
     Serial.print(AllMotor_Parameters[0]); Serial.print(" ");
     Serial.print(AllMotor_Parameters[1]); Serial.println(" ");
@@ -76,11 +79,10 @@ void loop()
 //    Serial.print(MotorCounter); Serial.println(" ");
     delay(10);
   #endif
-
-  LeftPID_Input = LeftEncoder_Value;
-  PID_Calculation(&LeftPID_Output, &LeftPID_Contorller, LeftMotor);
-  RightPID_Input = RightEncoder_Value;
-  PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
+    LeftPID_Input = LeftEncoder_Value;
+    PID_Calculation(&LeftPID_Output, &LeftPID_Contorller, LeftMotor);
+    RightPID_Input = RightEncoder_Value;
+    PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
 
   //Control Motor noise
   if (LeftPID_Output == 255 || RightPID_Output == 255) 
@@ -104,8 +106,8 @@ void loop()
     }
     else if (c == 'D')
     {
-      LeftPID_Contorller.SetTunings(2, 0, 0);
-      RightPID_Contorller.SetTunings(1, 0.1, 0);
+       LeftPID_Contorller.SetTunings(2, 0, 0);
+       RightPID_Contorller.SetTunings(1, 0.1, 0);
       char test = Serial.read();
     }
     else if (c == 'B')
@@ -133,8 +135,8 @@ void loop()
     RightMotor_Speed = 255;
     Serial.flush();
   }
-   LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
-   RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
+  LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
+  RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
 }
 
 void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value) 
@@ -177,8 +179,8 @@ void LeftInitialSetting()
   digitalWrite(LeftEncoder_Pin2, HIGH); //turn pullup resistor on
   attachInterrupt(digitalPinToInterrupt(LeftEncoder_Pin1), LeftEncoder_Update, CHANGE); 
   attachInterrupt(digitalPinToInterrupt(LeftEncoder_Pin2), LeftEncoder_Update, CHANGE);
-  RightPID_Contorller.SetMode(AUTOMATIC);
-  RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
+  LeftPID_Contorller.SetMode(AUTOMATIC);
+  LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
 }
 
 void LeftEncoder_Update() 
@@ -208,8 +210,8 @@ void RightInitialSetting()
   digitalWrite(RightEncoder_Pin2, HIGH); //turn pullup resistor on
   attachPinChangeInterrupt(RightEncoder_Pin1, RightEncoder_Update, CHANGE); 
   attachPinChangeInterrupt(RightEncoder_Pin2, RightEncoder_Update, CHANGE);
-  LeftPID_Contorller.SetMode(AUTOMATIC);
-  LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
+  RightPID_Contorller.SetMode(AUTOMATIC);
+  RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
 }
 
 void RightEncoder_Update() 

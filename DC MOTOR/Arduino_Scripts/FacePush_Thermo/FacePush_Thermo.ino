@@ -1,12 +1,9 @@
 
 #define SERIAL_BAUD 115200
-#define DEBUG  1
+#define DEBUG  0
 
 //All Thermal Parameter
 int AllThermo_Parameters[2];// L ColdorHot R ColdorHot
-int HotPWM = -20;
-int ColdPWM = 20;
-int StopPWM = 0;
 
 //Read String Parameter
 String ReadString_Input = "";
@@ -74,7 +71,6 @@ void loop()
     PID_Calculation( AllThermo_Parameters[1], RightThermal);
     Serial.flush();
   }
-
 }
 
 void ThermalAction(uint8_t Thermal, uint8_t pwm, int PinA_Value, int PinB_Value) 

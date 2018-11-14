@@ -12,12 +12,9 @@ public class hitted_v2 : MonoBehaviour
 {
 	int s = 0;
 	int state = 0;
-
-	//hit_pos_on_face
-
 	// Arduino connection
 	private CommunicateWithArduino Uno = new CommunicateWithArduino("COM5", baudRate:115200);
-	private CommunicateWithArduino UnoThermo = new CommunicateWithArduino("COM7", baudRate:115200);
+	private CommunicateWithArduino UnoThermal = new CommunicateWithArduino("COM7", baudRate:115200);
 
 	private GameObject hit;
 	private Transform face;
@@ -64,11 +61,16 @@ public class hitted_v2 : MonoBehaviour
     //gameover
     private bool isGameover = false;
 
+    //Timer
+    private float timer_f = 0f;
+    private int timer_i = 0;
+
+
 	// Use this for initialization
 	void Start()
 	{
 		new Thread(Uno.connectToArdunio).Start();
-		new Thread(UnoThermo.connectToArdunio).Start();
+		new Thread(UnoThermal.connectToArdunio).Start();
 
 		//hit_pos_on_face
 		hit = GameObject.FindGameObjectWithTag("Hit");//show where hitted on image---> delete now
@@ -87,6 +89,9 @@ public class hitted_v2 : MonoBehaviour
 	void Update()
 	{
 		//get animater in which state
+		timer_f += Time.deltaTime;
+        timer_i = (int)timer_f;
+
 		if (s != anim_change.s)
 		{
 			s = anim_change.s;
@@ -353,6 +358,7 @@ public class hitted_v2 : MonoBehaviour
 		float time = 0.5f;
 		int angle = 150;
 		int langle = 150;
+		int thermal = 0; // Hot
 
         //study2 94 , 134
         if(state != 5 && state != 1)
@@ -379,13 +385,15 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) {angle = 134; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = -100; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) {angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
+			if (state == 1 || state == 2 || state == 5)StartCoroutine(diveThermal(thermal, thermal, 1f));
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "+ degreeConvertToRightRotaryCoder(angle)); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
-			new Thread(Uno.SendData).Start("0 "+ " 0 "); //L Lspeed R Rspeed
+			new Thread(Uno.SendData).Start("0 "+ "0 "); //L Lspeed R Rspeed
+
 		}
 
 		//write data
@@ -407,6 +415,18 @@ public class hitted_v2 : MonoBehaviour
 		// increase another converter for right motor
 		return (degree * 824 / 360);
 	}
+
+	IEnumerator diveThermal(int Left, int Right, float time)
+    {
+	    if(timer_i >= 5)
+	    {
+		    timer_f = 0;
+	        timer_i = 0;
+		    new Thread(UnoThermal.SendData).Start(Left + " " + Right);
+		    yield return new WaitForSeconds(time);
+		    new Thread(UnoThermal.SendData).Start("0" + " " + "0");
+   		}
+    }
 
     IEnumerator gameoverScene()
     {
@@ -506,7 +526,4 @@ public class hitted_v2 : MonoBehaviour
 			Thread.Sleep(500);
 		}
 	}
-
-
-
 }

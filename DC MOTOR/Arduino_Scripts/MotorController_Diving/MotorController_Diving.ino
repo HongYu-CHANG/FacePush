@@ -24,7 +24,7 @@ double LeftPID_Input = 0;// input: current position (value of rotary encoder)
 double LeftPID_Output = 0;// output: result (where to go)
 double LeftPID_Target = 0;// Target: target position (position cmd from Feather)
 double Left_kp = 2, Left_ki = 0, Left_kd = 0; //PID Parameter
-PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT); 
+PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp, Left_ki, Left_kd, DIRECT);
 
 //Right default setting(Motor，Rotary Encoder，PID)
 #define RightMotor_A2_PIN 4
@@ -42,39 +42,39 @@ double RightPID_Output = 0;// output: result (where to go)
 double RightPID_Target = 0;// Target: target position (position cmd from Feather)
 double Right_kp = 1, Right_ki = 0.1, Right_kd = 0; //PID Parameter
 PID RightPID_Contorller(&RightPID_Input, &RightPID_Output, &RightPID_Target, Right_kp, Right_ki, Right_kd, DIRECT);
-  
-void setup()                         
+
+void setup()
 {
   Serial.begin(SERIAL_BAUD);
   LeftInitialSetting();
   RightInitialSetting();
 }
 
-void loop() 
+void loop()
 {
   //  DEBUG == 1 below to check values of PID
-  #if DEBUG == 1  
-    Serial.print("L: ");
-    Serial.print(LeftPID_Input); Serial.print(" ");
-    Serial.print(LeftPID_Target); Serial.print(" ");
-    Serial.print(LeftPID_Output); Serial.print(" ");
-    Serial.print(digitalRead(LeftMotor_A1_PIN)); Serial.print(" ");
-    Serial.print(digitalRead(LeftMotor_B1_PIN)); Serial.print(" ");
-    Serial.print(digitalRead(LeftMotor_EnablePin)); Serial.print(" ");
-    Serial.print("R: ");
-    Serial.print(RightPID_Input); Serial.print(" ");
-    Serial.print(RightPID_Target); Serial.print(" ");
-    Serial.print(RightPID_Output); Serial.print(" ");
-    Serial.print(digitalRead(RightMotor_A2_PIN)); Serial.print(" ");
-    Serial.print(digitalRead(RightMotor_B2_PIN)); Serial.print(" ");
-    Serial.print("Order: ");
-    Serial.print(AllMotor_Parameters[0]); Serial.print(" ");
-    Serial.print(AllMotor_Parameters[1]); Serial.println(" ");
-  #else DEBUG == 0
-//    Serial.print(LeftPID_Output); Serial.print(" ");
-//    Serial.print(MotorCounter); Serial.println(" ");
-    delay(10);
-  #endif
+#if DEBUG == 1
+  Serial.print("L: ");
+  Serial.print(LeftPID_Input); Serial.print(" ");
+  Serial.print(LeftPID_Target); Serial.print(" ");
+  Serial.print(LeftPID_Output); Serial.print(" ");
+  Serial.print(digitalRead(LeftMotor_A1_PIN)); Serial.print(" ");
+  Serial.print(digitalRead(LeftMotor_B1_PIN)); Serial.print(" ");
+  Serial.print(digitalRead(LeftMotor_EnablePin)); Serial.print(" ");
+  Serial.print("R: ");
+  Serial.print(RightPID_Input); Serial.print(" ");
+  Serial.print(RightPID_Target); Serial.print(" ");
+  Serial.print(RightPID_Output); Serial.print(" ");
+  Serial.print(digitalRead(RightMotor_A2_PIN)); Serial.print(" ");
+  Serial.print(digitalRead(RightMotor_B2_PIN)); Serial.print(" ");
+  Serial.print("Order: ");
+  Serial.print(AllMotor_Parameters[0]); Serial.print(" ");
+  Serial.print(AllMotor_Parameters[1]); Serial.println(" ");
+#else DEBUG == 0
+  //    Serial.print(LeftPID_Output); Serial.print(" ");
+  //    Serial.print(MotorCounter); Serial.println(" ");
+  delay(10);
+#endif
 
   LeftPID_Input = LeftEncoder_Value;
   PID_Calculation(&LeftPID_Output, &LeftPID_Contorller, LeftMotor);
@@ -82,18 +82,18 @@ void loop()
   PID_Calculation(&RightPID_Output, &RightPID_Contorller, RightMotor);
 
   //Control Motor noise
-  if (LeftPID_Output == 255 || RightPID_Output == 255) 
+  if (LeftPID_Output == 255 || RightPID_Output == 255)
   {
-      LeftMotor_Speed = 225;
-      RightMotor_Speed = 225; 
+    LeftMotor_Speed = 225;
+    RightMotor_Speed = 225;
   }
-    
+
   //Read Data and Handle Data
   int i = 0;
-  while(Serial.available())
+  while (Serial.available())
   {
     digitalWrite(LeftMotor_EnablePin, HIGH);
-    digitalWrite(RightMotor_EnablePin, HIGH); 
+    digitalWrite(RightMotor_EnablePin, HIGH);
     char c = Serial.read();
     if (c == ' ' || c == '\n')
     {
@@ -107,11 +107,11 @@ void loop()
     }
     LeftPID_Target = AllMotor_Parameters[0];
     RightPID_Target = AllMotor_Parameters[1];
-    if(AllMotor_Parameters[0] < -60)
+    if (AllMotor_Parameters[0] < -60)
     {
       digitalWrite(LeftMotor_EnablePin, LOW);
     }
-    if(AllMotor_Parameters[1] < -60)
+    if (AllMotor_Parameters[1] < -60)
     {
       digitalWrite(RightMotor_EnablePin, LOW);
     }
@@ -120,19 +120,19 @@ void loop()
     RightMotor_Speed = 255;
     Serial.flush();
   }
-   LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
-   RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
+  LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
+  RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
 }
 
-void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value) 
+void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value)
 {
-  if(motor == LeftMotor)
+  if (motor == LeftMotor)
   {
-    digitalWrite(LeftMotor_A1_PIN, PinA_Value); 
+    digitalWrite(LeftMotor_A1_PIN, PinA_Value);
     digitalWrite(LeftMotor_B1_PIN, PinB_Value);
     analogWrite(LeftMotor_PWM, pwm + 12.5);
   }
-  else if(motor == RightMotor)
+  else if (motor == RightMotor)
   {
     digitalWrite(RightMotor_A2_PIN, PinA_Value);
     digitalWrite(RightMotor_B2_PIN, PinB_Value);
@@ -140,15 +140,15 @@ void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value)
   }
 }
 
-void PID_Calculation(double *output, PID *motorPID, uint8_t motor) 
+void PID_Calculation(double *output, PID *motorPID, uint8_t motor)
 {
-    motorPID->Compute();
-    if (*output > 0) //正轉CW
-       motorAction(motor, *output, HIGH, LOW);
-    else if (*output < 0) //逆轉CCW
-      motorAction(motor, abs(*output), LOW, HIGH);
-    else if (*output == 0)//停止
-      motorAction(motor, 0, LOW, LOW);
+  motorPID->Compute();
+  if (*output > 0) //正轉CW
+    motorAction(motor, *output, HIGH, LOW);
+  else if (*output < 0) //逆轉CCW
+    motorAction(motor, abs(*output), LOW, HIGH);
+  else if (*output == 0)//停止
+    motorAction(motor, 0, LOW, LOW);
 }
 
 void LeftInitialSetting()
@@ -158,17 +158,17 @@ void LeftInitialSetting()
   pinMode(LeftMotor_B1_PIN, OUTPUT);
   pinMode(LeftMotor_PWM, OUTPUT);
   pinMode(LeftMotor_EnablePin, OUTPUT);
-  pinMode(LeftEncoder_Pin1, INPUT); 
+  pinMode(LeftEncoder_Pin1, INPUT);
   pinMode(LeftEncoder_Pin2, INPUT);
   digitalWrite(LeftEncoder_Pin1, HIGH); //turn pullup resistor on
   digitalWrite(LeftEncoder_Pin2, HIGH); //turn pullup resistor on
-  attachInterrupt(digitalPinToInterrupt(LeftEncoder_Pin1), LeftEncoder_Update, CHANGE); 
+  attachInterrupt(digitalPinToInterrupt(LeftEncoder_Pin1), LeftEncoder_Update, CHANGE);
   attachInterrupt(digitalPinToInterrupt(LeftEncoder_Pin2), LeftEncoder_Update, CHANGE);
   RightPID_Contorller.SetMode(AUTOMATIC);
   RightPID_Contorller.SetOutputLimits(-RightMotor_Speed, RightMotor_Speed);
 }
 
-void LeftEncoder_Update() 
+void LeftEncoder_Update()
 {
   long MSB = digitalRead(LeftEncoder_Pin1); //MSB = most significant bit
   long LSB = digitalRead(LeftEncoder_Pin2); //LSB = least significant bit
@@ -176,8 +176,8 @@ void LeftEncoder_Update()
   long encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
   long sum  = (LeftEncoder_LastValue << 2) | encoded; //adding it to the previous encoded value
 
-  if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) LeftEncoder_Value ++;
-  if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) LeftEncoder_Value --;
+  if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) LeftEncoder_Value ++;
+  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) LeftEncoder_Value --;
 
   LeftEncoder_LastValue = encoded; //store this value for next time
 }
@@ -189,17 +189,17 @@ void RightInitialSetting()
   pinMode(RightMotor_B2_PIN, OUTPUT);
   pinMode(RightMotor_PWM, OUTPUT);
   pinMode(RightMotor_EnablePin, OUTPUT);
-  pinMode(RightEncoder_Pin1, INPUT); 
+  pinMode(RightEncoder_Pin1, INPUT);
   pinMode(RightEncoder_Pin2, INPUT);
   digitalWrite(RightEncoder_Pin1, HIGH); //turn pullup resistor on
   digitalWrite(RightEncoder_Pin2, HIGH); //turn pullup resistor on
-  attachPinChangeInterrupt(RightEncoder_Pin1, RightEncoder_Update, CHANGE); 
+  attachPinChangeInterrupt(RightEncoder_Pin1, RightEncoder_Update, CHANGE);
   attachPinChangeInterrupt(RightEncoder_Pin2, RightEncoder_Update, CHANGE);
   LeftPID_Contorller.SetMode(AUTOMATIC);
   LeftPID_Contorller.SetOutputLimits(-LeftMotor_Speed, LeftMotor_Speed);
 }
 
-void RightEncoder_Update() 
+void RightEncoder_Update()
 {
   long MSB = digitalRead(RightEncoder_Pin1); //MSB = most significant bit
   long LSB = digitalRead(RightEncoder_Pin2); //LSB = least significant bit
@@ -207,8 +207,8 @@ void RightEncoder_Update()
   long encoded = (MSB << 1) | LSB; //converting the 2 pin value to single number
   long sum  = (RightEncoder_LastValue << 2) | encoded; //adding it to the previous encoded value
 
-  if(sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) RightEncoder_Value ++;
-  if(sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) RightEncoder_Value --;
+  if (sum == 0b1101 || sum == 0b0100 || sum == 0b0010 || sum == 0b1011) RightEncoder_Value ++;
+  if (sum == 0b1110 || sum == 0b0111 || sum == 0b0001 || sum == 0b1000) RightEncoder_Value --;
 
   RightEncoder_LastValue = encoded; //store this value for next time
 }
