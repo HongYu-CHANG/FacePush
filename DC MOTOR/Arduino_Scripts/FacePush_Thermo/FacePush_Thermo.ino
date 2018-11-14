@@ -1,9 +1,9 @@
 
 #define SERIAL_BAUD 115200
-#define DEBUG  0
+#define DEBUG  1
 
 //All Thermal Parameter
-char AllThermo_Parameters[2];// L ColdorHot R ColdorHot
+int AllThermo_Parameters[2];// L ColdorHot R ColdorHot
 int HotPWM = -20;
 int ColdPWM = 20;
 int StopPWM = 0;
@@ -60,48 +60,18 @@ void loop()
     digitalWrite(LeftThermal_EnablePin, HIGH);
     digitalWrite(RightThermal_EnablePin, HIGH); 
     char c = Serial.read();
-    if (c == ' ')
+    if (c == ' ' || c == '\n')
     {
+      AllThermo_Parameters[i] = ReadString_Input.toInt();
       i++;
-    }
-    else if (c == '\n')
-    {
-      if(AllThermo_Parameters[0] == 'H')//Hot
-      {
-        LeftThermal_Speed = HotPWM;
-        PID_Calculation( LeftThermal_Speed, LeftThermal);
-      }
-      else if(AllThermo_Parameters[0] == 'C')//Cold
-      {
-        LeftThermal_Speed = ColdPWM;
-        PID_Calculation( LeftThermal_Speed, LeftThermal);
-      }
-      else if(AllThermo_Parameters[0] == 'S')//Stop
-      {
-        LeftThermal_Speed = StopPWM;
-        PID_Calculation( LeftThermal_Speed, LeftThermal);
-      }
-       if(AllThermo_Parameters[1] == 'H')//Hot
-      {
-        RightThermal_Speed = HotPWM;
-        PID_Calculation( RightThermal_Speed, RightThermal);
-      }
-      else if(AllThermo_Parameters[1] == 'C')//Cold
-      {
-        RightThermal_Speed = ColdPWM;
-        PID_Calculation( ColdPWM, RightThermal);
-      }
-      else if(AllThermo_Parameters[1] == 'S')//Stop
-      {
-        RightThermal_Speed = StopPWM;
-        PID_Calculation( RightThermal_Speed, RightThermal);
-      }
+      ReadString_Input = "";
     }
     else
     {
-       AllThermo_Parameters[i] = c;
+      ReadString_Input += c;
     }
-    
+    PID_Calculation( AllThermo_Parameters[0], LeftThermal);
+    PID_Calculation( AllThermo_Parameters[1], RightThermal);
     Serial.flush();
   }
 
