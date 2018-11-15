@@ -83,7 +83,7 @@ public class DiverControll : MonoBehaviour {
         _sharkAnimator = shark.GetComponent<Animator>();
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
-
+        new Thread(GameDataManager.Uno.sendData).Start("D"); //Diving Setting
     }
 	
 	// Update is called once per frame
@@ -140,8 +140,10 @@ public class DiverControll : MonoBehaviour {
         {
             LRvector -= LRvector * 3f * Time.deltaTime;
             if (offset > 8) offset -= 0.1f;
-            else if (offset > 5 && offset <= 8) offset -= 0.03f;
-            else if (offset > 2.5 && offset <= 5) offset -= 0.025f;
+            else if (offset > 5 && offset <= 8) offset -= 0.05f;
+            else if (offset > 0&& offset <= 5) offset -= 0.05f;
+            //else if (offset > 0 && offset <= 2.5) offset -= 0.0125f;
+
         }
         body_vector_angle = Vector3.Angle(new Vector3(diveDirection.x, 0, diveDirection.z), new Vector3(LRvector.x, 0, LRvector.z));
     }
@@ -268,7 +270,7 @@ public class DiverControll : MonoBehaviour {
         Rvector = Vector3.zero;
         if (rotateValue.magnitude <= 1)// 為了讓旋轉的值可以很快歸零，因為要讓它不要一值有殘餘的值
             rotateValue = Vector3.zero;
-        if (offset < 0.15) //offset -= 0.021125f;
+        if (offset < 0.25) //offset -= 0.021125f;
         {
             offset = 0;
             LRvector = Vector3.zero;
@@ -334,7 +336,6 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 37;
                 answer.leftAngle = 37;
-                StartCoroutine(diveThermal(150, 150, 1f));
             }
         }
 

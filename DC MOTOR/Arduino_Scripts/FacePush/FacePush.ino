@@ -16,6 +16,7 @@ String ReadString_Input = "";
 #define LeftMotor_EnablePin A0
 #define LeftMotor 1
 double LeftMotor_Speed = 255;
+double LeftMotor_PWMBuffer = 0;
 int LeftEncoder_Pin1 = 3; // interrupt 0
 int LeftEncoder_Pin2 = 2; // interrupt 1
 volatile long LeftEncoder_LastValue = 0;
@@ -33,6 +34,7 @@ PID LeftPID_Contorller(&LeftPID_Input, &LeftPID_Output, &LeftPID_Target, Left_kp
 #define RightMotor_EnablePin A1
 #define RightMotor 2
 double RightMotor_Speed = 255;
+double RightMotor_PWMBuffer = 0;
 int RightEncoder_Pin1 = 10;//use PinChangeInt to simulate Interript
 int RightEncoder_Pin2 = 11;//use PinChangeInt to simulate Interript
 volatile long RightEncoder_LastValue = 0;
@@ -108,12 +110,16 @@ void loop()
     {
        LeftPID_Contorller.SetTunings(2, 0, 0);
        RightPID_Contorller.SetTunings(1, 0.1, 0);
+       RightMotor_PWMBuffer = 25;
+       LeftMotor_PWMBuffer = 12.5;
       char test = Serial.read();
     }
     else if (c == 'B')
     {
        LeftPID_Contorller.SetTunings(0.8, 0.09, 0.05);
        RightPID_Contorller.SetTunings(0.8, 0.09, 0.05);
+       RightMotor_PWMBuffer = 0;
+       LeftMotor_PWMBuffer = 0;
        char test = Serial.read();
     }
     else
@@ -145,13 +151,13 @@ void motorAction(uint8_t motor, uint8_t pwm, int PinA_Value, int PinB_Value)
   {
     digitalWrite(LeftMotor_A1_PIN, PinA_Value); 
     digitalWrite(LeftMotor_B1_PIN, PinB_Value);
-    analogWrite(LeftMotor_PWM, pwm + 12.5);
+    analogWrite(LeftMotor_PWM, pwm + LeftMotor_PWMBuffer);
   }
   else if(motor == RightMotor)
   {
     digitalWrite(RightMotor_A2_PIN, PinA_Value);
     digitalWrite(RightMotor_B2_PIN, PinB_Value);
-    analogWrite(RightMotor_PWM, pwm + 25);
+    analogWrite(RightMotor_PWM, pwm + RightMotor_PWMBuffer);
   }
 }
 
