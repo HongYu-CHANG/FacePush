@@ -71,7 +71,7 @@ public class DiverControll : MonoBehaviour {
     private int timer_i = 20;
 
     //Thermal
-    private int ThermalPWM = 125;
+    private bool ThermalOn = true;
 
     // Use this for initialization
     void Start ()
@@ -95,7 +95,7 @@ public class DiverControll : MonoBehaviour {
         
         timer_f += Time.deltaTime;
         timer_i = (int)timer_f;
-        StartCoroutine(diveThermal(ThermalPWM, ThermalPWM, 1f));
+        //
        
 
         // 抓取左右手的位置，並計算成前進的方向、角度和速度
@@ -292,6 +292,7 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
+                ThermalOn = true;
             }
 			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -311,6 +312,7 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
+                ThermalOn = true;
             }
 			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -330,6 +332,7 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
+                ThermalOn = true;
             }
             else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -338,6 +341,11 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 5.5)//5up 130
             {
+                if(ThermalOn)
+                {
+                	StartCoroutine(diveThermal(135, 135, 1f));
+                	ThermalOn = false;
+                }
                 answer.rightAngle = 37;
                 answer.leftAngle = 37;
             }
@@ -393,18 +401,13 @@ public class DiverControll : MonoBehaviour {
     }
     IEnumerator diveThermal(int Left, int Right, float time)
     {
-	    if(timer_i >= 25)
+	    if(timer_i >= 23)
 	    {
 		    timer_f = 0;
 	        timer_i = 0;
 		    new Thread(GameDataManager.UnoThermo.sendData).Start(Left + " " + Right);
 		    yield return new WaitForSeconds(time);
 		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
-		    if(ThermalPWM < 145)
-		    	ThermalPWM += 10;
-		    else
-		    	ThermalPWM = 125;
-
    		}
     }
 }

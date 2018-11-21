@@ -62,8 +62,8 @@ public class hitted_v2 : MonoBehaviour
     private bool isGameover = false;
 
     //Timer
-    private float timer_f = 0f;
-    private int timer_i = 0;
+    private float timer_f = 15f;
+    private int timer_i = 15;
 
 
 	// Use this for initialization
@@ -91,6 +91,7 @@ public class hitted_v2 : MonoBehaviour
 		//get animater in which state
 		timer_f += Time.deltaTime;
         timer_i = (int)timer_f;
+        //Debug.Log(timer_i);
 
 		if (s != anim_change.s)
 		{
@@ -369,27 +370,27 @@ public class hitted_v2 : MonoBehaviour
             yield return new WaitForSeconds(0);
         if (R)//奇數次點擊
 		{
-			if (state == 1 || state == 2 || state == 5) {angle = 134; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) {angle = 94; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = 0; Debug.Log("R 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) {angle = 94; thermal = 0; Debug.Log("R 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start("0 " + degreeConvertToRightRotaryCoder(angle)); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 0 "); //L Lspeed R Rspeed
 		}
 		else if (L)
 		{
-			if (state == 1 || state == 2 || state == 5) {angle = 160; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) {angle = 94; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {angle = 160; thermal = 0; Debug.Log("L 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) {angle = 94; thermal = 0; Debug.Log("L 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " " + "0"); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 "+ "0"); //L Lspeed R Rspeed
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = -100; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
-			else if (state == 3 || state == 4) {angle = 94; Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = -50; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			else if (state == 3 || state == 4) {angle = 94; thermal = -25;Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
-			if (state == 1 || state == 2 || state == 5)StartCoroutine(diveThermal(thermal, thermal, 1f));
+			if (state == 1 || state == 2 || state == 5) StartCoroutine(diveThermal(thermal, thermal, 1f));
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "+ degreeConvertToRightRotaryCoder(angle)); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 "+ "0 "); //L Lspeed R Rspeed
@@ -418,7 +419,7 @@ public class hitted_v2 : MonoBehaviour
 
 	IEnumerator diveThermal(int Left, int Right, float time)
     {
-	    if(timer_i >= 5)
+	    if(timer_i >= 15)
 	    {
 		    timer_f = 0;
 	        timer_i = 0;
