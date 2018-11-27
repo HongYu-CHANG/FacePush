@@ -9,8 +9,8 @@ int AllThermo_Parameters[2];// L ColdorHot R ColdorHot
 String ReadString_Input = "";
 
 // Left default setting(Thermal，Rotary Encoder，PID)
-#define LeftThermal_A1_PIN 8
-#define LeftThermal_B1_PIN 7
+#define LeftThermal_A1_PIN 7
+#define LeftThermal_B1_PIN 8
 #define LeftThermal_PWM 5
 #define LeftThermal_EnablePin A0
 #define LeftThermal 1

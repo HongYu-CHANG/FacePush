@@ -67,8 +67,8 @@ public class DiverControll : MonoBehaviour {
     private bool inControlMotor = true;
 
     //Timer
-    private float timer_f = 20f;
-    private int timer_i = 20;
+    private float timer_f = 24f;
+    private int timer_i = 24;
 
     //Thermal
     private bool ThermalOn = true;
@@ -87,6 +87,7 @@ public class DiverControll : MonoBehaviour {
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
         new Thread(GameDataManager.Uno.sendData).Start("D"); //Diving Setting
+        StartCoroutine(diveThermal(135, 135, 1f));
     }
 	
 	// Update is called once per frame
