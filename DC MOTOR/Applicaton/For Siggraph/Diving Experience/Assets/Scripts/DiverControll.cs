@@ -87,7 +87,9 @@ public class DiverControll : MonoBehaviour {
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
         new Thread(GameDataManager.Uno.sendData).Start("D"); //Diving Setting
-        StartCoroutine(diveThermal(135, 135, 1f));
+        StartCoroutine(diveThermal(135, 0, 0.5f,0f));
+        timer_i = 24;
+        StartCoroutine(diveThermal(135, 135, 1f,1f));
     }
 	
 	// Update is called once per frame
@@ -344,7 +346,7 @@ public class DiverControll : MonoBehaviour {
             {
                 if(ThermalOn)
                 {
-                	StartCoroutine(diveThermal(135, 135, 1f));
+                	StartCoroutine(diveThermal(135, 135, 1f, 0f));
                 	ThermalOn = false;
                 }
                 answer.rightAngle = 37;
@@ -380,14 +382,14 @@ public class DiverControll : MonoBehaviour {
             {
                 sharkMotor.rightAngle = 60;
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)sharkMotor.rightAngle));
-                StartCoroutine(diveThermal(0, 150, 1f));
+                StartCoroutine(diveThermal(0, 150, 1f, 0f));
             }
             else// right
             {
                 sharkMotor.leftAngle = 60;
                 Debug.LogWarning("send! shark");
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                StartCoroutine(diveThermal(150, 0, 1f));
+                StartCoroutine(diveThermal(150, 0, 1f, 0f));
             }
            	lastAngle = sharkMotor;
         }
@@ -400,14 +402,16 @@ public class DiverControll : MonoBehaviour {
         lastAngle = nowAngle;
         inControlMotor = true;
     }
-    IEnumerator diveThermal(int Left, int Right, float time)
+    IEnumerator diveThermal(int Left, int Right, float time, float interval)
     {
+	    
 	    if(timer_i >= 23)
 	    {
-		    timer_f = 0;
-	        timer_i = 0;
+		    yield return new WaitForSeconds(interval);
 		    new Thread(GameDataManager.UnoThermo.sendData).Start(Left + " " + Right);
 		    yield return new WaitForSeconds(time);
+		    timer_f = 0;
+	        timer_i = 0;
 		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
    		}
     }

@@ -84,6 +84,8 @@ public class hitted_v2 : MonoBehaviour
 
 		player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
 		new Thread(Uno.SendData).Start("B"); //Boxing Setting
+		StartCoroutine(diveThermal(-75, 0, 0.5f));
+		timer_i = 24;
 	}
 
 	void Update()
