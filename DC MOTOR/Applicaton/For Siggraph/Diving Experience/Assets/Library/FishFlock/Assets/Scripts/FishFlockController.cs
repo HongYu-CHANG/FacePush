@@ -45,9 +45,9 @@ namespace FishFlock
         public float minAcceleration = 6f;
         [Tooltip("Maximum acceleration to be applied on the fish vector."), Range(0.1f, 55)]
         public float maxAcceleration = 15f;
-        [Tooltip("Minimum speed to be applied on the fish direction vector."), Range(0.4f, 120)]
+        [Tooltip("Minimum speed to be applied on the fish direction vector."), Range(0.4f, 500)]
         public float minSpeed = 0.1f;
-        [Tooltip("Maximum speed to be applied on the fish direction vector."), Range(0.7f, 120)]
+        [Tooltip("Maximum speed to be applied on the fish direction vector."), Range(0.7f, 500)]
         public float maxSpeed = 1.0f;
         [Tooltip("Minimum force to be applied on the fish direction vector."), Range(0.01f, 10)]
         public float minForce = 0.01f;
@@ -240,16 +240,21 @@ namespace FishFlock
 
         IEnumerator fishflock()
         {
-            minSpeed = 12.8f;
+            flockingParent.gameObject.SetActive(true);
+            minSpeed = 15.8f;
             maxSpeed = 22.4f;
+             minAcceleration = 10;
+            maxAcceleration = 13;
             flockingParent.gameObject.SetActive(true);
             yield return new WaitForSeconds(15f);
             flockingParent.gameObject.SetActive(false);
-            minSpeed = 120f;
-            maxSpeed = 120f;
-            yield return new WaitForSeconds(10f);
-            flockingParent.gameObject.SetActive(true);
-            Debug.Log("FishFlock Finish!!");
+            minAcceleration = 1000;
+            maxAcceleration = 1000;
+            minSpeed = 50000f;
+            maxSpeed = 50000f;
+            yield return new WaitForSeconds(12.5f);
+            //print("Finish Fish Flock!");
+
         }
 
         void Update()

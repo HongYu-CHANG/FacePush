@@ -67,9 +67,9 @@ public class anim_change : MonoBehaviour {
 					else if (anim_control % 14 == 3) anim = 3;
 					else if (anim_control % 14 == 4) anim = 4;
 					else if (anim_control % 14 == 5) anim = 1;
-					else if (anim_control % 14 == 6) anim = 2;
+					else if (anim_control % 14 == 6) anim = 5;
 					else if (anim_control % 14 == 7) anim = 4;
-					else if (anim_control % 14 == 8) anim = 5;
+					else if (anim_control % 14 == 8) anim = 2;
 					else if (anim_control % 14 == 9) anim = 4;
 					else if (anim_control % 14 == 10) anim = 2;
 					else if (anim_control % 14 == 11) anim = 5;

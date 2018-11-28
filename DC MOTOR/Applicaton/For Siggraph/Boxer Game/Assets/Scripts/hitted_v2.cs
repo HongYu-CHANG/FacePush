@@ -85,7 +85,7 @@ public class hitted_v2 : MonoBehaviour
 		player_blood = GameObject.FindGameObjectWithTag("Player_blood").transform;
 		new Thread(Uno.SendData).Start("B"); //Boxing Setting
 		StartCoroutine(diveThermal(-75, 0, 0.5f));
-		timer_i = 24;
+		timer_f = 24;
 	}
 
 	void Update()
@@ -388,11 +388,11 @@ public class hitted_v2 : MonoBehaviour
 		}
 		else
 		{
-			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = -75; Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
+			if (state == 1 || state == 2 || state == 5) {angle = 134; thermal = -50; StartCoroutine(diveThermal(thermal, thermal, 1f));Debug.Log("C 重 "); if (hp + 25 < 250) hp += 25; else hp = 250; }
 			else if (state == 3 || state == 4) {angle = 94; thermal = -25;Debug.Log("C 輕 "); if (hp + 15 < 250) hp += 15; else hp = 250; }
 
 			//no langle
-			if (state == 1 || state == 2 || state == 5) StartCoroutine(diveThermal(thermal, thermal, 1f));
+			//if (state == 1 || state == 2 || state == 5) StartCoroutine(diveThermal(thermal, thermal, 1f));
 			new Thread(Uno.SendData).Start(degreeConvertToLeftRotaryCoder(angle) + " "+ degreeConvertToRightRotaryCoder(angle)); //L Lspeed R Rspeed
 			yield return new WaitForSeconds(time);
 			new Thread(Uno.SendData).Start("0 "+ "0 "); //L Lspeed R Rspeed

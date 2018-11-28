@@ -108,7 +108,7 @@ void loop()
     }
     else if (c == 'D')
     {
-       LeftPID_Contorller.SetTunings(2, 0, 0);
+       LeftPID_Contorller.SetTunings(1.5, 0.09, 0.05);
        RightPID_Contorller.SetTunings(1, 0.1, 0);
        RightMotor_PWMBuffer = 25;
        LeftMotor_PWMBuffer = 12.5;

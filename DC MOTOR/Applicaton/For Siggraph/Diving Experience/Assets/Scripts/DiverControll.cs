@@ -70,8 +70,9 @@ public class DiverControll : MonoBehaviour {
     private float timer_f = 24f;
     private int timer_i = 24;
 
-    //Thermal
-    private bool ThermalOn = true;
+    //Theraml
+    private bool TheramlOn = true;
+    public ParticleSystem waterFlow;
 
     // Use this for initialization
     void Start ()
@@ -86,10 +87,11 @@ public class DiverControll : MonoBehaviour {
         _sharkAnimator = shark.GetComponent<Animator>();
         _sharkAnimator.SetInteger("Start", 0);
         _sharkAnimator.SetInteger("Turn", 0);
+        
         new Thread(GameDataManager.Uno.sendData).Start("D"); //Diving Setting
-        StartCoroutine(diveThermal(135, 0, 0.5f,0f));
+        StartCoroutine(diveThermalFirst(135, 0, 0.5f,0f));
         timer_i = 24;
-        StartCoroutine(diveThermal(135, 135, 1f,1f));
+        StartCoroutine(diveThermal(135, 135, 1f,4.5f));
     }
 	
 	// Update is called once per frame
@@ -98,8 +100,12 @@ public class DiverControll : MonoBehaviour {
         
         timer_f += Time.deltaTime;
         timer_i = (int)timer_f;
-        //
-       
+        if(timer_i >= 16)TheramlOn = true;
+       if(TheramlOn)
+		{
+			TheramlOn = false;
+			StartCoroutine(diveThermal(135, 135, 1f, 6f));
+		 }
 
         // 抓取左右手的位置，並計算成前進的方向、角度和速度
         positionCal();
@@ -128,8 +134,8 @@ public class DiverControll : MonoBehaviour {
         //FishFlock
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Debug.Log("Fish");
             StartCoroutine(fishflock());
+
         }
     }
 
@@ -295,7 +301,7 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
-                ThermalOn = true;
+                
             }
 			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -315,7 +321,6 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
-                ThermalOn = true;
             }
 			else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -335,7 +340,6 @@ public class DiverControll : MonoBehaviour {
             {
                 answer.rightAngle = 0;
                 answer.leftAngle = 0;
-                ThermalOn = true;
             }
             else if (fowardValue > 5 && fowardValue <= 5.5)//1.5~5 100
             {
@@ -344,11 +348,7 @@ public class DiverControll : MonoBehaviour {
             }
             else if (fowardValue > 5.5)//5up 130
             {
-                if(ThermalOn)
-                {
-                	StartCoroutine(diveThermal(135, 135, 1f, 0f));
-                	ThermalOn = false;
-                }
+				
                 answer.rightAngle = 37;
                 answer.leftAngle = 37;
             }
@@ -365,9 +365,9 @@ public class DiverControll : MonoBehaviour {
 
     IEnumerator fishflock()
     {
-        specialEffectOn = true;
+        //specialEffectOn = true;
         fishflockFlowControl.target = fishflockOn;
-        yield return new WaitForSeconds(20f);
+        yield return new WaitForSeconds(16f);
         fishflockFlowControl.target = fishflockOff;
     }
 
@@ -382,14 +382,14 @@ public class DiverControll : MonoBehaviour {
             {
                 sharkMotor.rightAngle = 60;
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)sharkMotor.rightAngle));
-                StartCoroutine(diveThermal(0, 150, 1f, 0f));
+                //StartCoroutine(diveThermal(0, 135, 1f, 0f));
             }
             else// right
             {
                 sharkMotor.leftAngle = 60;
                 Debug.LogWarning("send! shark");
                 new Thread(GameDataManager.Uno.sendData).Start(Left_degreeConvertToRotaryCoder((int)sharkMotor.leftAngle) + " " + Right_degreeConvertToRotaryCoder((int)nowAngle.rightAngle));
-                StartCoroutine(diveThermal(150, 0, 1f, 0f));
+                //StartCoroutine(diveThermal(135, 0, 1f, 0f));
             }
            	lastAngle = sharkMotor;
         }
@@ -405,13 +405,35 @@ public class DiverControll : MonoBehaviour {
     IEnumerator diveThermal(int Left, int Right, float time, float interval)
     {
 	    
-	    if(timer_i >= 23)
+	    if(timer_i >= 17)
 	    {
+		    timer_f = 0;
+	        timer_i = 0;
+	        StartCoroutine(waterFlowControl(interval-3.5f));
+		    yield return new WaitForSeconds(interval-3.5f);
+		    new Thread(GameDataManager.UnoThermo.sendData).Start(Left + " " + Right);
+		    yield return new WaitForSeconds(time);
+		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
+   		}
+    }
+     IEnumerator waterFlowControl(float time)
+    {
+	    waterFlow.maxParticles = 10000;
+		var emission = waterFlow.emission;
+        emission.enabled  = true;
+		yield return new WaitForSeconds(time);
+        emission.enabled  = false;
+    }
+    IEnumerator diveThermalFirst(int Left, int Right, float time, float interval)
+    {
+	    
+	    if(timer_i >= 17)
+	    {
+		    timer_f = 0;
+	        timer_i = 0;
 		    yield return new WaitForSeconds(interval);
 		    new Thread(GameDataManager.UnoThermo.sendData).Start(Left + " " + Right);
 		    yield return new WaitForSeconds(time);
-		    timer_f = 0;
-	        timer_i = 0;
 		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
    		}
     }
