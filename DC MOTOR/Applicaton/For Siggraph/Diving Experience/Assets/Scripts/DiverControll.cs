@@ -358,6 +358,7 @@ public class DiverControll : MonoBehaviour {
         {
             answer.rightAngle = 0;
             answer.leftAngle = 0;
+
         }
 
         return answer;
@@ -392,6 +393,7 @@ public class DiverControll : MonoBehaviour {
                 //StartCoroutine(diveThermal(135, 0, 1f, 0f));
             }
            	lastAngle = sharkMotor;
+           	StartCoroutine(gameoverScene());
         }
     }
 
@@ -436,5 +438,14 @@ public class DiverControll : MonoBehaviour {
 		    yield return new WaitForSeconds(time);
 		    new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
    		}
+    }
+    IEnumerator gameoverScene()
+    {
+        
+        yield return new WaitForSeconds(1.8f);
+        float fadeTime = GameObject.Find("Camera (eye)").GetComponent<SteamVrFade>().FadeToBlack();
+        yield return new WaitForSeconds(fadeTime);
+        new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
+        new Thread(GameDataManager.UnoThermo.sendData).Start("0" + " " + "0");
     }
 }
