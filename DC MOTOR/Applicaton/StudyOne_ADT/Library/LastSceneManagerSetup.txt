@@ -1,4 +1,0 @@
-sceneSetups:
-- path: Assets/Sense/StudyOne_ADT.unity
-  isLoaded: 1
-  isActive: 1
