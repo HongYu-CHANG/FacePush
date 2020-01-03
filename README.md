@@ -7,6 +7,10 @@ This paper presents FacePush, a Head-Mounted Display (HMD) integrated with a pul
 
 Unity 5.6.3 and Arduino
 
+## Video
+
+[FacePush Demo Video](https://www.youtube.com/watch?v=IPLVCdbvWyI)
+
 ## API Reference
 
 ### Arduino
